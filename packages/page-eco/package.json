@@ -1,0 +1,16 @@
+{
+  "name": "@polkadot/app-eco",
+  "private": true,
+  "version": "0.59.0-beta.23",
+  "description": "page eco",
+  "author": "my <yang.yang@kucoinc.com>",
+  "homepage": "http://./packages/page-eco",
+  "license": "ISC",
+  "scripts": {},
+  "main": "index.js",
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@polkadot/react-components": "0.59.0-beta.23",
+    "clsx": "^1.1.1"
+  }
+}

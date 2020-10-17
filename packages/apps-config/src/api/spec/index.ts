@@ -1,5 +1,6 @@
 // Copyright 2017-2020 @polkadot/apps-config authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+/* eslint-disable sort-keys */
 
 import acala from './acala';
 import centrifugeChain from './centrifuge-chain';
@@ -20,6 +21,8 @@ import robonomics from './robonomics';
 import stablePoc from './stable-poc';
 import stafi from './stafi';
 import subsocialNode from './subsocial';
+
+import ecoNode from './eco';
 
 export default {
   Crab: crab,
@@ -43,5 +46,6 @@ export default {
   'stable-poc': stablePoc,
   stable_poc: stablePoc,
   stafi,
-  subsocial: subsocialNode
+  subsocial: subsocialNode,
+  eco: ecoNode
 };

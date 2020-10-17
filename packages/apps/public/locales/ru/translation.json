@@ -795,6 +795,7 @@
   "display name": "экранное имя",
   "do not include empty strings in the generated file": "не включать пробелы в созданном файле",
   "does not appear to have a valid claim. Please double check that you have signed the transaction correctly on the correct ETH account.": "Не найдено действительного запроса. Перепровертье, что Вы правильно подписали транзакцию правильным адресом на сети Ethereum.",
+  "eco.tab": "ECC",
   "ed25519, Edwards": "ed25519, Edwards",
   "elected stake": "выбранный стейк",
   "email": "email",

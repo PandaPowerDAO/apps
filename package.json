@@ -114,5 +114,14 @@
     "webpack-cli": "^3.3.12",
     "webpack-merge": "^5.1.4",
     "webpack-plugin-serve": "^1.0.1"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@types/qrcode.react": "^1.0.1",
+    "antd": "^4.6.6",
+    "axios": "^0.20.0",
+    "copy-to-clipboard": "^3.3.1",
+    "qrcode.react": "^1.0.0",
+    "rc-form": "^2.4.11"
   }
 }

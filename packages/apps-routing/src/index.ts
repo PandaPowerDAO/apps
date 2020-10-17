@@ -27,6 +27,7 @@ import sudo from './sudo';
 import techcomm from './techcomm';
 import transfer from './transfer';
 import treasury from './treasury';
+import eco from './eco';
 
 export default function create (t: <T = string> (key: string, text: string, options: { ns: string }) => T): Routes {
   return [
@@ -53,6 +54,7 @@ export default function create (t: <T = string> (key: string, text: string, opti
     signing(t),
     sudo(t),
     js(t),
-    settings(t)
+    settings(t),
+    eco(t)
   ];
 }

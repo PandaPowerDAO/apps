@@ -72,7 +72,9 @@
       "@polkadot/react-query": [ "packages/react-query/src" ],
       "@polkadot/react-query/*": [ "packages/react-query/src/*" ],
       "@polkadot/react-signer": [ "packages/react-signer/src" ],
-      "@polkadot/react-signer/*": [ "packages/react-signer/src/*" ]
+      "@polkadot/react-signer/*": [ "packages/react-signer/src/*" ],
+      "@polkadot/app-eco": [ "packages/page-eco/src" ],
+      "@polkadot/app-eco/*": [ "packages/page-eco/src/*" ],
     },
     "skipLibCheck": true,
     "typeRoots": [
