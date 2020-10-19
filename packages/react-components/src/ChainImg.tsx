@@ -5,7 +5,7 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { chainLogos, emptyLogo, namedLogos, nodeLogos } from '@polkadot/apps-config/ui/logos';
 import { useApi } from '@polkadot/react-hooks';
-
+const logoImg = nodeLogos['eco2']
 interface Props {
   className?: string;
   logo?: keyof typeof namedLogos;
@@ -29,7 +29,7 @@ function ChainImg ({ className = '', logo, onClick }: Props): React.ReactElement
       alt='chain logo'
       className={`${className}${isEmpty ? ' highlight--bg' : ''}`}
       onClick={onClick}
-      src={img}
+      src={logoImg}
     />
   );
 }

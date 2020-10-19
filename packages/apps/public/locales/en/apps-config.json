@@ -12,7 +12,7 @@
   "rpc.kusama.ava": "Kusama (Polkadot Canary, user-run public nodes; see https://status.cloud.ava.do/)",
   "rpc.kusama.parity": "Kusama (Polkadot Canary, hosted by Parity)",
   "rpc.kusama.w3f": "Kusama (Polkadot Canary, hosted by Web3 Foundation)",
-  "rpc.local": "Local Node (Own, 127.0.0.1:9944)",
+  "rpc.local": "Local Node (Own, 49.233.3.48:9944)",
   "rpc.mandala": "Mandala (Acala Testnet, hosted by Acala)",
   "rpc.nodle-arcadia": "Arcadia (Nodle Testnet, hosted by Nodle)",
   "rpc.turbulence": "Turbulence (Laminar Testnet, hosted by Laminar)",

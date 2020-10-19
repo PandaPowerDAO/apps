@@ -45,7 +45,7 @@ function getApiUrl (): string {
     ? settings.apiUrl // keep as-is
     : fallbackUrl
       ? fallbackUrl.value as string // grab the fallback
-      : 'ws://127.0.0.1:9944'; // nothing found, go local
+      : 'ws://49.233.3.48:9944'; // nothing found, go local
 }
 
 const apiUrl = getApiUrl();

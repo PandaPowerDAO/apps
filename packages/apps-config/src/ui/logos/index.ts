@@ -34,6 +34,7 @@ import nodeRobonomics from './nodes/robonomics.svg';
 import nodeStafi from './nodes/stafi.png';
 import nodeSubsocial from './nodes/subsocial.svg';
 import nodeSubstrate from './nodes/substrate-hexagon.svg';
+import nodeECO2 from './nodes/eco2.svg';
 
 // extensions
 // alphbetical
@@ -92,7 +93,8 @@ const nodeLogos: Record<string, any> = [
   ['Stafi Node', nodeStafi],
   ['Stafi', nodeStafi],
   ['subsocial-node', nodeSubsocial],
-  ['substrate-node', nodeSubstrate]
+  ['substrate-node', nodeSubstrate],
+  ['eco2', nodeECO2]
 ].reduce((logos, [node, logo]): Record<string, any> => ({
   ...logos,
   [(node as string).toLowerCase().replace(/-/g, ' ')]: logo

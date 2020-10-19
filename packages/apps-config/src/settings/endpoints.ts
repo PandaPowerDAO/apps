@@ -44,8 +44,8 @@ function createDev (t: TFunction): LinkOption[] {
     {
       dnslink: 'local',
       info: 'local',
-      text: t<string>('rpc.local', 'Local Node (Own, 127.0.0.1:9944)', { ns: 'apps-config' }),
-      value: 'ws://127.0.0.1:9944'
+      text: t<string>('rpc.local', 'Local Node (Own, 49.233.3.48:9944)', { ns: 'apps-config' }),
+      value: 'ws://49.233.3.48:9944'
     }
   ];
 }
@@ -53,77 +53,83 @@ function createDev (t: TFunction): LinkOption[] {
 function createLiveNetworks (t: TFunction): LinkOption[] {
   return [
     // fixed, polkadot
+    // {
+    //   dnslink: 'polkadot',
+    //   info: 'polkadot',
+    //   text: t<string>('rpc.polkadot.parity', 'Polkadot (Live, hosted by Parity)', { ns: 'apps-config' }),
+    //   value: 'wss://rpc.polkadot.io'
+    // },
+    // {
+    //   info: 'polkadot',
+    //   text: t<string>('rpc.polkadot.w3f', 'Polkadot (Live, hosted by Web3 Foundation)', { ns: 'apps-config' }),
+    //   value: 'wss://cc1-1.polkadot.network'
+    // },
+    // {
+    //   dnslink: 'kusama',
+    //   info: 'kusama',
+    //   text: t<string>('rpc.kusama.parity', 'Kusama (Polkadot Canary, hosted by Parity)', { ns: 'apps-config' }),
+    //   value: 'wss://kusama-rpc.polkadot.io'
+    // },
+    // {
+    //   info: 'kusama',
+    //   text: t<string>('rpc.kusama.w3f', 'Kusama (Polkadot Canary, hosted by Web3 Foundation)', { ns: 'apps-config' }),
+    //   value: 'wss://cc3-5.kusama.network'
+    // },
+    // {
+    //   info: 'kusama',
+    //   isDisabled: true,
+    //   text: t<string>('rpc.kusama.ava', 'Kusama (Polkadot Canary, user-run public nodes; see https://status.cloud.ava.do/)', { ns: 'apps-config' }),
+    //   value: 'wss://kusama.polkadot.cloud.ava.do'
+    // },
+    // // alphabetical based on chain name
+    // {
+    //   dnslink: 'centrifuge',
+    //   info: 'centrifuge',
+    //   text: t<string>('rpc.centrifuge', 'Centrifuge (Mainnet, hosted by Centrifuge)', { ns: 'apps-config' }),
+    //   value: 'wss://fullnode.centrifuge.io'
+    // },
+    // {
+    //   info: 'crab',
+    //   text: t<string>('rpc.crab', 'Darwinia Crab (Darwinia Canary, hosted by Darwinia Network)', { ns: 'apps-config' }),
+    //   value: 'wss://crab.darwinia.network'
+    // },
+    // {
+    //   dnslink: 'edgeware',
+    //   info: 'edgeware',
+    //   text: t<string>('rpc.edgeware', 'Edgeware (Mainnet, hosted by Commonwealth Labs)', { ns: 'apps-config' }),
+    //   value: 'wss://mainnet1.edgewa.re'
+    // },
+    // {
+    //   dnslink: 'kulupu',
+    //   info: 'kulupu',
+    //   text: t<string>('rpc.kulupu', 'Kulupu (Kulupu Mainnet, hosted by Kulupu)', { ns: 'apps-config' }),
+    //   value: 'wss://rpc.kulupu.corepaper.org/ws'
+    // },
+    // {
+    //   info: 'nodle',
+    //   text: t<string>('rpc.nodle-main', 'Nodle Main (Nodle Mainnet, hosted by Nodle)', { ns: 'apps-config' }),
+    //   value: 'wss://main1.nodleprotocol.io'
+    // },
+    // {
+    //   info: 'plasm',
+    //   text: t<string>('rpc.plasm', 'Plasm (Plasm Mainnet, hosted by Stake Technologies)', { ns: 'apps-config' }),
+    //   value: 'wss://rpc.plasmnet.io/'
+    // },
+    // {
+    //   info: 'stafi',
+    //   text: t<string>('rpc.stafi', 'Stafi (Stafi Mainnet, hosted by Stafi Foundation)', { ns: 'apps-config' }),
+    //   value: 'wss://mainnet-rpc.stafi.io'
+    // },
+    // {
+    //   info: 'subsocial',
+    //   text: t<string>('rpc.subsocial', 'Subsocial (Subsocial Network, hosted by DappForce)', { ns: 'apps-config' }),
+    //   value: 'wss://rpc.subsocial.network'
+    // }
     {
-      dnslink: 'polkadot',
-      info: 'polkadot',
-      text: t<string>('rpc.polkadot.parity', 'Polkadot (Live, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://rpc.polkadot.io'
-    },
-    {
-      info: 'polkadot',
-      text: t<string>('rpc.polkadot.w3f', 'Polkadot (Live, hosted by Web3 Foundation)', { ns: 'apps-config' }),
-      value: 'wss://cc1-1.polkadot.network'
-    },
-    {
-      dnslink: 'kusama',
-      info: 'kusama',
-      text: t<string>('rpc.kusama.parity', 'Kusama (Polkadot Canary, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://kusama-rpc.polkadot.io'
-    },
-    {
-      info: 'kusama',
-      text: t<string>('rpc.kusama.w3f', 'Kusama (Polkadot Canary, hosted by Web3 Foundation)', { ns: 'apps-config' }),
-      value: 'wss://cc3-5.kusama.network'
-    },
-    {
-      info: 'kusama',
-      isDisabled: true,
-      text: t<string>('rpc.kusama.ava', 'Kusama (Polkadot Canary, user-run public nodes; see https://status.cloud.ava.do/)', { ns: 'apps-config' }),
-      value: 'wss://kusama.polkadot.cloud.ava.do'
-    },
-    // alphabetical based on chain name
-    {
-      dnslink: 'centrifuge',
-      info: 'centrifuge',
-      text: t<string>('rpc.centrifuge', 'Centrifuge (Mainnet, hosted by Centrifuge)', { ns: 'apps-config' }),
-      value: 'wss://fullnode.centrifuge.io'
-    },
-    {
-      info: 'crab',
-      text: t<string>('rpc.crab', 'Darwinia Crab (Darwinia Canary, hosted by Darwinia Network)', { ns: 'apps-config' }),
-      value: 'wss://crab.darwinia.network'
-    },
-    {
-      dnslink: 'edgeware',
-      info: 'edgeware',
-      text: t<string>('rpc.edgeware', 'Edgeware (Mainnet, hosted by Commonwealth Labs)', { ns: 'apps-config' }),
-      value: 'wss://mainnet1.edgewa.re'
-    },
-    {
-      dnslink: 'kulupu',
-      info: 'kulupu',
-      text: t<string>('rpc.kulupu', 'Kulupu (Kulupu Mainnet, hosted by Kulupu)', { ns: 'apps-config' }),
-      value: 'wss://rpc.kulupu.corepaper.org/ws'
-    },
-    {
-      info: 'nodle',
-      text: t<string>('rpc.nodle-main', 'Nodle Main (Nodle Mainnet, hosted by Nodle)', { ns: 'apps-config' }),
-      value: 'wss://main1.nodleprotocol.io'
-    },
-    {
-      info: 'plasm',
-      text: t<string>('rpc.plasm', 'Plasm (Plasm Mainnet, hosted by Stake Technologies)', { ns: 'apps-config' }),
-      value: 'wss://rpc.plasmnet.io/'
-    },
-    {
-      info: 'stafi',
-      text: t<string>('rpc.stafi', 'Stafi (Stafi Mainnet, hosted by Stafi Foundation)', { ns: 'apps-config' }),
-      value: 'wss://mainnet-rpc.stafi.io'
-    },
-    {
-      info: 'subsocial',
-      text: t<string>('rpc.subsocial', 'Subsocial (Subsocial Network, hosted by DappForce)', { ns: 'apps-config' }),
-      value: 'wss://rpc.subsocial.network'
+      dnslink: 'eco2-live',
+      info: 'eco2-live',
+      text: t<string>('rpc.ECO2', 'ECO2 (hosted by ECO2)', { ns: 'apps-config' }),
+      value: 'ws://49.233.3.48:9944'
     }
   ];
 }
@@ -131,122 +137,122 @@ function createLiveNetworks (t: TFunction): LinkOption[] {
 function createTestNetworks (t: TFunction): LinkOption[] {
   return [
     // polkadot test relays
+    // {
+    //   dnslink: 'rococo',
+    //   info: 'rococo',
+    //   text: t<string>('rpc.rococo', 'Rococo (Polkadot Testnet, hosted by Parity)', { ns: 'apps-config' }),
+    //   value: 'wss://rococo-rpc.polkadot.io'
+    // },
+    // {
+    //   info: 'rococoTick',
+    //   isChild: true,
+    //   text: t<string>('rpc.rococo.tick', 'Tick (Polkadot Testpara, hosted by Parity)', { ns: 'apps-config' }),
+    //   value: 'wss://tick-rpc.polkadot.io'
+    // },
+    // {
+    //   info: 'rococoTrick',
+    //   isChild: true,
+    //   text: t<string>('rpc.rococo.trick', 'Trick (Polkadot Testpara, hosted by Parity)', { ns: 'apps-config' }),
+    //   value: 'wss://trick-rpc.polkadot.io'
+    // },
+    // {
+    //   info: 'rococoTrack',
+    //   isChild: true,
+    //   text: t<string>('rpc.rococo.track', 'Track (Polkadot Testpara, hosted by Parity)', { ns: 'apps-config' }),
+    //   value: 'wss://track-rpc.polkadot.io'
+    // },
+    // {
+    //   info: 'rococoAcala',
+    //   isChild: true,
+    //   text: t<string>('rpc.rococo.acala', 'Mandala PC1 (Acala Testpara, hosted by Acala)', { ns: 'apps-config' }),
+    //   value: 'wss://rococo-1.acala.laminar.one'
+    // },
+    // {
+    //   info: 'rococoDarwinia',
+    //   isChild: true,
+    //   text: t<string>('rpc.rococo.darwinia', 'Darwinia PC1 (Darwinia Testpara, hosted by Darwinia Network)', { ns: 'apps-config' }),
+    //   value: 'wss://parachain-rpc.darwinia.network'
+    // },
+    // {
+    //   info: 'rococoPlasm',
+    //   isChild: true,
+    //   text: t<string>('rpc.rococo.plasm', 'Plasm PC1 (Plasm Testpara, hosted by Stake Technologies)', { ns: 'apps-config' }),
+    //   value: 'wss://rpc.parachain.plasmnet.io'
+    // },
+    // {
+    //   info: 'rococoRobonomics',
+    //   isChild: true,
+    //   text: t<string>('rpc.rococo.robonomics', 'Robonomics PC1 (Robonomics Testpara, hosted by Airalab)', { ns: 'apps-config' }),
+    //   value: 'wss://parachain-rpc.robonomics.network'
+    // },
+    // {
+    //   info: 'rococoLaminar',
+    //   isChild: true,
+    //   text: t<string>('rpc.rococo.laminar', 'Turbulence PC1 (Laminar Testpara, hosted by Laminar)', { ns: 'apps-config' }),
+    //   value: 'wss://rococo-1.laminar-chain.laminar.one'
+    // },
+    // // alphabetical based on chain name
+    // {
+    //   info: 'centrifuge',
+    //   text: t<string>('rpc.amber', 'Amber (Centrifuge Testnet, hosted by Centrifuge)', { ns: 'apps-config' }),
+    //   value: 'wss://fullnode.amber.centrifuge.io'
+    // },
+    // {
+    //   info: 'nodle',
+    //   text: t<string>('rpc.nodle-arcadia', 'Arcadia (Nodle Testnet, hosted by Nodle)', { ns: 'apps-config' }),
+    //   value: 'wss://arcadia1.nodleprotocol.io'
+    // },
+    // {
+    //   info: 'edgeware',
+    //   text: t<string>('rpc.beresheet', 'Beresheet (Edgeware Testnet, hosted by Commonwealth Labs)', { ns: 'apps-config' }),
+    //   value: 'wss://beresheet1.edgewa.re'
+    // },
+    // {
+    //   info: 'crust',
+    //   text: t<string>('rpc.crust.network', 'Crust Maxwell CC2 (Crust Testnet, hosted by Crust Network)', { ns: 'apps-config' }),
+    //   value: 'wss://api.crust.network/'
+    // },
+    // {
+    //   info: 'datahighway',
+    //   isDisabled: true,
+    //   text: t<string>('rpc.datahighway.harbour', 'Harbour (DataHighway Testnet, hosted by MXC)', { ns: 'apps-config' }),
+    //   value: 'wss://testnet-harbour.datahighway.com'
+    // },
+    // {
+    //   info: 'dusty',
+    //   text: t<string>('rpc.dusty', 'Dusty (Plasm Testnet, hosted by Stake Technologies)', { ns: 'apps-config' }),
+    //   value: 'wss://rpc.dusty.plasmnet.io/'
+    // },
+    // {
+    //   info: 'substrate',
+    //   text: t<string>('rpc.flamingfir', 'Flaming Fir (Substrate Testnet, hosted by Parity)', { ns: 'apps-config' }),
+    //   value: 'wss://substrate-rpc.parity.io'
+    // },
+    // {
+    //   info: 'acala',
+    //   text: t<string>('rpc.mandala', 'Mandala (Acala Testnet, hosted by Acala)', { ns: 'apps-config' }),
+    //   value: 'wss://node-6684611762228215808.jm.onfinality.io/ws'
+    // },
+    // {
+    //   info: 'kilt',
+    //   text: t<string>('rpc.kilt', 'Mashnet (KILT Canary, hosted by KILT Protocol)', { ns: 'apps-config' }),
+    //   value: 'wss://full-nodes.kilt.io:9944/'
+    // },
+    // {
+    //   info: 'phala',
+    //   text: t<string>('rpc.phala', 'Phala PoC-2 (Phala Testnet, hosted by Phala Network)', { ns: 'apps-config' }),
+    //   value: 'wss://poc2.phala.network/ws'
+    // },
+    // {
+    //   info: 'laminar',
+    //   text: t<string>('rpc.turbulence', 'Turbulence (Laminar Testnet, hosted by Laminar)', { ns: 'apps-config' }),
+    //   value: 'wss://testnet-node-1.laminar-chain.laminar.one/ws'
+    // },
     {
-      dnslink: 'rococo',
-      info: 'rococo',
-      text: t<string>('rpc.rococo', 'Rococo (Polkadot Testnet, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://rococo-rpc.polkadot.io'
-    },
-    {
-      info: 'rococoTick',
-      isChild: true,
-      text: t<string>('rpc.rococo.tick', 'Tick (Polkadot Testpara, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://tick-rpc.polkadot.io'
-    },
-    {
-      info: 'rococoTrick',
-      isChild: true,
-      text: t<string>('rpc.rococo.trick', 'Trick (Polkadot Testpara, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://trick-rpc.polkadot.io'
-    },
-    {
-      info: 'rococoTrack',
-      isChild: true,
-      text: t<string>('rpc.rococo.track', 'Track (Polkadot Testpara, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://track-rpc.polkadot.io'
-    },
-    {
-      info: 'rococoAcala',
-      isChild: true,
-      text: t<string>('rpc.rococo.acala', 'Mandala PC1 (Acala Testpara, hosted by Acala)', { ns: 'apps-config' }),
-      value: 'wss://rococo-1.acala.laminar.one'
-    },
-    {
-      info: 'rococoDarwinia',
-      isChild: true,
-      text: t<string>('rpc.rococo.darwinia', 'Darwinia PC1 (Darwinia Testpara, hosted by Darwinia Network)', { ns: 'apps-config' }),
-      value: 'wss://parachain-rpc.darwinia.network'
-    },
-    {
-      info: 'rococoPlasm',
-      isChild: true,
-      text: t<string>('rpc.rococo.plasm', 'Plasm PC1 (Plasm Testpara, hosted by Stake Technologies)', { ns: 'apps-config' }),
-      value: 'wss://rpc.parachain.plasmnet.io'
-    },
-    {
-      info: 'rococoRobonomics',
-      isChild: true,
-      text: t<string>('rpc.rococo.robonomics', 'Robonomics PC1 (Robonomics Testpara, hosted by Airalab)', { ns: 'apps-config' }),
-      value: 'wss://parachain-rpc.robonomics.network'
-    },
-    {
-      info: 'rococoLaminar',
-      isChild: true,
-      text: t<string>('rpc.rococo.laminar', 'Turbulence PC1 (Laminar Testpara, hosted by Laminar)', { ns: 'apps-config' }),
-      value: 'wss://rococo-1.laminar-chain.laminar.one'
-    },
-    // alphabetical based on chain name
-    {
-      info: 'centrifuge',
-      text: t<string>('rpc.amber', 'Amber (Centrifuge Testnet, hosted by Centrifuge)', { ns: 'apps-config' }),
-      value: 'wss://fullnode.amber.centrifuge.io'
-    },
-    {
-      info: 'nodle',
-      text: t<string>('rpc.nodle-arcadia', 'Arcadia (Nodle Testnet, hosted by Nodle)', { ns: 'apps-config' }),
-      value: 'wss://arcadia1.nodleprotocol.io'
-    },
-    {
-      info: 'edgeware',
-      text: t<string>('rpc.beresheet', 'Beresheet (Edgeware Testnet, hosted by Commonwealth Labs)', { ns: 'apps-config' }),
-      value: 'wss://beresheet1.edgewa.re'
-    },
-    {
-      info: 'crust',
-      text: t<string>('rpc.crust.network', 'Crust Maxwell CC2 (Crust Testnet, hosted by Crust Network)', { ns: 'apps-config' }),
-      value: 'wss://api.crust.network/'
-    },
-    {
-      info: 'datahighway',
-      isDisabled: true,
-      text: t<string>('rpc.datahighway.harbour', 'Harbour (DataHighway Testnet, hosted by MXC)', { ns: 'apps-config' }),
-      value: 'wss://testnet-harbour.datahighway.com'
-    },
-    {
-      info: 'dusty',
-      text: t<string>('rpc.dusty', 'Dusty (Plasm Testnet, hosted by Stake Technologies)', { ns: 'apps-config' }),
-      value: 'wss://rpc.dusty.plasmnet.io/'
-    },
-    {
-      info: 'substrate',
-      text: t<string>('rpc.flamingfir', 'Flaming Fir (Substrate Testnet, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://substrate-rpc.parity.io'
-    },
-    {
-      info: 'acala',
-      text: t<string>('rpc.mandala', 'Mandala (Acala Testnet, hosted by Acala)', { ns: 'apps-config' }),
-      value: 'wss://node-6684611762228215808.jm.onfinality.io/ws'
-    },
-    {
-      info: 'kilt',
-      text: t<string>('rpc.kilt', 'Mashnet (KILT Canary, hosted by KILT Protocol)', { ns: 'apps-config' }),
-      value: 'wss://full-nodes.kilt.io:9944/'
-    },
-    {
-      info: 'phala',
-      text: t<string>('rpc.phala', 'Phala PoC-2 (Phala Testnet, hosted by Phala Network)', { ns: 'apps-config' }),
-      value: 'wss://poc2.phala.network/ws'
-    },
-    {
-      info: 'laminar',
-      text: t<string>('rpc.turbulence', 'Turbulence (Laminar Testnet, hosted by Laminar)', { ns: 'apps-config' }),
-      value: 'wss://testnet-node-1.laminar-chain.laminar.one/ws'
-    },
-    {
-      dnslink: 'westend',
-      info: 'westend',
-      text: t<string>('rpc.westend', 'Westend (Polkadot Testnet, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://westend-rpc.polkadot.io'
+      dnslink: 'eco2-test',
+      info: 'eco2-test',
+      text: t<string>('rpc.ECO2', 'ECO2 (hosted by ECO2)', { ns: 'apps-config' }),
+      value: 'ws://49.233.3.48:9944'
     }
   ];
 }
