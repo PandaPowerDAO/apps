@@ -186,6 +186,9 @@ function Api ({ children, store, url }: Props): React.ReactElement<Props> | null
 
     api = new ApiPromise({ provider, registry, signer, types, typesChain, typesSpec });
 
+    // 注入类型
+    api.registerTypes(typesSpec.eco);
+
     api.on('connected', () => setIsApiConnected(true));
     api.on('disconnected', () => setIsApiConnected(false));
     api.on('ready', async (): Promise<void> => {

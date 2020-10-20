@@ -12,7 +12,7 @@ import { BareProps } from '@polkadot/react-components/types';
 import styled from 'styled-components';
 import clsx from 'clsx';
 // @ts-ignore
-import createDOMForm from 'rc-form/lib/createDOMForm';
+import createDOMForm from '@eco/eco-components/Form/node_modules/rc-form/lib/createDOMForm';
 import { FormProvider, FormConsumer } from './formContext';
 import { FormControl } from '@material-ui/core';
 import { FIELD_DATA_PROP,

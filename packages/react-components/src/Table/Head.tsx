@@ -11,9 +11,10 @@ interface Props {
   filter?: React.ReactNode;
   header?: (null | undefined | HeaderDef)[];
   isEmpty: boolean;
+  remain: boolean;
 }
 
-function Head ({ className = '', filter, header, isEmpty }: Props): React.ReactElement<Props> | null {
+function Head ({ className = '', filter, header, isEmpty, remain = false }: Props): React.ReactElement<Props> | null {
   if (!header?.length) {
     return null;
   }
@@ -35,7 +36,7 @@ function Head ({ className = '', filter, header, isEmpty }: Props): React.ReactE
           >
             {index === 0
               ? <h1 className='highlight--color'>{label}</h1>
-              : isEmpty
+              : (isEmpty && !remain)
                 ? ''
                 : label
             }

@@ -13,7 +13,7 @@ import { useApi } from '@polkadot/react-hooks';
 import 'antd/dist/antd.css';
 import PageHome from './Pages/Home/home';
 import PageAssetsDetail from './Pages/Assets/detail';
-import PageRegisterIssuer from './Pages/RegisterIssuer';
+// import PageRegisterIssuer from './Pages/RegisterIssuer';
 import PageRegisterAssets from './Pages/registerAssets';
 import PageRegisterProject from './Pages/registerProject';
 import PageBurning from './Pages/burningIssue';
@@ -24,7 +24,7 @@ import PageTransfer from './Pages/transfer';
 import ECOAccountProvider, { AccountSelector, AccountUpdator } from './Components/Account';
 import styled from 'styled-components';
 
-import { typesSpec } from '@polkadot/apps-config/api';
+// import { typesSpec } from '@polkadot/apps-config/api';
 
 import { setGaApi } from './service';
 
@@ -78,12 +78,12 @@ function EcoApp ({ basePath }: Props): React.ReactElement<Props> {
     //   // text: t<string>('Democracy overview')
     //   text: '资产详情'
     // },
-    {
-      isRoot: false,
-      name: 'register-issuer',
-      // text: t<string>('Democracy overview')
-      text: '注册发行商'
-    },
+    // {
+    //   isRoot: false,
+    //   name: 'register-issuer',
+    //   // text: t<string>('Democracy overview')
+    //   text: '注册发行商'
+    // },
     // {
     //   isRoot: false,
     //   name: 'register-assets',
@@ -126,7 +126,7 @@ function EcoApp ({ basePath }: Props): React.ReactElement<Props> {
 
   const { api } = useApi();
 
-  api.registerTypes(typesSpec.eco);
+  // api.registerTypes(typesSpec.eco);
 
   useEffect(() => {
     setGaApi(api);
@@ -158,11 +158,11 @@ function EcoApp ({ basePath }: Props): React.ReactElement<Props> {
               >
                 <PageAssetsDetail />
               </Route>
-              <Route
+              {/* <Route
                 path={`${basePath}/register-issuer`}
               >
                 <PageRegisterIssuer />
-              </Route>
+              </Route> */}
               <Route
                 path={`${basePath}/register-project`}
               >

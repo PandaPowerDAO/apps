@@ -12,8 +12,10 @@ export default function create (t: <T = string> (key: string, text: string, opti
       needsAccounts: true,
       needsApi: [
         'tx.contracts.call'
-      ]
+      ],
+      isHidden: true
     },
+
     group: 'developer',
     icon: 'compress',
     name: 'contracts',

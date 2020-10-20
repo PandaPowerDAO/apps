@@ -97,10 +97,11 @@ function Menu ({ className = '' }: Props): React.ReactElement<Props> {
 
   const groupRef = useRef({
     accounts: t('Accounts'),
-    developer: t('Developer'),
+    // developer: t('Developer'),
     governance: t('Governance'),
     network: t('Network'),
-    settings: t('Settings')
+    settings: t('Settings'),
+    eco: t('eco')
   });
 
   const routeRef = useRef(createRoutes(t));

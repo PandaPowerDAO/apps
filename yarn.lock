@@ -1565,6 +1565,54 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eco/eco-components@workspace:packages/eco-components":
+  version: 0.0.0-use.local
+  resolution: "@eco/eco-components@workspace:packages/eco-components"
+  languageName: unknown
+  linkType: soft
+
+"@eco/eco-utils@workspace:packages/eco-utils":
+  version: 0.0.0-use.local
+  resolution: "@eco/eco-utils@workspace:packages/eco-utils"
+  languageName: unknown
+  linkType: soft
+
+"@eco/page-eco-assets@workspace:packages/page-eco-assets":
+  version: 0.0.0-use.local
+  resolution: "@eco/page-eco-assets@workspace:packages/page-eco-assets"
+  languageName: unknown
+  linkType: soft
+
+"@eco/page-eco-transfer@workspace:packages/page-eco-transfer":
+  version: 0.0.0-use.local
+  resolution: "@eco/page-eco-transfer@workspace:packages/page-eco-transfer"
+  languageName: unknown
+  linkType: soft
+
+"@eco/page-my-assets-view@workspace:packages/page-my-assets-view":
+  version: 0.0.0-use.local
+  resolution: "@eco/page-my-assets-view@workspace:packages/page-my-assets-view"
+  languageName: unknown
+  linkType: soft
+
+"@eco/page-my-eco-assets@workspace:packages/page-my-eco-assets":
+  version: 0.0.0-use.local
+  resolution: "@eco/page-my-eco-assets@workspace:packages/page-my-eco-assets"
+  languageName: unknown
+  linkType: soft
+
+"@eco/page-neutralization@workspace:packages/page-neutralization":
+  version: 0.0.0-use.local
+  resolution: "@eco/page-neutralization@workspace:packages/page-neutralization"
+  languageName: unknown
+  linkType: soft
+
+"@eco/page-trade@workspace:packages/page-trade":
+  version: 0.0.0-use.local
+  resolution: "@eco/page-trade@workspace:packages/page-trade"
+  languageName: unknown
+  linkType: soft
+
 "@edgeware/node-types@npm:^2.4.5":
   version: 2.4.5
   resolution: "@edgeware/node-types@npm:2.4.5"

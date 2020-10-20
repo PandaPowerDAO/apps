@@ -13,7 +13,8 @@ export default function create (t: <T = string> (key: string, text: string, opti
       needsApi: [
         'tx.sudo.setKey'
       ],
-      needsSudo: true
+      needsSudo: true,
+      isHidden: true
     },
     group: 'developer',
     icon: 'unlock',

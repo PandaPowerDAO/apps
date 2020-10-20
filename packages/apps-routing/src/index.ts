@@ -28,6 +28,12 @@ import techcomm from './techcomm';
 import transfer from './transfer';
 import treasury from './treasury';
 import eco from './eco';
+import ecoNeutralization from './eco-neutralization';
+import ecoTransfer from './eco-transfer';
+import ecoAssets from './eco-assets';
+import ecoMyAssets from './eco-my-assets';
+import ecoTrade from './eco-trade';
+import ecoMyAssetsView from './eco-my-assets-view';
 
 export default function create (t: <T = string> (key: string, text: string, options: { ns: string }) => T): Routes {
   return [
@@ -55,6 +61,12 @@ export default function create (t: <T = string> (key: string, text: string, opti
     sudo(t),
     js(t),
     settings(t),
-    eco(t)
+    eco(t),
+    ecoNeutralization(t),
+    ecoTransfer(t),
+    ecoAssets(t),
+    ecoMyAssets(t),
+    ecoTrade(t),
+    ecoMyAssetsView(t)
   ];
 }
