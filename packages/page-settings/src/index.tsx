@@ -38,10 +38,10 @@ function SettingsApp ({ basePath, onStatusChange }: Props): React.ReactElement<P
       name: 'developer',
       text: t<string>('Developer')
     },
-    {
-      name: 'i18n',
-      text: t<string>('Translate')
-    }
+    // {
+    //   name: 'i18n',
+    //   text: t<string>('Translate')
+    // }
   ], [numExtensions, t]);
 
   const hidden = useMemo(
@@ -68,9 +68,9 @@ function SettingsApp ({ basePath, onStatusChange }: Props): React.ReactElement<P
             onStatusChange={onStatusChange}
           />
         </Route>
-        <Route path={`${basePath}/i18n`}>
+        {/* <Route path={`${basePath}/i18n`}>
           <I18n />
-        </Route>
+        </Route> */}
         <Route path={`${basePath}/metadata`}>
           <Metadata />
         </Route>

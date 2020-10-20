@@ -170,11 +170,6 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
 
   return (
     <div className={className}>
-      <Panel title='您好，A女士'>
-        <p>1、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-        <p>2、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-        <p>3、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-      </Panel>
       <Panel
         title='完善提案细节'
       >

@@ -44,7 +44,7 @@ interface ProtocalProps {
 
 function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
   const [protocals, setProtocals] = useState<ProtocalProps>({
-    costPro: false,
+    // costPro: false,
     registerPro: false
   });
 
@@ -111,7 +111,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       message.info('申请提交成功');
       form.resetFields();
       setProtocals({
-        costPro: false,
+        // costPro: false,
         registerPro: false
       });
 
@@ -245,14 +245,14 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
           </Row>
         </Panel>
         <Panel>
-          <div>
+          {/* <div>
             <Checkbox
               label='请知晓，资产一旦销毁，不可撤回'
               onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
               value={protocals.costPro}
             />
 
-          </div>
+          </div> */}
           <div>
             <Checkbox
               label='销毁资产会优先扣除您资产可发行但未发行的额度，该部分不足的，将扣除您钱包账户的余额'

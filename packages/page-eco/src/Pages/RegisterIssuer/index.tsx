@@ -32,7 +32,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
   });
 
   const [protocals, setProtocals] = useState<ProtocalProps>({
-    costPro: false,
+    // costPro: false,
     registerPro: false
   });
 
@@ -52,13 +52,11 @@ function Home ({ className }: Props): React.ReactElement<Props> {
 
   return (
     <div className={className}>
-      <Panel title='您好，A女士'>
-        <p>1、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-        <p>2、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-        <p>3、阿斯顿发送到发送到发的是发送到发送到发送到</p>
+      <Panel title='您好'>
+        <p>欢迎成为ECO2 Ledger的资产发⾏商，在ECO2 Ledger上发⾏区块链的碳汇资产或是标准区块 链资产，皆须先⾏完成发⾏商的注册。请尽量完善您的发⾏商信息，增强碳汇资产或标准区 块链资产发⾏的辨识度，此发⾏不需经过审核即可完成，信息⼀旦完成后⽆法修改，敬请核 对后再注册。</p>
       </Panel>
       <Panel
-        title='完善提案细节'
+        title='注册发行商'
       >
         <Row>
           <Input
@@ -84,14 +82,14 @@ function Home ({ className }: Props): React.ReactElement<Props> {
         </Row>
       </Panel>
       <Panel>
-        <div>
+        {/* <div>
           <Checkbox
             label='注册成为发行商，将消耗 100ECO及 10,000 ECC'
             onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
             value={protocals.costPro}
           />
 
-        </div>
+        </div> */}
         <div>
           <Checkbox
             label='我同意遵守TOS协议内容'

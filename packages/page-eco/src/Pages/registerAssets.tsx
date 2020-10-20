@@ -64,7 +64,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
   console.log('ecoAccount', ecoAccount);
 
   const [protocals, setProtocals] = useState<ProtocalProps>({
-    costPro: false,
+    // costPro: false,
     registerPro: false
   });
 
@@ -167,7 +167,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       message.info('申请提交成功');
       form.resetFields();
       setProtocals({
-        costPro: false,
+        // costPro: false,
         registerPro: false
       });
     }
@@ -179,13 +179,11 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       name='transfer-form'
       onFinish={onFinish}>
       <div className={className}>
-        <Panel title='您好，A女士'>
-          <p>1、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-          <p>2、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-          <p>3、阿斯顿发送到发送到发的是发送到发送到发送到</p>
+        <Panel title='您好'>
+          <p>完成碳汇项⽬注册后，已签发后的碳汇可以申请上链⾄ECO2 Ledger，请将要上链的碳汇资 产的信息完整填⼊下⽅栏位，请注意输⼊信息与数量必须与汇⼊ECO2 Ledger的托管账户之 碳汇完全吻合，此操作完成后，资产审查委员会对碳汇资产的信息与托管账户中的碳汇资产 进⾏审核，请注意碳汇资产的数量、年份与相关信息，必须完全吻合，才可完成碳汇资产上 链的操作。资产审查委员会审核完成后，您将可以在您的ECO2 Ledger碳钱包中看到所申请 的碳汇资产。</p>
         </Panel>
         <Panel
-          title='完善信息'
+          title='注册碳汇资产'
         >
           <Row>
             <Form.Item
@@ -533,14 +531,14 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
           </Row>
         </Panel>
         <Panel>
-          <div>
+          {/* <div>
             <Checkbox
-              label='注册成为发行商，将消耗 100 ECO2 及 10,000 ECC'
+              label='注册资产，将消耗 100ECO及 10,000 ECC'
               onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
               value={protocals.costPro}
             />
 
-          </div>
+          </div> */}
           <div>
             <Checkbox
               label='我同意遵守TOS协议内容'
