@@ -47,7 +47,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
   const [errorMap] = useState<Record<string, boolean | undefined>>({});
 
   const [protocals, setProtocals] = useState<ProtocalProps>({
-    costPro: false,
+    // costPro: false,
     registerPro: false
   });
 
@@ -91,7 +91,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
       message.info('申请提交成功');
       form.resetFields();
       setProtocals({
-        costPro: false,
+        // costPro: false,
         registerPro: false
       });
     }
@@ -674,14 +674,14 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
           </Row>
         </Panel>
         <Panel>
-          <div>
+          {/* <div>
             <Checkbox
               label='注册成为发行商，将消耗 100 ECO2 及 10,000 ECC'
               onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
               value={protocals.costPro}
             />
 
-          </div>
+          </div> */}
           <div>
             <Checkbox
               label='我同意遵守TOS协议内容'
