@@ -8,23 +8,23 @@ import { useLocation } from 'react-router-dom';
 
 import { useApi } from '@polkadot/react-hooks';
 import { Input, Checkbox } from '@polkadot/react-components';
-import Panel from '../Components/Panel';
-// import Button from '../Components/Button';
-import TextArea from '../Components/TextArea';
-import FieldDecorator from '../Components/FormComponents';
-import Row from '../Components/Row';
-import { useECOAccount } from '../Components/Account/accountContext';
+import Panel from '@eco/eco-components/Panel';
+// import Button from '@eco/eco-components/Button';
+import TextArea from '@eco/eco-components/TextArea';
+import FieldDecorator from '@eco/eco-components/FormComponents';
+import Row from '@eco/eco-components/Row';
+import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 
-import { AnyObj } from '../Utils/types';
+import { AnyObj } from '@eco/eco-utils/types';
 
 import { parseQuery,
   requiredValidator,
   // urlValidator,
   // dateValidator,
   numberValidator,
-  notAllprotocalChecked } from '../Utils';
+  notAllprotocalChecked } from '@eco/eco-utils/utils';
 
-import { submitBurn, queryAsset, queryCarbonBalance } from '../service';
+import { submitBurn, queryAsset, queryCarbonBalance } from '@eco/eco-utils/service';
 
 interface Props {
   className?: string,
@@ -45,7 +45,9 @@ interface ProtocalProps {
 function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
   const [protocals, setProtocals] = useState<ProtocalProps>({
     costPro: false,
-    registerPro: false
+    registerPro: false,
+    agreed3: false,
+    agreed2: false
   });
 
   // const [isReady, setReady] = useState<boolean>(false);
@@ -112,7 +114,9 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       form.resetFields();
       setProtocals({
         costPro: false,
-        registerPro: false
+        registerPro: false,
+        agreed2: false,
+        agreed3: false
       });
 
       console.log('result ----', result);
@@ -263,16 +267,16 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
           <div>
             <Checkbox
               label='销毁碳汇资产需要等待资产审查委员会审查通过后，您的碳汇数字资产将被扣除，同时会将您的真实碳汇资产原路转回到您的碳汇资产账户中'
-              onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
-              value={protocals.costPro}
+              onChange={(agreed2: boolean) => setProtocalValue({ agreed2 })}
+              value={protocals.agreed2}
             />
 
           </div>
           <div>
             <Checkbox
               label='销毁碳汇资产将消耗 100 ECO2 及 10,000 ECC'
-              onChange={(registerPro: boolean) => setProtocalValue({ registerPro })}
-              value={protocals.registerPro}
+              onChange={(agreed3: boolean) => setProtocalValue({ agreed3 })}
+              value={protocals.agreed3}
             />
           </div>
           <div style={{

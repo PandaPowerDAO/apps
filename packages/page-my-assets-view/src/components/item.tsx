@@ -14,7 +14,7 @@ import styled from 'styled-components';
 import { queryCarbonBalance } from '@eco/eco-utils/service';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
-
+import { fromHex } from '@eco/eco-utils/utils';
 import { api } from '@polkadot/react-api';
 const Content = styled.div`
   display: flex;
@@ -81,7 +81,7 @@ function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
       <Content>
         <div><Icon></Icon></div>
         <div>
-          <div className='title'>{asset.symbol}</div>
+          <div className='title'>{fromHex(asset.symbol as string)}</div>
           <div>
           持有量： {balance.balance || 0}
           </div>

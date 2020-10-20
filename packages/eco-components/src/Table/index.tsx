@@ -31,7 +31,8 @@ interface TableProps extends BareProps {
     pageSize?: number,
     total?: number,
     current: number,
-  }
+  },
+  remainHeader: boolean
 }
 
 const StyledTable = styled(Table)`
@@ -59,7 +60,8 @@ function CmptTable ({
   className,
   footer,
   pagination,
-  onChange
+  onChange,
+  remainHeader = true
 } : TableProps): React.ReactElement<TableProps> {
   const header: any[] = columns.map((col): any[] => {
     return [col.title, clsx(col.className, 'theader'), col.colSpan];
@@ -82,6 +84,7 @@ function CmptTable ({
       </td>
     </FooterTr>}
     header={header}
+    remainHeader={remainHeader}
   >
     {datasource.map((item:ObjectAny, rowIndex:number):React.ReactNode => {
       return <tr key={rowIndex}>

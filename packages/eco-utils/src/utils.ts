@@ -78,6 +78,10 @@ export function toUtf8 (data: Uint8Array): string {
   return Buffer.from(data).toString('utf8');
 }
 
+export function fromHex (data: string): string {
+  return Buffer.from(data.replace('0x', ''), 'hex').toString('utf8');
+}
+
 export function toUtf8JSON (data: Uint8Array):Record<string, any> {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return JSON.parse(toUtf8(data) || '{}');

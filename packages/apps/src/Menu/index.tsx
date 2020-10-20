@@ -96,12 +96,12 @@ function Menu ({ className = '' }: Props): React.ReactElement<Props> {
   const externalRef = useRef(createExternals(t));
 
   const groupRef = useRef({
+    eco: t('eco'),
     accounts: t('Accounts'),
     // developer: t('Developer'),
     governance: t('Governance'),
     network: t('Network'),
-    settings: t('Settings'),
-    eco: t('eco')
+    settings: t('Settings')
   });
 
   const routeRef = useRef(createRoutes(t));

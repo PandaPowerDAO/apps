@@ -14,7 +14,7 @@ import FieldDecorator from '@eco/eco-components/FormComponents';
 import { queryAsset, transferCarbonAsset, queryPotentialBalance } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { useApi } from '@polkadot/react-hooks';
-import { beautifulNumber, parseQuery } from '@eco/eco-utils/utils';
+import { beautifulNumber, parseQuery, fromHex } from '@eco/eco-utils/utils';
 import SubmitBtn from '@eco/eco-components/SubmitBtn';
 import { useLocation } from 'react-router-dom';
 
@@ -94,7 +94,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
         ...tempAssetListRef.current,
         {
           ..._item,
-          text: _item.symbol,
+          text: fromHex(_item.symbol as string),
           value: asset.assetId,
           assetId: asset.assetId
         }

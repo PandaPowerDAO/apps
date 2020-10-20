@@ -11,20 +11,20 @@ import { Form, Button, message } from 'antd';
 
 import { useApi } from '@polkadot/react-hooks';
 import { Input, Checkbox, Dropdown } from '@polkadot/react-components';
-import Panel from '../Components/Panel';
-// import Button from '../Components/Button';
-import TextArea from '../Components/TextArea';
+import Panel from '@eco/eco-components/Panel';
+// import Button from '@eco/eco-components/Button';
+import TextArea from '@eco/eco-components/TextArea';
 // import { Keyring } from '@polkadot/api';
-import FieldDecorator from '../Components/FormComponents';
-import Row from '../Components/Row';
+import FieldDecorator from '@eco/eco-components/FormComponents';
+import Row from '@eco/eco-components/Row';
 
-import { submitAsset, queryProjectsList } from '../service';
-import { useECOAccount } from '../Components/Account/accountContext';
+import { submitAsset, queryProjectsList } from '@eco/eco-utils/service';
+import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 
 import { notAllprotocalChecked,
   requiredValidator,
   urlValidator,
-  dateValidator, yearValidator, numberValidator } from '../Utils';
+  dateValidator, yearValidator, numberValidator } from '@eco/eco-utils/utils';
 
 interface Props {
   className?: string,
@@ -179,10 +179,8 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       name='transfer-form'
       onFinish={onFinish}>
       <div className={className}>
-        <Panel title='您好，A女士'>
-          <p>1、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-          <p>2、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-          <p>3、阿斯顿发送到发送到发的是发送到发送到发送到</p>
+        <Panel title='您好'>
+          <p>注册碳汇资产说明</p>
         </Panel>
         <Panel
           title='完善信息'

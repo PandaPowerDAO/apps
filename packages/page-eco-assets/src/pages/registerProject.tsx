@@ -9,22 +9,22 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Form, Button, message } from 'antd';
 
 import { Input, Checkbox, Dropdown, InputAddress } from '@polkadot/react-components';
-import Panel from '../Components/Panel';
-// import Button from '../Components/Button';
-import TextArea from '../Components/TextArea';
+import Panel from '@eco/eco-components/Panel';
+// import Button from '@eco/eco-components/Button';
+import TextArea from '@eco/eco-components/TextArea';
 
 import { useApi } from '@polkadot/react-hooks';
 
-import { submitProject } from '../service';
+import { submitProject } from '@eco/eco-utils/service';
 // import { Keyring } from '@polkadot/api';
-import FieldDecorator from '../Components/FormComponents';
-import Row from '../Components/Row';
+import FieldDecorator from '@eco/eco-components/FormComponents';
+import Row from '@eco/eco-components/Row';
 
 import { notAllprotocalChecked,
   requiredValidator,
   urlValidator,
   dateValidator,
-  numberValidator, yearValidator } from '../Utils';
+  numberValidator, yearValidator } from '@eco/eco-utils/utils';
 
 interface Props {
   className?: string,

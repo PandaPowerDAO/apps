@@ -2,37 +2,33 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { useCallback, useState, useEffect } from 'react';
-// import styled from 'styled-components';
-import { Form, Button, message } from 'antd';
+import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
+import { Form, Button, message } from 'antd';
 
+import { Input,
+  Checkbox,
+  // Dropdown,
+  InputAddress } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks';
-import { Input, Checkbox } from '@polkadot/react-components';
-import Panel from '../Components/Panel';
-// import Button from '../Components/Button';
-import TextArea from '../Components/TextArea';
-import FieldDecorator from '../Components/FormComponents';
-import Row from '../Components/Row';
-import { useECOAccount } from '../Components/Account/accountContext';
 
-import { AnyObj } from '../Utils/types';
+import Panel from '@eco/eco-components/Panel';
+// import Button from '@eco/eco-components/Button';
+import TextArea from '@eco/eco-components/TextArea';
+import FieldDecorator from '@eco/eco-components/FormComponents';
+import Row from '@eco/eco-components/Row';
+import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 
 import { parseQuery,
   requiredValidator,
-  // urlValidator,
+  urlValidator,
   // dateValidator,
-  numberValidator,
-  notAllprotocalChecked } from '../Utils';
-
-import { submitBurn, queryAsset, queryCarbonBalance } from '../service';
+  notAllprotocalChecked, numberValidator } from '@eco/eco-utils/utils';
+import { queryAsset, submitIssue } from '@eco/eco-utils/service';
 
 interface Props {
   className?: string,
 }
-
-// interface DataItem {
-//   [key: string]: string | number | undefined | null
-// }
 
 interface FormProps {
   [key: string]: string
@@ -42,22 +38,29 @@ interface ProtocalProps {
   [key: string]: undefined | null | boolean
 }
 
-function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
+interface AnyObj {
+  [key: string]: string | number | undefined
+}
+
+const Hidden = styled.div`
+  width: 0;
+  height: 0;
+  opacity: 0;
+`;
+
+function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
+  const [form] = Form.useForm();
+  const [ecoAccount] = useECOAccount();
+
+  const [assetsInfo, updateAssetsInfo] = useState<AnyObj>({});
+
   const [protocals, setProtocals] = useState<ProtocalProps>({
     costPro: false,
     registerPro: false
   });
 
-  // const [isReady, setReady] = useState<boolean>(false);
-
-  const [ecoAccount] = useECOAccount();
-
-  const [assetsInfo, updateAssetsInfo] = useState<AnyObj>({});
-
-  const [form] = Form.useForm();
   const { api } = useApi();
   const location = useLocation();
-
   const assetId = parseQuery(location.search || '').asset || '';
 
   const setProtocalValue = useCallback((protocal): void => {
@@ -67,36 +70,24 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
     });
   }, [protocals]);
 
-  const queryCarbonAsset = useCallback((address) => {
+  useEffect((): void => {
+    // 获取碳汇资产及相关信息
+
     async function init () {
-      const {
-        // assetId as asset_id,
-        balance
-      } = await queryCarbonBalance(api, assetId, address);
       const assetDetail = await queryAsset(api, assetId);
 
-      console.log('additionals', balance);
+      console.log('additionals ---', assetDetail);
+
       updateAssetsInfo({
         ...(assetDetail.asset || {}),
-        ...(assetDetail.additionals || {}),
-        balance: balance as string as unknown as number
+        ...(assetDetail.additionals || {})
       });
     }
 
     init();
-  }, [ecoAccount]);
+  }, []);
 
-  useEffect(() => {
-    if (ecoAccount) {
-      queryCarbonAsset(ecoAccount);
-    }
-  }, [ecoAccount]);
-
-  /**
-   * 申请销毁资产
-   */
-
-  const onFinish = (values: FormProps) => {
+  const onFinish = (values: FormProps): void => {
     if (notAllprotocalChecked(protocals)) {
       message.error('请先同意协议');
 
@@ -106,16 +97,15 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
     async function submit () {
       // form.proponent
       const { amount, ...additionals } = values;
-      const result = await submitBurn(api, ecoAccount as string, assetId, amount, additionals);
+      const result = await submitIssue(api, ecoAccount as string, assetId, amount, additionals);
 
+      console.log('result ----', result);
       message.info('申请提交成功');
       form.resetFields();
       setProtocals({
         costPro: false,
         registerPro: false
       });
-
-      console.log('result ----', result);
     }
 
     submit();
@@ -124,12 +114,29 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
   return (
     <Form
       form={form}
-      name='burning-form'
+      name='transfer-form'
       onFinish={onFinish}>
       <div className={className}>
+        {/* <Panel title='您好，A女士'>
+        <p>1、阿斯顿发送到发送到发的是发送到发送到发送到</p>
+        <p>2、阿斯顿发送到发送到发的是发送到发送到发送到</p>
+        <p>3、阿斯顿发送到发送到发的是发送到发送到发送到</p>
+      </Panel> */}
         <Panel
-          title='销毁碳汇资产'
+          title='增发碳汇资产'
         >
+          <Row>
+            <Hidden>
+              <InputAddress
+              // isError={!!errorMap.proponent}
+                label={<div>账户</div>}
+                // onChange={(proponent: string | null) => setFieldsValue({ proponent })}
+                placeholder='请输入项目发起人名称'
+                // //value={form.proponent}
+                withLabel
+              />
+            </Hidden>
+          </Row>
           <Row>
             <Form.Item
               label=' '
@@ -140,7 +147,21 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   isFull={false}
                   label={<div>当前资产</div>}
                   value={assetsInfo.symbol as string}
-                  withLabel={true}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item>
+            <Form.Item
+
+              label=' '
+            >
+              <FieldDecorator>
+                <Input
+                  isDisabled
+                  isFull={false}
+                  label={<div>资产年限</div>}
+                  value={assetsInfo.vintage as string}
+                  withLabel
                 />
               </FieldDecorator>
             </Form.Item>
@@ -153,9 +174,10 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isDisabled
                   isFull={false}
-                  label={<div>资产年限</div>}
-                  value={assetsInfo.vintage as string}
-                  withLabel={true}
+                  label={<div>资产上限</div>}
+                  labelExtra={<div>克</div>}
+                  value={assetsInfo.total_supply as string}
+                  withLabel
                 />
               </FieldDecorator>
             </Form.Item>
@@ -166,11 +188,10 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isDisabled
                   isFull={false}
-                  label={<div>资产上限</div>}
-                  labelExtra={<div>克</div>}
+                  label={<div>已发行总量</div>}
                   maxLength={500}
                   value={assetsInfo.total_supply as string}
-                  withLabel={true}
+                  withLabel
                 />
               </FieldDecorator>
             </Form.Item>
@@ -191,32 +212,12 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>申请销毁数量</div>}
+                  label={<div>申请增发数量</div>}
                   maxLength={500}
-                  // onChange={(description: string) => setFieldsValue({ description })}
-                  placeholder='请选择'
+                  // onChange={(amount: string) => setFieldsValue({ amount })}
+                  placeholder='请填写'
                   // value={form.name}
-                  withLabel={true}
-                />
-              </FieldDecorator>
-            </Form.Item>
-            <Form.Item
-              label=' '
-              name='type'
-              rules={[{
-                // validator: requiredValidator
-              }]}>
-              <FieldDecorator
-              >
-                <Input
-                  isDisabled
-                  isFull={false}
-                  label={<div>当前账户余额</div>}
-                  maxLength={500}
-                  // onChange={(description: string) => setFieldsValue({ description })}
-                  placeholder='请输入'
-                  value={assetsInfo.balance as string || ''}
-                  withLabel={true}
+                  withLabel
                 />
               </FieldDecorator>
             </Form.Item>
@@ -224,7 +225,33 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
           <Row>
             <Form.Item
               label=' '
-              name='type'
+              name='proof'
+              rules={[{
+                validator: requiredValidator
+              }, {
+                validator: urlValidator
+              }]}
+              validateFirst
+            >
+              <FieldDecorator
+                required
+              >
+                <Input
+                  isFull={false}
+                  label={<div>碳汇转入证明</div>}
+                  maxLength={500}
+                  // onChange={(proof: string) => setFieldsValue({ proof })}
+                  placeholder='请输入'
+                  // value={form.name}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item>
+          </Row>
+          <Row>
+            <Form.Item
+              label=' '
+              name='remark'
               rules={[{
                 // validator: requiredValidator
               }]}>
@@ -235,9 +262,9 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   label={<div>描述</div>}
                   labelExtra={<div>最多500字</div>}
                   maxLength={500}
-                  // onChange={(description: string) => setFieldsValue({ description })}
+                  // onChange={(remark: string) => setFieldsValue({ remark })}
                   rows={3}
-                  // value={form.description}
+                  // value={form.remark}
                   withLabel
                 />
               </FieldDecorator>
@@ -247,7 +274,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
         <Panel>
           <div>
             <Checkbox
-              label='请知晓，资产一旦销毁，不可撤回'
+              label='增发碳汇资产需要等待资产审查委员会审查通过后，您发行的碳汇资产会增加相应的可发行上限'
               onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
               value={protocals.costPro}
             />
@@ -255,22 +282,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
           </div>
           <div>
             <Checkbox
-              label='销毁资产会优先扣除您资产可发行但未发行的额度，该部分不足的，将扣除您钱包账户的余额'
-              onChange={(registerPro: boolean) => setProtocalValue({ registerPro })}
-              value={protocals.registerPro}
-            />
-          </div>
-          <div>
-            <Checkbox
-              label='销毁碳汇资产需要等待资产审查委员会审查通过后，您的碳汇数字资产将被扣除，同时会将您的真实碳汇资产原路转回到您的碳汇资产账户中'
-              onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
-              value={protocals.costPro}
-            />
-
-          </div>
-          <div>
-            <Checkbox
-              label='销毁碳汇资产将消耗 100 ECO2 及 10,000 ECC'
+              label='发布提案将消耗 100ECO及 10,000 ECC'
               onChange={(registerPro: boolean) => setProtocalValue({ registerPro })}
               value={protocals.registerPro}
             />
@@ -279,7 +291,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
             textAlign: 'center',
             marginTop: '24px'
           }}>
-            <Button htmlType='submit'>立即销毁</Button>
+            <Button htmlType='submit'>增发</Button>
           </div>
         </Panel>
       </div>
@@ -287,4 +299,4 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
   );
 }
 
-export default RegisterCoins;
+export default AdditionalIssue;

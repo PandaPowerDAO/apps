@@ -25,9 +25,9 @@ import staking from './staking';
 import storage from './storage';
 import sudo from './sudo';
 import techcomm from './techcomm';
-import transfer from './transfer';
+// import transfer from './transfer';
 import treasury from './treasury';
-import eco from './eco';
+// import eco from './eco';
 import ecoNeutralization from './eco-neutralization';
 import ecoTransfer from './eco-transfer';
 import ecoAssets from './eco-assets';
@@ -43,7 +43,7 @@ export default function create (t: <T = string> (key: string, text: string, opti
     explorer(t),
     claims(t),
     poll(t),
-    transfer(t),
+    // transfer(t),
     genericAsset(t),
     staking(t),
     democracy(t),
@@ -61,7 +61,7 @@ export default function create (t: <T = string> (key: string, text: string, opti
     sudo(t),
     js(t),
     settings(t),
-    eco(t),
+    // eco(t),
     ecoNeutralization(t),
     ecoTransfer(t),
     ecoAssets(t),
