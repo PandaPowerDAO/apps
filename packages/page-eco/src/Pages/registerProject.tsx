@@ -47,7 +47,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
   const [errorMap] = useState<Record<string, boolean | undefined>>({});
 
   const [protocals, setProtocals] = useState<ProtocalProps>({
-    costPro: false,
+    // costPro: false,
     registerPro: false
   });
 
@@ -91,7 +91,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
       message.info('申请提交成功');
       form.resetFields();
       setProtocals({
-        costPro: false,
+        // costPro: false,
         registerPro: false
       });
     }
@@ -103,10 +103,8 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
       name='transfer-form'
       onFinish={onFinish}>
       <div className={className}>
-        <Panel title='您好，A女士'>
-          <p>1、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-          <p>2、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-          <p>3、阿斯顿发送到发送到发的是发送到发送到发送到</p>
+        <Panel title='您好'>
+          <p>在将碳汇资产上链⾄ECO2 Ledger前，请先完善预备上链的碳汇项⽬之基础信息。依照碳汇 项⽬之报告，如实完成下⽅信息填写，为提⾼碳汇项⽬的辨识度，请尽可能完成每个栏位的 信息填写，以便资产审查委员会审核。此申请⽆法撤回与修改，故请谨慎填写。⽬前ECO2 Ledger仅⽀持VCS (Verified Carbon Standard) 和GS (Gold Standard) 的碳标准申请上链，其他 碳标准之碳汇资产暂不⽀持。</p>
         </Panel>
         <Panel
           title='完善提案细节'
@@ -674,14 +672,14 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
           </Row>
         </Panel>
         <Panel>
-          <div>
+          {/* <div>
             <Checkbox
-              label='注册成为发行商，将消耗 100ECO及 10,000 ECC'
+              label='注册碳汇项目，将消耗 100ECO及 10,000 ECC'
               onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
               value={protocals.costPro}
             />
 
-          </div>
+          </div> */}
           <div>
             <Checkbox
               label='我同意遵守TOS协议内容'
