@@ -57,12 +57,18 @@ export async function submitTx (label: string, tx: SubmittableExtrinsic<'promise
   });
 }
 
-export async function queryBalance (api: ApiPromise, address: string):Promise<void> {
+export async function queryBalance (api: ApiPromise, address: string):Promise<Record<string, any>> {
   const account = await api.query.system.account(address);
 
   console.log(`queryBalance for ${address}'`);
   console.log('account:', account.toJSON());
   console.log('balance:', account.data.free.toHuman(), account.data.free.toString());
+
+  return {
+    assetId: 'eco2',
+    balance: account.data.free.toString()
+  };
+  // return account.data.free.toHuman();
 }
 
 export async function voteProposal (api: ApiPromise, sender: KeyringPair | string, id: string, index: number, approve: boolean):Promise<void> {
@@ -204,7 +210,7 @@ export async function queryCarbonBalance (api: ApiPromise, assetId: string, addr
 
   return {
     assetId,
-    balance: balance.toHuman()
+    balance: balance.toString()
   };
 
   // console.log(`queryCarbonBalance: (${assetId}, ${address}) => ${balance.toHuman()}`);
@@ -228,10 +234,15 @@ export async function transferStandardAsset (api: ApiPromise, sender: KeyringPai
   await submitTx('transferStandardAsset', tx, sender);
 }
 
-export async function queryStandardAsset (api: ApiPromise, moneyId: string):Promise<void> {
+export async function queryStandardAsset (api: ApiPromise, moneyId: string):Promise<Record<string, any>> {
   const asset = await api.query.standardAssets.assetInfos(moneyId);
 
-  console.log('queryStandardBalance:', asset.toJSON());
+  return {
+    assetId: '',
+    balance: asset.toJSON()
+  };
+
+  // console.log('queryStandardBalance:', asset.toJSON());
 }
 
 export async function queryStandardBalance (api: ApiPromise, moneyId: string, address: string):Promise<void> {

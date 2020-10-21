@@ -41,6 +41,9 @@ const OwnerTd = styled.td`
 // `;
 
 const TableWrapper = styled.div`
+.ui--Table{
+  overflow-y: auto;
+}
   tr td {
     text-align: right;
   }
