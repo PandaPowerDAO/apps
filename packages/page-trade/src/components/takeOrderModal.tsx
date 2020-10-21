@@ -102,7 +102,10 @@ function CreateModal (props: Props): React.ReactElement<Props> {
       <Modal.Header>创建订单</Modal.Header>
       <Modal.Content>
         <FormWrapper>
-          <Form>
+          <Form
+            form={form}
+            name='take-order-form'
+          >
             <Form.Item
               initialValue={(orderDetail || {}).price}
               label='资产'
