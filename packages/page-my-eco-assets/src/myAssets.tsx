@@ -223,7 +223,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     <div className={className}>
       <Panel title={
         <TitleWrapper>
-          <div>ECO Block</div>
+          <div>ECO2 Block</div>
           <OperationBtnWrapper>
             <OperationBtn>
               <IconLink href='#/ecassets/register-project'
@@ -247,7 +247,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
       </Panel>
       <TableWrapper>
         <Table
-          empty={'暂无数据'}
+          empty={<div style={{ textAlign: 'center' }}>暂无数据</div>}
           footer={
             <tr>
               <td colSpan={100}>
@@ -260,10 +260,11 @@ function Home ({ className }: Props): React.ReactElement<Props> {
 
           }
           header={header}
+          remainHeader
         >
           {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
             return <tr key={rowIndex}>
-              <td><IconLink href={`#/myassets/assets-detail?asset=${v.assetId as string}`}
+              <td><IconLink href={`#/ecassets/assets-detail?asset=${v.assetId as string}`}
                 label={`${v.symbol as string}(${v.vintage as string})`}></IconLink></td>
               <td>{v.type === 'standard' ? '标准' : '碳汇资产'}</td>
               <td>{v.vintage}</td>

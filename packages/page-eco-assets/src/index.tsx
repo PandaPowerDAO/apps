@@ -43,7 +43,8 @@ header{
     justify-content: bettwen;
     & > .ui--Tabs{
       flex: 1;
-      padding-top: 0;
+      padding-left: 0;
+      margin-left: 1.5rem;
     }
 }
 .account-selector{

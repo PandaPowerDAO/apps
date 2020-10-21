@@ -3,7 +3,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { Modal, Dropdown, Input, Button } from '@polkadot/react-components';
-import { Form } from 'antd';
+import { Form, message } from 'antd';
 import { useApi } from '@polkadot/react-hooks';
 
 import { queryAssetsList, makeOrder } from '@eco/eco-utils/service';
@@ -78,8 +78,11 @@ function CreateModal (props: Props): React.ReactElement<Props> {
 
         await makeOrder(api, ecoAccount as string, formValues.assetId, '', formValues.price, formValues.amount, formValues.direction);
         onClose();
+        message.info('订单创建成功');
       } catch (e) {
         console.log(e);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        message.info(e.msg || e.message || '创建失败');
       }
     }
 

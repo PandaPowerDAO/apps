@@ -10,6 +10,7 @@ import Panel from '@eco/eco-components/Panel';
 import { queryOrderDeals } from '@eco/eco-utils/service';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
+import { debounce } from 'lodash';
 
 interface HanleAction {
   (orderItem: OrderItem): Promise<void> | void
@@ -114,7 +115,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
         offset: (offset || 0) as number,
         limit: pagination.pageSize,
         // closed,
-        reverse
+        reverse: reverse || 0
       });
 
       updatePagination((_pagination) => {
@@ -142,26 +143,26 @@ function OrderList (props: Props): React.ReactElement<Props> {
     return query();
   }, [ecoAccount]);
 
-  const handlePageChange = useCallback((page) => {
+  const handlePageChange = useCallback(debounce((page) => {
     queryOrderList((page - 1) * pagination.pageSize);
-  }, []);
+  }, 4000), []);
 
   useEffect(() => {
     console.log('aaaaa');
 
     if (isMine) {
       if (ecoAccount) {
-        handlePageChange(0);
+        handlePageChange(1);
       }
     } else {
-      handlePageChange(0);
+      handlePageChange(1);
     }
   }, [ecoAccount]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       updatePagination((_pagination) => {
-        handlePageChange(_pagination.current);
+        handlePageChange(+(_pagination.current as number));
 
         return _pagination;
       });

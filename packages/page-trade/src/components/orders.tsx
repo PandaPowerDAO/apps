@@ -55,6 +55,10 @@ tbody tr td {
 }
 `;
 
+const ActionWrapper = styled.div`
+  cursor: pointer;
+`;
+
 const Sides = ['卖', '买'];
 
 const noop = (e: OrderItem) => Promise.resolve(undefined);
@@ -243,9 +247,9 @@ function OrderList (props: Props): React.ReactElement<Props> {
               <td>{Sides[v.direction as number]}</td>
               {
                 action ? <td>
-                  <div onClick={() => handleAction(v as OrderItem)}>
+                  <ActionWrapper onClick={() => handleAction(v as OrderItem)}>
                     {action}
-                  </div>
+                  </ActionWrapper>
                 </td> : null
               }
             </tr>;

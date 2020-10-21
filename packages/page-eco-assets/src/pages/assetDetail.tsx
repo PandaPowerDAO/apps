@@ -1,7 +1,7 @@
 // Copyright 2017-2020 @polkadot/app-democracy authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useMemo, useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import QRCode from 'qrcode.react';
 // import CopyToClipBoard from 'copy-to-clipboard';
@@ -9,14 +9,15 @@ import { useApi } from '@polkadot/react-hooks';
 import Panel from '@eco/eco-components/Panel';
 // import { Table } from '@polkadot/react-components';
 import { useLocation } from 'react-router-dom';
-import { NoPaddingTable } from '@eco/eco-components/Table';
-import { parseQuery, beautifulNumber } from '@eco/eco-utils/utils';
+// import { NoPaddingTable } from '@eco/eco-components/Table';
+import { parseQuery, beautifulNumber, fromHex } from '@eco/eco-utils/utils';
 import { AnyObj } from '@eco/eco-utils/types';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 // import { Modal } from '@polkadot/react-components';
 
 import { queryAsset, queryCarbonBalance, queryCarbonDeals } from '@eco/eco-utils/service';
 import { Tooltip } from 'antd';
+import CmptDeals from '@eco/page-trade/components/deals';
 
 interface Props {
   className?: string,
@@ -107,7 +108,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
 
   // const [showTransferModal, updateTransferModalStatus] = useState<boolean>(false);
 
-  const [records, updateRecords] = useState<OrderItem[]>([]);
+  const [, updateRecords] = useState<OrderItem[]>([]);
 
   const [assetInfo, updateAssetInfo] = useState<AnyObj>({});
   const { api } = useApi();
@@ -136,25 +137,6 @@ function Home ({ className }: Props): React.ReactElement<Props> {
       init();
     }
   }, [ecoAccount]);
-
-  const columns = useMemo(() => {
-    return [{
-      key: 'takerId',
-      title: '地址'
-    }, {
-      key: 'orderId',
-      title: '交易ID'
-    }, {
-      key: 'remarks',
-      title: '备注'
-    }, {
-      key: 'price',
-      title: '金额'
-    }, {
-      key: 'timestamp',
-      title: '时间'
-    }];
-  }, []);
 
   const queryDeals = useCallback((offset: number | string) => {
     _queryDeals();
@@ -186,7 +168,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
   return <div className={className}>
     <AssetsPanel>
       <div>
-        <PanelTitle>{assetInfo.name}</PanelTitle>
+        <PanelTitle>{fromHex(assetInfo.symbol as string || '')}</PanelTitle>
         <div>
           <span>收款地址: {assetInfo.owner}</span>
           {/* <span><CopyToClipBoard text={assetInfo.owner as string as unknown || ''} >copy</CopyToClipBoard></span> */}
@@ -215,19 +197,10 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     </AssetsPanel>
     <Panel title='资产介绍'>
       <div>
-          adfasdfasdfadsfasdfasdfasdafgsdfgssgasdfasfasdfasdfadfasdfasdfadsfasdfasdfasdafgsdfgssgasdfasfasdfasdf
-          adfasdfasdfadsfasdfasdfasdafgsdfgssgasdfasfasdfasdf
-          adfasdfasdfadsfasdfasdfasdafgsdfgssgasdfasfasdfasdf
-          adfasdfasdfadsfasdfasdfasdafgsdfgssgasdfasfasdfasdf
-          adfasdfasdfadsfasdfasdfasdafgsdfgssgasdfasfasdfasdf
-          adfasdfasdfadsfasdfasdfasdafgsdfgssgasdfasfasdfasdf
-          adfasdfasdfadsfasdfasdfasdafgsdfgssgasdfasfasdfasdf
-          adfasdfasdfadsfasdfasdfasdafgsdfgssgasdfasfasdfasdf
-          adfasdfasdfadsfasdfasdfasdafgsdfgssgasdfasfasdfasdf
-          adfasdfasdfadsfasdfasdfasdafgsdfgssgasdfasfasdfasdf
+          资产介绍说明
       </div>
     </Panel>
-    <Panel title='最近交易'>
+    {/* <Panel title='最近交易'>
       <NoPaddingTable
         columns={columns}
         datasource={records}
@@ -239,7 +212,12 @@ function Home ({ className }: Props): React.ReactElement<Props> {
         }}
         remainHeader
       />
-    </Panel>
+
+    </Panel> */}
+    <CmptDeals closed={1}
+      isMine={false}
+      reverse={0}
+      title='最近交易' />
     {/* <Modal
       open={showTransferModal}
 

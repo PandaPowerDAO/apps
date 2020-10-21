@@ -11,7 +11,7 @@ import { useApi } from '@polkadot/react-hooks';
 import md from './md/basics.md';
 import { useTranslation } from './translate';
 import Developer from './Developer';
-import I18n from './I18n';
+// import I18n from './I18n';
 import Metadata from './Metadata';
 import General from './General';
 import useCounter from './useCounter';
@@ -37,7 +37,7 @@ function SettingsApp ({ basePath, onStatusChange }: Props): React.ReactElement<P
     {
       name: 'developer',
       text: t<string>('Developer')
-    },
+    }
     // {
     //   name: 'i18n',
     //   text: t<string>('Translate')

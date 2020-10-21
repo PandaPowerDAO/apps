@@ -9,6 +9,7 @@ import { OrderItem } from './types';
 import { cancelOrder } from '@eco/eco-utils/service';
 import { useApi } from '@polkadot/react-hooks';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
+import { message } from 'antd';
 
 interface Props extends BareProps {
   type?:string,
@@ -21,7 +22,13 @@ function MyOrderList (props: Props): React.ReactElement<Props> {
     console.log(orderItem);
 
     async function _cancel () {
-      await cancelOrder(api, ecoAccount as string, orderItem.orderId);
+      try {
+        await cancelOrder(api, ecoAccount as string, orderItem.orderId);
+        message.info('取消成功');
+      } catch (e) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        message.info(e.msg || e.message || '取消失败');
+      }
     }
 
     _cancel();

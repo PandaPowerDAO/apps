@@ -5,7 +5,7 @@
  * 注册碳汇资产
  */
 import React, { useCallback, useEffect, useState } from 'react';
-import { Form, Button, message } from 'antd';
+import { Form, message } from 'antd';
 
 // import styled from 'styled-components';
 
@@ -17,6 +17,7 @@ import TextArea from '@eco/eco-components/TextArea';
 // import { Keyring } from '@polkadot/api';
 import FieldDecorator from '@eco/eco-components/FormComponents';
 import Row from '@eco/eco-components/Row';
+import SubmitBtn from '@eco/eco-components/SubmitBtn';
 
 import { submitAsset, queryProjectsList } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
@@ -550,7 +551,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
             textAlign: 'center',
             marginTop: '24px'
           }}>
-            <Button htmlType='submit'>注册</Button>
+            <SubmitBtn htmlType='submit'>注册</SubmitBtn>
           </div>
         </Panel>
       </div>

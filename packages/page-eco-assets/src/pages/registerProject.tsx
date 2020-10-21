@@ -6,7 +6,7 @@
  */
 import React, { useCallback, useMemo, useState } from 'react';
 // import styled from 'styled-components';
-import { Form, Button, message } from 'antd';
+import { Form, message } from 'antd';
 
 import { Input, Checkbox, Dropdown, InputAddress } from '@polkadot/react-components';
 import Panel from '@eco/eco-components/Panel';
@@ -19,6 +19,7 @@ import { submitProject } from '@eco/eco-utils/service';
 // import { Keyring } from '@polkadot/api';
 import FieldDecorator from '@eco/eco-components/FormComponents';
 import Row from '@eco/eco-components/Row';
+import SubmitBtn from '@eco/eco-components/SubmitBtn';
 
 import { notAllprotocalChecked,
   requiredValidator,
@@ -103,10 +104,8 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
       name='transfer-form'
       onFinish={onFinish}>
       <div className={className}>
-        <Panel title='您好，A女士'>
-          <p>1、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-          <p>2、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-          <p>3、阿斯顿发送到发送到发的是发送到发送到发送到</p>
+        <Panel title='您好'>
+          <p>注册碳汇项目说明</p>
         </Panel>
         <Panel
           title='完善信息'
@@ -693,7 +692,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
             textAlign: 'center',
             marginTop: '24px'
           }}>
-            <Button htmlType='submit'>注册</Button>
+            <SubmitBtn htmlType='submit'>注册</SubmitBtn>
           </div>
         </Panel>
       </div>

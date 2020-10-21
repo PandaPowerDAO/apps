@@ -245,10 +245,11 @@ function Home ({ className }: Props): React.ReactElement<Props> {
 
           }
           header={header}
+          remainHeader
         >
           {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
             return <tr key={rowIndex}>
-              <td><IconLink href={`#/myassets/assets-detail?asset=${v.assetId as string}`}
+              <td><IconLink href={`#/ecassets/assets-detail?asset=${v.assetId as string}`}
                 label={`${v.symbol as string}(${v.vintage as string})`}></IconLink></td>
               <td>{v.type === 'standard' ? '碳汇资产' : '标准资产'}</td>
               <td>{v.vintage}</td>

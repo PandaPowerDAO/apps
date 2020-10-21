@@ -35,7 +35,7 @@ export async function requiredValidator (rule: any, value: any): Promise<void> {
 }
 
 export async function dateValidator (rule: any, value: any): Promise<void> {
-  if (!dateReg.test(value)) {
+  if (value && !dateReg.test(value)) {
     throw new Error('日期格式错误');
   }
 
@@ -43,7 +43,7 @@ export async function dateValidator (rule: any, value: any): Promise<void> {
 }
 
 export async function urlValidator (rule: any, value: any): Promise<void> {
-  if (!urlReg.test(value)) {
+  if (value && !urlReg.test(value)) {
     throw new Error('url格式错误');
   }
 
@@ -51,7 +51,7 @@ export async function urlValidator (rule: any, value: any): Promise<void> {
 }
 
 export async function yearValidator (rule: any, value: any): Promise<void> {
-  if (!yearReg.test(value)) {
+  if (value && !yearReg.test(value)) {
     throw new Error('年限格式不正确');
   }
 
@@ -67,7 +67,7 @@ export function notAllprotocalChecked (_protocals:Record<string, any>):boolean {
 }
 
 export async function numberValidator (rule: any, value: any): Promise<void> {
-  if (!numberReg.test(value)) {
+  if (value && !numberReg.test(value)) {
     throw new Error('数字格式错误');
   }
 
@@ -79,7 +79,11 @@ export function toUtf8 (data: Uint8Array): string {
 }
 
 export function fromHex (data: string): string {
-  return Buffer.from(data.replace('0x', ''), 'hex').toString('utf8');
+  if (/^0x/.test(data)) {
+    return Buffer.from(data.replace('0x', ''), 'hex').toString('utf8');
+  }
+
+  return data;
 }
 
 export function toUtf8JSON (data: Uint8Array):Record<string, any> {
