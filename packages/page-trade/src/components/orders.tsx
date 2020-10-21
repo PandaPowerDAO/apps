@@ -97,7 +97,8 @@ function OrderList (props: Props): React.ReactElement<Props> {
 
       tempRecordsRef.current.push({
         // ...orderItem,
-        ...(result as OrderDetail || {})
+        ...(result as OrderDetail || {}),
+        orderId: orderItem.orderId
       });
 
       // const projectDetail = await queryProject(api, assetItem.projectId);

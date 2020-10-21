@@ -35,7 +35,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
   const [currentOrder, updateCurrentOrder] = useState<OrderItem | null>(null);
 
   const handleAction = useCallback((orderItem: OrderItem): void => {
-    console.log(orderItem);
+    console.log(orderItem,'====');
     updateCurrentOrder(orderItem);
     // return Promise.resolve()
   }, []);

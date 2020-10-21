@@ -115,9 +115,15 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               >
                 <Input
                   isDisabled
+                  value={String((orderDetail || {}).price)}
                 />
               </FieldDecorator>
             </Form.Item>
+            {/* <Form.Item>
+              <span>
+                {orderDetail && orderDetail.direction == 1 ? '买':'卖'}
+              </span>
+            </Form.Item> */}
             <Form.Item
               label='数量'
               name='amount'
