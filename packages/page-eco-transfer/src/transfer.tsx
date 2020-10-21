@@ -4,7 +4,7 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-import { Input, Dropdown, InputNumber } from '@polkadot/react-components';
+import { Input, Dropdown } from '@polkadot/react-components';
 import Panel from '@eco/eco-components/Panel';
 // import Button from '@eco/eco-components/Button';
 import TextArea from '@eco/eco-components/TextArea';
