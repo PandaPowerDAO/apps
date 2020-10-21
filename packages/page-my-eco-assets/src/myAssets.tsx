@@ -41,6 +41,9 @@ const OperationBtn = styled.div`
 `;
 
 const TableWrapper = styled.div`
+.ui--Table{
+  overflow-y: auto;
+}
   tr td {
     text-align: right;
   }
@@ -48,6 +51,11 @@ const TableWrapper = styled.div`
 
 const OperationSpan = styled.span`
   cursor: pointer;
+`;
+
+const OperationSpanWrapper = styled.span`
+  display: flex;
+  align-items: center;
 `;
 
 const TitleWrapper = styled.div`
@@ -201,12 +209,12 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     }
   }, [ecoAccount, accountLoaded]);
 
-  const goAdditionalPage = useCallback((asset = 'asdfasdfasdfasdfasdfads') => {
-    window.location.hash = `#/eco/additional?asset=${asset as string}`;
+  const goAdditionalPage = useCallback((asset: string) => {
+    window.location.hash = `#/ecassets/additional?asset=${asset}`;
   }, []);
 
-  const goBurningPage = useCallback((asset = 'asdfasdfasdfasdfasdfads') => {
-    window.location.hash = `#/eco/burning?asset=${asset as string}`;
+  const goBurningPage = useCallback((asset: string) => {
+    window.location.hash = `#/ecassets/burning?asset=${asset}`;
   }, []);
 
   const handlePageChange = useCallback((page) => {
@@ -277,11 +285,11 @@ function Home ({ className }: Props): React.ReactElement<Props> {
               <td>{StatusMap[v.approved === 1 ? '1' : '0'] || StatusMap[0]}</td>
               <td>
                 {
-                  v.approved === 1 ? <div>
+                  v.approved === 1 ? <OperationSpanWrapper>
                     <OperationSpan onClick={() => goAdditionalPage(v.assetId)}>增发</OperationSpan>
                     <Divider type='vertical' />
                     <OperationSpan onClick={() => goBurningPage(v.assetId)}>销毁</OperationSpan>
-                  </div> : '-'
+                  </OperationSpanWrapper> : '-'
                 }
               </td>
             </tr>;

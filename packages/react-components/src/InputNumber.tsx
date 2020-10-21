@@ -47,7 +47,7 @@ interface Props {
 const DEFAULT_BITLENGTH = BitLengthOption.NORMAL_NUMBERS as BitLength;
 
 export class TokenUnit {
-  public static abbr = 'Unit';
+  public static abbr = 'ECO2';
 
   public static setAbbr (abbr: string = TokenUnit.abbr): void {
     TokenUnit.abbr = abbr;
@@ -69,7 +69,10 @@ function getRegex (isDecimal: boolean): RegExp {
 }
 
 function getSiOptions (): { text: string; value: string }[] {
-  return formatBalance.getOptions().map(({ power, text, value }): { text: string; value: string } => ({
+  // 修改配置, 用SIOptions 替换formatBalance.getOptions()
+  const SIOptions = [{ power: 0, text: 'ECO2', value: '-' }];
+
+  return SIOptions.map(({ power, text, value }): { text: string; value: string } => ({
     text: power === 0
       ? TokenUnit.abbr
       : text,
@@ -88,6 +91,12 @@ function getSiPowers (si: SiDef | null): [BN, number, number] {
 }
 
 function isValidNumber (bn: BN, bitLength: BitLength, isZeroable: boolean, maxValue?: BN): boolean {
+  const _max = getGlobalMaxValue(bitLength);
+
+  console.log(bn.lt(BN_ZERO), _max, bn.lt(_max), bn.isZero(), bn.bitLength() > (bitLength || DEFAULT_BITLENGTH));
+
+  console.log((maxValue && maxValue.gtn(0) && bn.gt(maxValue)));
+
   if (
     // cannot be negative
     bn.lt(BN_ZERO) ||
@@ -137,7 +146,8 @@ function inputToBn (input: string, si: SiDef | null, bitLength: BitLength, isZer
   ];
 }
 
-function getValuesFromString (value: string, si: SiDef | null, bitLength: BitLength, isZeroable: boolean, maxValue?: BN): [string, BN, boolean] {
+export function getValuesFromString (value: string, si: SiDef | null, bitLength: BitLength, isZeroable: boolean, maxValue?: BN): [string, BN, boolean] {
+  console.log('getValuesFromString', value, si, bitLength);
   const [valueBn, isValid] = inputToBn(value, si, bitLength, isZeroable, maxValue);
 
   return [

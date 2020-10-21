@@ -9,8 +9,8 @@ export default function create (t: <T = string> (key: string, text: string, opti
   return {
     Component,
     display: {
-      needsApi: [],
-      isHidden: true
+      needsApi: []
+      // isHidden: true
     },
     group: 'developer',
     icon: 'code',

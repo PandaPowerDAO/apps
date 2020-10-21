@@ -39,11 +39,16 @@ const Icon = styled.div`
 
 `;
 const ItemWrapper = styled.div`
-  width: 30%;
-  max-width: 20rem;
+  // width: 30%;
+  // max-width: 20rem;
   border: 1px solid #acacac;
   padding: 8px 12px;
   border-radius: 5px;
+  display: inline-block;
+
+  & + & {
+    margin-left: 20px;
+  }
 
 `;
 const ButtonWrapper = styled.div`

@@ -11,12 +11,14 @@ import TextArea from '@eco/eco-components/TextArea';
 // import Form from '@eco/eco-components/Form';
 import { Form, message } from 'antd';
 import FieldDecorator from '@eco/eco-components/FormComponents';
-import { queryAsset, transferCarbonAsset, queryPotentialBalance } from '@eco/eco-utils/service';
+import { queryAsset, transferCarbonAsset, queryPotentialBalance, transfer, queryBalance, queryCarbonBalance } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { useApi } from '@polkadot/react-hooks';
 import { beautifulNumber, parseQuery, fromHex } from '@eco/eco-utils/utils';
 import SubmitBtn from '@eco/eco-components/SubmitBtn';
 import { useLocation } from 'react-router-dom';
+import { getValuesFromString } from '@polkadot/react-components/InputNumber';
+import { BitLengthOption } from '@polkadot/react-components/constants';
 
 interface Props {
   className?: string,
@@ -82,13 +84,25 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
   const queryAssetInfo = useCallback((asset: Asset) => {
     async function _query () {
       const result = await queryAsset(api, asset.assetId);
+      let balance;
+
+      if (asset.assetId === 'eco2') {
+        balance = await queryBalance(api, ecoAccount as string);
+      } else {
+        balance = await queryCarbonBalance(api, asset.assetId, ecoAccount as string);
+      }
 
       console.log('result', tempAssetListRef.current);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const _item:Asset = {
-        ...result.asset,
-        ...result.additionals
+        ...(result.asset || {}),
+        ...(result.additionals || {}),
+        balance
       };
+
+      if (asset.assetId === 'eco2') {
+        _item.symbol = 'ECO2';
+      }
 
       tempAssetListRef.current = [
         ...tempAssetListRef.current,
@@ -116,8 +130,14 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
         offset: 0,
         limit: 100
       });
+      const _alist: Asset = {
+        assetId: 'eco2',
+        text: 'ECO2',
+        value: 'eco2',
+        symbol: 'ECO2'
+      };
 
-      recursionQueryDetail(result as unknown as Asset[], queryAssetInfo);
+      recursionQueryDetail([_alist, ...result as unknown as Asset[]], queryAssetInfo);
 
       // updateAssetsList(() => {
       //   return (result.docs as Asset[]).map((doc: Asset): Asset => {
@@ -138,6 +158,15 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
     async function _run () {
       if (!arr) {
         updateAssetsList(() => {
+          // const _temp = tempAssetListRef.current;
+
+          // _temp.push({
+          //   assetId: 'eco2',
+          //   text: 'ECO2',
+          //   value: 'eco2'
+          // });
+
+          // return _temp;
           return tempAssetListRef.current;
         });
 
@@ -150,6 +179,15 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
         console.log('tempAssetListRef.current', tempAssetListRef.current);
         setTimeout(() => {
           updateAssetsList(() => {
+            // const _temp = tempAssetListRef.current;
+
+            // _temp.push({
+            //   assetId: 'eco2',
+            //   text: 'ECO2',
+            //   value: 'eco2'
+            // });
+
+            // return _temp;
             return tempAssetListRef.current;
           });
         }, 1000);
@@ -192,14 +230,28 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
     // form.validateFields({ force: true }, (err: Error, values: any): void => {
     //   console.log(err, values);
     // });
+
     async function _transfer () {
-      await transferCarbonAsset(
-        api,
-        ecoAccount as string,
-        values.assetId as string,
-        values.to as string,
-        values.amount as string
-      );
+      if (values.assetId === 'eco2') {
+        const _amount = getValuesFromString(values.amount as string, {
+          power: 0,
+          text: 'ECO2',
+          value: '-'
+        }, BitLengthOption.CHAIN_SPEC, true);
+
+        console.log('_amount', _amount);
+
+        await transfer(api, ecoAccount as string, values.to as string, values.amount as string);
+      } else {
+        await transferCarbonAsset(
+          api,
+          ecoAccount as string,
+          values.assetId as string,
+          values.to as string,
+          values.amount as string
+        );
+      }
+
       message.info('操作成功');
       form.resetFields();
 
@@ -319,13 +371,14 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
               <FieldDecorator required>
                 <Input
                   isFull={false}
+                  // isSi
                   label={<div>转账金额</div>}
                   // labelExtra={<div>克</div>}
-                  maxLength={500}
                   // onChange={(amount: string) => setFieldsValue({ description })}
                   placeholder='请输入您要转账的金额'
                   // value={formValues.name}
                   withLabel
+
                 />
               </FieldDecorator>
             </Form.Item>
