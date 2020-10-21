@@ -92,7 +92,7 @@ function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
           <IconLink href={`#/ectransfer?asset=${asset.assetId}`}
             label='转账' />
         </SubmitBtn>
-        <SubmitBtn>收款</SubmitBtn>
+        {/* <SubmitBtn>收款</SubmitBtn> */}
         {
           type === 'standard' ? <SubmitBtn>兑换</SubmitBtn> : <SubmitBtn>
             <IconLink href={`#/neutralization?asset=${asset.assetId}`}
