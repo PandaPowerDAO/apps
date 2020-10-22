@@ -239,9 +239,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
           value: '-'
         }, BitLengthOption.CHAIN_SPEC, true);
 
-        console.log('_amount', _amount);
-
-        await transfer(api, ecoAccount as string, values.to as string, values.amount as string);
+        await transfer(api, ecoAccount as string, values.to as string, (_amount[1] || 0).toString());
       } else {
         await transferCarbonAsset(
           api,

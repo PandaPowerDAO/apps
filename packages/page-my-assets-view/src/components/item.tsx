@@ -45,6 +45,7 @@ const ItemWrapper = styled.div`
   padding: 8px 12px;
   border-radius: 5px;
   display: inline-block;
+  min-width: 30%;
 
   & + & {
     margin-left: 20px;
