@@ -276,7 +276,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               withLabel={true}
             />
           </Row>
-          <Row>
+          {/* <Row>
             <Input
               isDisabled
               isFull={false}
@@ -286,7 +286,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               value={beautifulNumber(10000)}
               withLabel
             />
-          </Row>
+          </Row> */}
           <div style={{
             textAlign: 'center',
             marginTop: '24px'

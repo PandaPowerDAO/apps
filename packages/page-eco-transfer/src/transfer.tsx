@@ -19,7 +19,7 @@ import SubmitBtn from '@eco/eco-components/SubmitBtn';
 import { useLocation } from 'react-router-dom';
 import { getValuesFromString } from '@polkadot/react-components/InputNumber';
 // import { BitLengthOption } from '@polkadot/react-components/constants';
-// import { Keyring } from '@polkadot/api';
+// import Selected from '@polkadot/react-components/InputAddressMulti/Selected';
 import BN from 'bn.js';
 
 interface Props {
@@ -113,7 +113,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
 
       if (asset.assetId === 'eco2') {
         balance = await queryBalance(api, ecoAccount as string);
-        balance.balance = new BN(balance.balance).mul(new BN(10).pow(new BN(-8))).toString();
+        balance.balance = new BN(balance.balance).div(new BN(10).pow(new BN(8))).toString();
       } else {
         balance = await queryCarbonBalance(api, asset.assetId, ecoAccount as string);
       }
@@ -308,6 +308,12 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
     // updateCurAsset(_selected || null);
     // queryAssetInfo(_selected.assetId);
     if (_selected) {
+      if (_selected.symbol !== 'ECO2') {
+        _selected.symbolName = fromHex(_selected.symbol.toString());
+      } else {
+        _selected.symbolName = _selected.symbol;
+      }
+
       updateCurAsset(_selected);
       setTimeout(() => {
         form.validateFields(['assetId']);
@@ -440,13 +446,14 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
               isDisabled
               isFull={false}
               label={<div>总量</div>}
-              labelExtra={<div>{curAsset ? fromHex(curAsset.symbol as string) : '' }</div>}
+              // labelExtra={<div>{curAsset ? fromHex(curAsset.symbol as string) : '' }</div>}
+              labelExtra={<div>{curAsset ? curAsset.symbolName : '' }</div>}
               maxLength={500}
               value={beautifulNumber((curAsset ? (curAsset.balance as BalanceType).balance : 0) || 0)}
               withLabel={true}
             />
           </Row>
-          <Row>
+          {/* <Row>
             <Input
               isDisabled
               isFull={false}
@@ -456,7 +463,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
               value={beautifulNumber(10000)}
               withLabel
             />
-          </Row>
+          </Row> */}
           <div style={{
             textAlign: 'center',
             marginTop: '24px'
