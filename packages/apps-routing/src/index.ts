@@ -39,11 +39,17 @@ export default function create (t: <T = string> (key: string, text: string, opti
   return [
     // dashboard(t),
     accounts(t),
+    ecoNeutralization(t),
+    ecoTransfer(t),
+    ecoAssets(t),
+    ecoMyAssets(t),
+    ecoTrade(t),
+    ecoMyAssetsView(t),
     addresses(t),
     explorer(t),
     claims(t),
     poll(t),
-    transfer(t),
+    // transfer(t),
     genericAsset(t),
     staking(t),
     democracy(t),
@@ -62,11 +68,6 @@ export default function create (t: <T = string> (key: string, text: string, opti
     js(t),
     settings(t),
     // eco(t),
-    ecoNeutralization(t),
-    ecoTransfer(t),
-    ecoAssets(t),
-    ecoMyAssets(t),
-    ecoTrade(t),
-    ecoMyAssetsView(t)
+   
   ];
 }

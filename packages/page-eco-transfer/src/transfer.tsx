@@ -19,6 +19,7 @@ import SubmitBtn from '@eco/eco-components/SubmitBtn';
 import { useLocation } from 'react-router-dom';
 import { getValuesFromString } from '@polkadot/react-components/InputNumber';
 import { BitLengthOption } from '@polkadot/react-components/constants';
+import Selected from '@polkadot/react-components/InputAddressMulti/Selected';
 
 interface Props {
   className?: string,
@@ -284,6 +285,11 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
     // updateCurAsset(_selected || null);
     // queryAssetInfo(_selected.assetId);
     if (_selected) {
+      if(_selected.symbol !== 'ECO2'){
+        _selected.symbolName = fromHex(_selected.symbol.toString())
+      } else {
+        _selected.symbolName = _selected.symbol
+      }
       updateCurAsset(_selected);
     }
 
@@ -407,13 +413,13 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
               isDisabled
               isFull={false}
               label={<div>总量</div>}
-              labelExtra={<div>{curAsset ? curAsset.symbol : '' }</div>}
+              labelExtra={<div>{curAsset ? curAsset.symbolName : '' }</div>}
               maxLength={500}
               value={beautifulNumber((curAsset ? curAsset.total_supply : 0) || 0)}
               withLabel={true}
             />
           </Row>
-          <Row>
+          {/* <Row>
             <Input
               isDisabled
               isFull={false}
@@ -423,7 +429,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
               value={beautifulNumber(10000)}
               withLabel
             />
-          </Row>
+          </Row> */}
           <div style={{
             textAlign: 'center',
             marginTop: '24px'

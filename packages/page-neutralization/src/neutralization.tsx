@@ -314,7 +314,7 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
               </FieldDecorator>
             </Form.Item>
           </Row>
-          <Row>
+          {/* <Row>
             <Form.Item
               label=' '
             >
@@ -331,7 +331,7 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
                 />
               </FieldDecorator>
             </Form.Item>
-          </Row>
+          </Row> */}
           <div style={{
             textAlign: 'center',
             marginTop: '24px'
