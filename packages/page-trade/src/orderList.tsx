@@ -35,7 +35,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
   const [currentOrder, updateCurrentOrder] = useState<OrderItem | null>(null);
 
   const handleAction = useCallback((orderItem: OrderItem): void => {
-    console.log(orderItem,'====');
+    console.log(orderItem, '====');
     updateCurrentOrder(orderItem);
     // return Promise.resolve()
   }, []);
@@ -87,14 +87,14 @@ function OrderList (props: Props): React.ReactElement<Props> {
       <CreateModal
         onClose={closeCreateModal}
         open={isShowCreateModal}>
-        <span>sfs</span>
+        <span>-</span>
       </CreateModal>
       <TakeModal
         onClose={closeTakeModal}
         open={!!currentOrder}
         orderDetail={currentOrder as unknown as OrderDetailType}
       >
-        <span>sd</span>
+        <span>-</span>
       </TakeModal>
     </div>
   );
