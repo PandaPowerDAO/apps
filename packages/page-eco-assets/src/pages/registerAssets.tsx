@@ -85,12 +85,9 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (projects && (projects.docs as Project[])) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        setProjects([{
-          symbol: '请选择碳汇项目',
-          projectId: '_empty_'
-        },
+        setProjects([
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        ...(projects.docs || [])
+          ...(projects.docs || [])
         ].map((pro: Project): Project => {
           return {
             ...pro,
@@ -136,6 +133,12 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
 
     await Promise.resolve(undefined);
   };
+
+  const handleProjectSelect = useCallback((value) => {
+    if (value) {
+      form.validateFields(['projectId']);
+    }
+  }, []);
 
   const onFinish = (values: FormProps): void => {
     console.log('ecoAccount', ecoAccount);
@@ -188,18 +191,17 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
         >
           <Row>
             <Form.Item
-              initialValue='_empty_'
               label=' '
               name='projectId'
               rules={[{
-                validator: projectValidator
+                validator: requiredValidator
               }]}
               validateTrigger={['onSubmit']}>
               <FieldDecorator
+                onChange={handleProjectSelect}
                 required
               >
                 <Dropdown
-                  defaultValue={'_empty_'}
                   // onChange={(assetsType) => setFieldsValue(assetsType)}
                   label={<div>碳汇项目</div>}
                   options={projects}

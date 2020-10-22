@@ -18,7 +18,9 @@ import { beautifulNumber, parseQuery, fromHex } from '@eco/eco-utils/utils';
 import SubmitBtn from '@eco/eco-components/SubmitBtn';
 import { useLocation } from 'react-router-dom';
 import { getValuesFromString } from '@polkadot/react-components/InputNumber';
-import { BitLengthOption } from '@polkadot/react-components/constants';
+// import { BitLengthOption } from '@polkadot/react-components/constants';
+// import { Keyring } from '@polkadot/api';
+import BN from 'bn.js';
 
 interface Props {
   className?: string,
@@ -35,15 +37,25 @@ interface FormProps {
 // interface ProtocalProps {
 //   [key: string]: undefined | null | boolean
 // }
+interface BalanceType {
+  [key: string] : string | number,
+}
 
 interface Asset {
   assetId: string,
-  [key:string]: string | number
+  // balance?: BalanceType,
+  [key:string]: string | number | BalanceType
+}
+
+interface QueryDetailCallback {
+  (a: Asset, b: Asset): void
 }
 
 interface QueryDetailFn {
-  (asset: Asset): Promise<void> | void
+  (asset: Asset, callback: QueryDetailCallback): Promise<void> | void
 }
+
+let timer: any = null;
 
 const Row = styled.div`
   display: flex;
@@ -81,13 +93,27 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
   const location = useLocation();
   const initAssetId: string = parseQuery(location.search || '').asset || '';
 
-  const queryAssetInfo = useCallback((asset: Asset) => {
+  const hanleUpdateTempList = useCallback((_item:Asset, item:Asset) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    tempAssetListRef.current = [
+      ...tempAssetListRef.current,
+      {
+        ..._item,
+        text: fromHex(_item.symbol as string),
+        value: item.assetId,
+        assetId: item.assetId
+      }
+    ];
+  }, []);
+
+  const queryAssetInfo = useCallback((asset: Asset, callback: QueryDetailCallback) => {
     async function _query () {
       const result = await queryAsset(api, asset.assetId);
       let balance;
 
       if (asset.assetId === 'eco2') {
         balance = await queryBalance(api, ecoAccount as string);
+        balance.balance = new BN(balance.balance).mul(new BN(10).pow(new BN(-8))).toString();
       } else {
         balance = await queryCarbonBalance(api, asset.assetId, ecoAccount as string);
       }
@@ -104,15 +130,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
         _item.symbol = 'ECO2';
       }
 
-      tempAssetListRef.current = [
-        ...tempAssetListRef.current,
-        {
-          ..._item,
-          text: fromHex(_item.symbol as string),
-          value: asset.assetId,
-          assetId: asset.assetId
-        }
-      ];
+      callback(_item, asset);
 
       // updateCurAsset({
       //   ...result.asset,
@@ -157,17 +175,8 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
   const recursionQueryDetail = useCallback((arr: Asset[], queryFn: QueryDetailFn) => {
     async function _run () {
       if (!arr) {
-        updateAssetsList(() => {
-          // const _temp = tempAssetListRef.current;
-
-          // _temp.push({
-          //   assetId: 'eco2',
-          //   text: 'ECO2',
-          //   value: 'eco2'
-          // });
-
-          // return _temp;
-          return tempAssetListRef.current;
+        updateAssetsList((_list) => {
+          return tempAssetListRef.current.slice(0);
         });
 
         return;
@@ -179,25 +188,14 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
         console.log('tempAssetListRef.current', tempAssetListRef.current);
         setTimeout(() => {
           updateAssetsList(() => {
-            // const _temp = tempAssetListRef.current;
-
-            // _temp.push({
-            //   assetId: 'eco2',
-            //   text: 'ECO2',
-            //   value: 'eco2'
-            // });
-
-            // return _temp;
-            return tempAssetListRef.current;
+            return tempAssetListRef.current.slice(0);
           });
         }, 1000);
-
-        // tempAssetListRef.current = [];
 
         return;
       }
 
-      await queryFn(_curItem);
+      await queryFn(_curItem, hanleUpdateTempList);
 
       if (arr.length > 0) {
         recursionQueryDetail(arr.slice(1), queryFn);
@@ -226,6 +224,27 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
     }
   }, [ecoAccount]);
 
+  useEffect(() => {
+    if (!curAsset || !curAsset.assetId) {
+      console.log('do nothing');
+    } else {
+      timer = setInterval(() => {
+        // tempAssetListRef.current = [];
+        // getAssetsList(ecoAccount);
+        queryAssetInfo(curAsset, (newAsset: Asset) => {
+          updateCurAsset(newAsset);
+        });
+      }, 10000);
+    }
+
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+  }, [curAsset]);
+
   const handleSubmit = useCallback((values: FormProps) => {
     // form.validateFields({ force: true }, (err: Error, values: any): void => {
     //   console.log(err, values);
@@ -237,7 +256,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
           power: 0,
           text: 'ECO2',
           value: '-'
-        }, BitLengthOption.CHAIN_SPEC, true);
+        }, 8, true);
 
         await transfer(api, ecoAccount as string, values.to as string, (_amount[1] || 0).toString());
       } else {
@@ -252,6 +271,11 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
 
       message.info('操作成功');
       form.resetFields();
+      updateCurAsset(null);
+      tempAssetListRef.current = [];
+      setTimeout(() => {
+        getAssetsList(ecoAccount);
+      }, 1000);
 
       // setProtocals({
       //   costPro: false,
@@ -285,6 +309,9 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
     // queryAssetInfo(_selected.assetId);
     if (_selected) {
       updateCurAsset(_selected);
+      setTimeout(() => {
+        form.validateFields(['assetId']);
+      }, []);
     }
 
     console.log('_selected', _selected);
@@ -293,6 +320,10 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
   // const selectedAssets = useMemo(() => {
   //   const asset = form.
   // }, [form]);
+
+  const accountValidator = async (rule: any, value: any): Promise<void> => {
+    return Promise.resolve(undefined);
+  };
 
   return (
     <div className={className}>
@@ -342,6 +373,8 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
               name='to'
               rules={[{
                 validator: requiredValidator
+              }, {
+                validator: accountValidator
               }]}>
               <FieldDecorator
                 required
@@ -407,9 +440,9 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
               isDisabled
               isFull={false}
               label={<div>总量</div>}
-              labelExtra={<div>{curAsset ? curAsset.symbol : '' }</div>}
+              labelExtra={<div>{curAsset ? fromHex(curAsset.symbol as string) : '' }</div>}
               maxLength={500}
-              value={beautifulNumber((curAsset ? curAsset.total_supply : 0) || 0)}
+              value={beautifulNumber((curAsset ? (curAsset.balance as BalanceType).balance : 0) || 0)}
               withLabel={true}
             />
           </Row>
