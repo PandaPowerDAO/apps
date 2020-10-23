@@ -25,7 +25,7 @@ import { getValuesFromString } from '@polkadot/react-components/InputNumber';
 import BN from 'bn.js';
 // import { checkAddress } from '@polkadot/util-crypto';
 import { useTranslation } from '@polkadot/app-accounts/translate';
-import { Available } from '@polkadot/react-query';
+// import { Available } from '@polkadot/react-query';
 
 interface Props {
   className?: string,
