@@ -1,5 +1,7 @@
-// [object Object]
+// Copyright 2017-2020 @polkadot/app-council authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+
+import { Keyring } from '@polkadot/api';
 
 // eslint-disable-next-line header/header
 export function parseQuery (_query: string): Record<string, string> {
@@ -14,9 +16,11 @@ export function parseQuery (_query: string): Record<string, string> {
   return obj;
 }
 
+export const keyring = new Keyring({ type: 'sr25519' });
+
 // 日期正则表达试
-const dateReg = /^[1-9]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
-const urlReg = /(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/;
+const dateReg = /^[1-9]\d{3}-(0?[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
+const urlReg = /((https?|ftp|file):\/\/)?[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/;
 const yearReg = /^\d{4}$/;
 
 const numberReg = /^\d+$/;
@@ -28,7 +32,7 @@ const resolved = () => Promise.resolve(undefined);
    */
 export async function requiredValidator (rule: any, value: any): Promise<void> {
   if (!value) {
-    throw new Error('required');
+    throw new Error('不能为空');
   }
 
   await resolved();
@@ -68,7 +72,7 @@ export function notAllprotocalChecked (_protocals:Record<string, any>):boolean {
 
 export async function numberValidator (rule: any, value: any): Promise<void> {
   if (value && !numberReg.test(value)) {
-    throw new Error('数字格式错误');
+    throw new Error('请输入正整数');
   }
 
   await resolved();

@@ -1,10 +1,12 @@
 // Copyright 2017-2020 @polkadot/app-democracy authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-import { Input, Dropdown } from '@polkadot/react-components';
+import { Input, Dropdown, InputAddress } from '@polkadot/react-components';
 import Panel from '@eco/eco-components/Panel';
 // import Button from '@eco/eco-components/Button';
 import TextArea from '@eco/eco-components/TextArea';
@@ -14,13 +16,16 @@ import FieldDecorator from '@eco/eco-components/FormComponents';
 import { queryAsset, transferCarbonAsset, queryPotentialBalance, transfer, queryBalance, queryCarbonBalance } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { useApi } from '@polkadot/react-hooks';
-import { beautifulNumber, parseQuery, fromHex } from '@eco/eco-utils/utils';
+import { beautifulNumber, parseQuery, fromHex, keyring } from '@eco/eco-utils/utils';
 import SubmitBtn from '@eco/eco-components/SubmitBtn';
 import { useLocation } from 'react-router-dom';
 import { getValuesFromString } from '@polkadot/react-components/InputNumber';
 // import { BitLengthOption } from '@polkadot/react-components/constants';
 // import Selected from '@polkadot/react-components/InputAddressMulti/Selected';
 import BN from 'bn.js';
+// import { checkAddress } from '@polkadot/util-crypto';
+import { useTranslation } from '@polkadot/app-accounts/translate';
+// import { Available } from '@polkadot/react-query';
 
 interface Props {
   className?: string,
@@ -78,6 +83,9 @@ const Row = styled.div`
   .ui--Labelled{
     padding-left: 0!important;
   }
+  .ui--IdentityIcon{
+    // display: none!important;
+  }
 `;
 
 function PageTransfer ({ className }: Props): React.ReactElement<Props> {
@@ -86,8 +94,10 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
   const [curAsset, updateCurAsset] = useState<Asset | null>(null);
 
   const [assetsList, updateAssetsList] = useState<Asset[]>([]);
+  const [recipientId, setRecipientId] = useState<string | null>(null);
   const tempAssetListRef = useRef<Asset[]>([]);
 
+  const { t } = useTranslation();
   const { api } = useApi();
   const [ecoAccount] = useECOAccount();
   const location = useLocation();
@@ -108,11 +118,19 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
 
   const queryAssetInfo = useCallback((asset: Asset, callback: QueryDetailCallback) => {
     async function _query () {
-      const result = await queryAsset(api, asset.assetId);
+      let result: any = {};
+
+      if (asset.assetId === 'eco2') {
+        result = { ...asset };
+      } else {
+        result = await queryAsset(api, asset.assetId);
+      }
+
       let balance;
 
       if (asset.assetId === 'eco2') {
         balance = await queryBalance(api, ecoAccount as string);
+        console.log('balance', balance);
         balance.balance = new BN(balance.balance).div(new BN(10).pow(new BN(8))).toString();
       } else {
         balance = await queryCarbonBalance(api, asset.assetId, ecoAccount as string);
@@ -154,6 +172,8 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
         value: 'eco2',
         symbol: 'ECO2'
       };
+
+      console.log(_alist);
 
       recursionQueryDetail([_alist, ...result as unknown as Asset[]], queryAssetInfo);
 
@@ -327,7 +347,15 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
   //   const asset = form.
   // }, [form]);
 
-  const accountValidator = async (rule: any, value: any): Promise<void> => {
+  const amountValidator = async (rule: any, value: string): Promise<void> => {
+    const max = curAsset ? ((curAsset.balance as BalanceType).balance || 0) : 0;
+
+    if (!value || new BN(value).lt(new BN(0))) {
+      throw new Error('请输入有效数字');
+    } else if (new BN(value).gt(new BN(max))) {
+      throw new Error(`最大可转数量为${max}`);
+    }
+
     return Promise.resolve(undefined);
   };
 
@@ -379,20 +407,32 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
               name='to'
               rules={[{
                 validator: requiredValidator
-              }, {
-                validator: accountValidator
               }]}>
               <FieldDecorator
                 required
               >
-                <Input
+                <InputAddress
+                  defaultValue={null}
+                  // help={t<string>('Select a contact or paste the address you want to send funds to.')}
+                  // isDisabled={!!propRecipientId}
+                  label='收款账户'
+                  // labelExtra={
+                  //   <Available
+                  //     label={'aa'}
+                  //     params={recipientId}
+                  //   />
+                  // }
+                  onChange={setRecipientId}
+                  type='allPlus'
+                />
+                {/* <Input
                   isFull={false}
                   label={<div>收款账户</div>}
                   maxLength={500}
                   placeholder='请输入您要转账的账户昵称或地址'
                   // value={formValues.name}
                   withLabel
-                />
+                /> */}
 
               </FieldDecorator>
 
@@ -404,13 +444,17 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
               name='amount'
               rules={[{
                 validator: requiredValidator
-              }]}>
+              }, {
+                validator: amountValidator
+              }]}
+              validateFirst
+            >
               <FieldDecorator required>
                 <Input
                   isFull={false}
                   // isSi
                   label={<div>转账金额</div>}
-                  // labelExtra={<div>克</div>}
+                  labelExtra={<div>最大可转{curAsset ? (curAsset.balance as BalanceType).balance : 0}</div>}
                   // onChange={(amount: string) => setFieldsValue({ description })}
                   placeholder='请输入您要转账的金额'
                   // value={formValues.name}

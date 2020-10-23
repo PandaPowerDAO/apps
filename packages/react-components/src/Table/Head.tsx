@@ -35,7 +35,7 @@ function Head ({ className = '', filter, header, isEmpty, remain = false }: Prop
             onClick={onClick}
           >
             {index === 0
-              ? <h1 className='highlight--color'>{label}</h1>
+              ? (remain ? label : <h1 className='highlight--color'>{label}</h1>)
               : (isEmpty && !remain)
                 ? ''
                 : label

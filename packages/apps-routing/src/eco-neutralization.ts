@@ -12,7 +12,7 @@ export default function create (t: <T = string> (key: string, text: string, opti
     display: {
       needsApi: []
     },
-    group: 'eco',
+    group: 'ecneutralization',
     icon: 'users',
     name: 'neutralization',
     text: t<string>('nav.eco.neutralization', 'nav.eco.neutralization', { ns: 'apps-routing' })

@@ -22,6 +22,9 @@ const PanelWrapper = styled.div`
     font-weight: 600;
     margin-bottom: 12px;
   }
+  .ui--Checkbox{
+    display: flex;
+  }
 `;
 
 export default function Panel ({ title, children, className } : Props): React.ReactElement<Props> {

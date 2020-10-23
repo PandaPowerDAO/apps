@@ -22,7 +22,9 @@ import { parseQuery,
   // urlValidator,
   // dateValidator,
   numberValidator,
-  notAllprotocalChecked } from '@eco/eco-utils/utils';
+  notAllprotocalChecked,
+  fromHex,
+  beautifulNumber } from '@eco/eco-utils/utils';
 
 import { submitBurn, queryAsset, queryCarbonBalance } from '@eco/eco-utils/service';
 
@@ -42,7 +44,7 @@ interface ProtocalProps {
   [key: string]: undefined | null | boolean
 }
 
-function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
+function PageBurning ({ className }: Props): React.ReactElement<Props> {
   const [protocals, setProtocals] = useState<ProtocalProps>({
     costPro: false,
     registerPro: false,
@@ -143,7 +145,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   isDisabled
                   isFull={false}
                   label={<div>当前资产</div>}
-                  value={assetsInfo.symbol as string}
+                  value={fromHex(assetsInfo.symbol as string)}
                   withLabel={true}
                 />
               </FieldDecorator>
@@ -173,7 +175,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   label={<div>资产上限</div>}
                   labelExtra={<div>克</div>}
                   maxLength={500}
-                  value={assetsInfo.total_supply as string}
+                  value={beautifulNumber(assetsInfo.total_supply as string || '')}
                   withLabel={true}
                 />
               </FieldDecorator>
@@ -198,7 +200,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   label={<div>申请销毁数量</div>}
                   maxLength={500}
                   // onChange={(description: string) => setFieldsValue({ description })}
-                  placeholder='请选择'
+                  placeholder='请输入'
                   // value={form.name}
                   withLabel={true}
                 />
@@ -206,20 +208,15 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
             </Form.Item>
             <Form.Item
               label=' '
-              name='type'
-              rules={[{
-                // validator: requiredValidator
-              }]}>
+            >
               <FieldDecorator
               >
                 <Input
                   isDisabled
                   isFull={false}
                   label={<div>当前账户余额</div>}
-                  maxLength={500}
                   // onChange={(description: string) => setFieldsValue({ description })}
-                  placeholder='请输入'
-                  value={assetsInfo.balance as string || ''}
+                  value={beautifulNumber(assetsInfo.balance as string || '')}
                   withLabel={true}
                 />
               </FieldDecorator>
@@ -291,4 +288,4 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
   );
 }
 
-export default RegisterCoins;
+export default PageBurning;

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import { Form, message } from 'antd';
@@ -14,11 +15,11 @@ import TextArea from '@eco/eco-components/TextArea';
 import FieldDecorator from '@eco/eco-components/FormComponents';
 import SubmitBtn from '@eco/eco-components/SubmitBtn';
 import Row from '@eco/eco-components/Row';
-
+import { useLocation } from 'react-router-dom';
 import { queryAsset, neutralize, queryPotentialBalance } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { requiredValidator,
-  numberValidator } from '@eco/eco-utils/utils';
+  numberValidator, fromHex, parseQuery } from '@eco/eco-utils/utils';
 
 interface Props {
   className?: string,
@@ -49,6 +50,8 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
   const [assetsList, updateAssetsList] = useState<Asset[]>([]);
   const tempAssetListRef = useRef<Asset[]>([]);
 
+  const location = useLocation();
+  const urlAssetId = parseQuery(location.search || '').asset || '';
   const [form] = Form.useForm();
   const { api } = useApi();
   const [ecoAccount] = useECOAccount();
@@ -57,20 +60,29 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
     async function _query () {
       const result = await queryAsset(api, asset.assetId);
 
-      console.log('result', tempAssetListRef.current);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const _item = {
         ...result.asset,
-        ...result.additionals
+        ...result.additionals,
+        ...asset
       };
 
+      console.log('result', _item);
+
+      // tempAssetListRef.current = [
+      //   ...tempAssetListRef.current,
+      //   {
+      //     ..._item,
+      //     text: fromHex((_item as Asset).symbol as string),
+      //     value: asset.assetId,
+      //     assetId: asset.assetId
+      //   }];
       tempAssetListRef.current.push({
         ..._item,
-        text: (_item as Asset).symbol,
+        text: fromHex((_item as Asset).symbol as string),
         value: asset.assetId,
         assetId: asset.assetId
       });
-
       // updateCurAsset({
       //   ...result.asset,
       //   ...result.additionals
@@ -108,16 +120,13 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
   // 递归查询资产详情
   const recursionQueryDetail = useCallback((arr: Asset[], queryFn: QueryDetailFn) => {
     async function _run () {
-      if (!arr) {
-        return;
-      }
-
-      const _curItem = arr.slice(0, 1)[0];
+      const _curItem = (arr || []).slice(0, 1)[0];
 
       if (!_curItem) {
         updateAssetsList(() => {
           return tempAssetListRef.current;
         });
+
         // tempAssetListRef.current = [];
 
         return;
@@ -140,6 +149,18 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
       getAssetsList(ecoAccount);
     }
   }, [ecoAccount]);
+
+  useEffect(() => {
+    if (assetsList && assetsList.length) {
+      if (assetsList.some((v) => {
+        return v.assetId === urlAssetId;
+      }) && urlAssetId !== 'eco2') {
+        form.setFieldsValue({
+          assetId: urlAssetId
+        });
+      }
+    }
+  }, [assetsList]);
 
   // 1. 商业活动
   // 2. 日常生活
@@ -181,6 +202,12 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
     }
   }, [ecoAccount]);
 
+  const handleSelectAsset = useCallback((value) => {
+    if (value) {
+      form.validateFields(['assetId']);
+    }
+  }, []);
+
   return (
     <div className={className}>
       <Form
@@ -200,10 +227,10 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
               validateTrigger={['onSubmit']}
             >
               <FieldDecorator
+                onChange={handleSelectAsset}
                 required
               >
                 <Dropdown
-                  defaultValue={''}
                   label={<div>选择资产</div>}
                   // onChange={(assetsType) => setFieldsValue(assetsType)}
                   options={assetsList}
@@ -230,6 +257,7 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isFull={false}
                   label={<div>碳中和数量</div>}
+                  labelExtra={<div>可中和数量{}</div>}
                   maxLength={500}
                   placeholder='碳中和数量'
                   withLabel

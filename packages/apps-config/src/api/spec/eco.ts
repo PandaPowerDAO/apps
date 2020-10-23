@@ -39,11 +39,12 @@ export default {
     asset_id: 'Hash',
     money_id: 'Hash',
     maker: 'AccountId',
-    status: 'u8',
     amount: 'u64',
     price: 'u64',
     left_amount: 'u64',
-    direction: 'u8'
+    direction: 'u8',
+    locked_balance: 'u64',
+    salt: 'u64'
   },
   ECRC10: {
     symbol: 'Vec<u8>',

@@ -15,6 +15,6 @@ export default function create (t: <T = string> (key: string, text: string, opti
     group: 'eco',
     icon: 'users',
     name: 'ectrade',
-    text: t<string>('交易', '交易', { ns: 'apps-routing' })
+    text: t<string>('碳汇交易', '碳汇交易', { ns: 'apps-routing' })
   };
 }
