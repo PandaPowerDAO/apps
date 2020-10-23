@@ -97,7 +97,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
       const result = await queryOrder(api, orderItem.orderId);
 
       tempRecordsRef.current.push({
-        // ...orderItem,
+        ...orderItem,
         ...(result as OrderDetail || {}),
         orderId: orderItem.orderId
       });
@@ -123,7 +123,6 @@ function OrderList (props: Props): React.ReactElement<Props> {
       const _curItem = arr.slice(0, 1)[0];
 
       if (!_curItem) {
-        console.log(tempRecordsRef.current);
         updateRecords((_records) => {
           return [...tempRecordsRef.current];
         });
@@ -174,7 +173,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
 
       recursionQueryDetail(result.docs, queryAssetDetail);
 
-      console.log('queryAssets', result);
+      // console.log('queryAssets', result);
     }
 
     return query();
@@ -243,9 +242,9 @@ function OrderList (props: Props): React.ReactElement<Props> {
         >
           {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
             return <tr key={rowIndex}>
-              <td>{v.name}</td>
-              <td>{beautifulNumber(v.amount)}</td>
-              <td>{beautifulNumber(v.price)}/kg</td>
+              <td>{v.assetSymbol}</td>
+              <td>{beautifulNumber((v.amount))}</td>
+              <td>{beautifulNumber((v.price))}/kg</td>
               <td>{Sides[v.direction as number]}</td>
               {
                 action ? <td>

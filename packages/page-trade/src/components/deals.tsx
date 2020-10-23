@@ -126,7 +126,6 @@ function OrderList (props: Props): React.ReactElement<Props> {
           total: result.count || 0
         };
       });
-      console.log(result.docs);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (result && result.docs.length > 0) {
