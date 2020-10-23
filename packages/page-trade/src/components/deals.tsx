@@ -5,9 +5,9 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Table } from '@polkadot/react-components';
 import { Pagination } from 'antd';
 import Panel from '@eco/eco-components/Panel';
-// import { useApi } from '@polkadot/react-hooks';
+import { useApi } from '@polkadot/react-hooks';
 
-import { queryOrderDeals } from '@eco/eco-utils/service';
+import { queryOrderDeals, queryOrder } from '@eco/eco-utils/service';
 import { formatDate } from '@eco/eco-utils/utils';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
@@ -45,7 +45,7 @@ interface QueryDetailFn {
   (assetItem: OrderItem): Promise<void>
 }
 
-const noop = (e: OrderItem) => Promise.resolve(undefined);
+// const noop = (e: OrderItem) => Promise.resolve(undefined);
 
 function OrderList (props: Props): React.ReactElement<Props> {
   const header = useMemo(() => [
@@ -55,7 +55,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
     ['数量', 'header']
 
   ], []);
-  const { title, reverse, action, handleAction = noop, isMine } = props;
+  const { title, reverse, isMine } = props;
 
   const [pagination, updatePagination] = useState<PageType>({
     total: 0,
@@ -65,26 +65,27 @@ function OrderList (props: Props): React.ReactElement<Props> {
   const [records, updateRecords] = useState<Record<string, any>[]>([]);
   const [ecoAccount] = useECOAccount();
 
-  // const { api } = useApi();
+  const { api } = useApi();
 
-  // const queryAssetDetail = useCallback((orderItem: OrderItem): Promise<void> => {
-  //   async function _queryDetail () {
-  //     const result = await queryOrder(api, orderItem.orderId);
+  const queryAssetDetail = useCallback((orderItem: OrderItem): Promise<void> => {
+    async function _queryDetail () {
+      const result = await queryOrder(api, orderItem.orderId);
 
-  //     // const projectDetail = await queryProject(api, assetItem.projectId);
-  //     updateRecords((_records) => {
-  //       return [
-  //         ..._records,
-  //         {
-  //           ...orderItem,
-  //           orderDetail: result
-  //         }
-  //       ];
-  //     });
-  //   }
+      console.log('sssss', result);
+      // const projectDetail = await queryProject(api, assetItem.projectId);
+      updateRecords((_records) => {
+        return [
+          ..._records,
+          {
+            ...orderItem,
+            orderDetail: result
+          }
+        ];
+      });
+    }
 
-  //   return _queryDetail();
-  // }, []);
+    return _queryDetail();
+  }, []);
 
   // 递归查询资产详情
   const recursionQueryDetail = useCallback((arr: OrderItem[], queryFn: QueryDetailFn) => {
@@ -130,11 +131,11 @@ function OrderList (props: Props): React.ReactElement<Props> {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (result && result.docs.length > 0) {
         updateRecords([]);
-      } else {
 
+        return;
       }
 
-      // recursionQueryDetail(result.docs, queryAssetDetail);
+      recursionQueryDetail(result.docs, queryAssetDetail);
     }
 
     return query();

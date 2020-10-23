@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Form, message } from 'antd';
+import { Form } from 'antd';
 
 import { Input, Dropdown } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks';
@@ -111,7 +111,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
 
     async function _neutralize () {
       await neutralize(api, ecoAccount as string, assetId, amount, additionals);
-      message.info('提交成功');
+      // message.info('提交成功');
       form.resetFields();
     }
   }, [ecoAccount]);

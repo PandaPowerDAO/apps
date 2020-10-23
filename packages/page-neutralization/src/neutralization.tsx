@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
-import { Form, message } from 'antd';
+import { Form } from 'antd';
 
 import { Input, Dropdown } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks';
@@ -77,6 +77,11 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
       //     value: asset.assetId,
       //     assetId: asset.assetId
       //   }];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (_item.status !== 1) {
+        return;
+      }
+
       tempAssetListRef.current.push({
         ..._item,
         text: fromHex((_item as Asset).symbol as string),
@@ -197,7 +202,7 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
 
     async function _neutralize () {
       await neutralize(api, ecoAccount as string, assetId, amount, additionals);
-      message.info('提交成功');
+      // message.info('提交成功');
       form.resetFields();
     }
   }, [ecoAccount]);

@@ -124,15 +124,15 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
   //   _submit();
   // }, [form, api]);
 
-  const projectValidator = async (rule: any, value: any): Promise<void> => {
-    console.log('projectValidator');
+  // const projectValidator = async (rule: any, value: any): Promise<void> => {
+  //   console.log('projectValidator');
 
-    if (!value || value === '_empty_') {
-      throw new Error('required');
-    }
+  //   if (!value || value === '_empty_') {
+  //     throw new Error('required');
+  //   }
 
-    await Promise.resolve(undefined);
-  };
+  //   await Promise.resolve(undefined);
+  // };
 
   const handleProjectSelect = useCallback((value) => {
     if (value) {
@@ -168,7 +168,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
         additional
       );
 
-      message.info('申请提交成功');
+      // message.info('申请提交成功');
       form.resetFields();
       setProtocals({
         // costPro: false,

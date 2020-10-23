@@ -88,7 +88,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
         rest
       );
 
-      message.info('申请提交成功');
+      // message.info('申请提交成功');
       form.resetFields();
       setProtocals({
         // costPro: false,

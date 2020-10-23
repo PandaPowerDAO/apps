@@ -112,7 +112,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
       const { amount, ...additionals } = values;
       const result = await submitBurn(api, ecoAccount as string, assetId, amount, additionals);
 
-      message.info('申请提交成功');
+      // message.info('申请提交成功');
       form.resetFields();
       setProtocals({
         costPro: false,

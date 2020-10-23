@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import createRoutes from '@polkadot/apps-routing';
 import { ErrorBoundary, Spinner, StatusContext } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks';
+import RootNotice from '@polkadot/react-components/RootNotice';
 
 import { findMissingApis } from '../endpoint';
 import { useTranslation } from '../translate';
@@ -70,11 +71,15 @@ function Content ({ className }: Props): React.ReactElement<Props> {
                     />
                   )
                   : (
-                    <Component
-                      basePath={`/${name}`}
-                      location={location}
-                      onStatusChange={queueAction}
-                    />
+                    <React.Fragment>
+                      <RootNotice />
+                      <Component
+                        basePath={`/${name}`}
+                        location={location}
+                        onStatusChange={queueAction}
+                      />
+                    </React.Fragment>
+
                   )
                 }
               </ErrorBoundary>

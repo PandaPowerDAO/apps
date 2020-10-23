@@ -8,7 +8,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { ApiPromise } from '@polkadot/api';
+import { ApiPromise, SubmittableResult } from '@polkadot/api';
 // import { SubmittableExtrinsics } from '@polkadot/api/types/submittable';
 import { TypeRegistry, createTypeUnsafe } from '@polkadot/types';
 import { KeyringPair } from '@polkadot/keyring/types';
@@ -16,6 +16,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 // import { SubmittableExtrinsic } from '@polkadot/api/types';
 import axios, { AxiosResponse } from 'axios';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { EE } from '@eco/eco-utils/utils';
 
 const typeRegistry = new TypeRegistry();
 let gApi: ApiPromise;
@@ -39,12 +40,39 @@ export function toUtf8JSON (data: Uint8Array):Record<string, any> {
 //   // [key: string]: any,
 // }
 
-export async function submitTx (label: string, tx: SubmittableExtrinsic<'promise'>, sender: string | KeyringPair): Promise<void> {
+export interface TxResult { status: string; result: SubmittableResult; }
+
+export async function submitTx (label: string, tx: SubmittableExtrinsic<'promise'>, sender: string | KeyringPair): Promise<TxResult | void> {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
+  return new Promise((resolve, reject) => {
+    EE.emit('__ss__quq_event', {
+      txs: [tx],
+      sender,
+      onFailed: (rslt: SubmittableResult) => {
+        reject(new Error('Error'));
+      },
+      onSuccess (rslt: SubmittableResult) {
+        console.log('SubmittableResult success', rslt);
+        resolve({
+          status: 'success',
+          result: rslt
+        });
+      }
+    });
+  });
+
+  return;
   const unsub = await tx.signAndSend(sender, (result: { status: { isInBlock: any; isFinalized: any; }; events: { event: any; phase: any; }[]; }): void => {
     if (result.status.isInBlock) {
       result.events.forEach(({ event, phase }) => {
         const { data, method } = event;
+
+        // notification.open({
+        //   message: method
+        //   // description: phase.toString()
+        //   // icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+        // });
 
         if (method === 'ExtrinsicFailed') {
           gApi.registry.findMetaError(data[0].asModule);
@@ -260,7 +288,7 @@ export async function queryStandardBalance (api: ApiPromise, moneyId: string, ad
 }
 
 export async function makeOrder (api: ApiPromise, sender: KeyringPair | string, assetId: string, moneyId: string, price: string, amount: string, direction: number):Promise<void> {
-  const tx = api.tx.carbonExchange.makeOrder(assetId, moneyId, price, amount, direction);
+  const tx = api.tx.carbonExchange.makeOrder(assetId, moneyId, price, amount, direction, Date.now());
 
   await submitTx('makeOrder', tx, sender);
 }

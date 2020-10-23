@@ -19,10 +19,6 @@
   "rpc.header.dev": "Development",
   "rpc.header.live": "Live networks",
   "rpc.header.test": "Test networks",
-  "ss58.edgeware": "Edgeware (live)",
-  "ss58.kusama": "Kusama (canary)",
-  "ss58.polkadot": "Polkadot (live)",
-  "ss58.substrate": "Substrate (generic)",
   "rpc.hosted.by": "hosted by {{host}}",
   "rpc.kilt": "Mashnet",
   "rpc.kulupu": "Kulupu",
@@ -50,5 +46,9 @@
   "rpc.subsocial": "Subsocial",
   "rpc.turbulence": "Turbulence",
   "rpc.westend": "Westend",
-  "ss58.default": "Default for the connected node"
+  "ss58.default": "Default for the connected node",
+  "ss58.edgeware": "Edgeware (live)",
+  "ss58.kusama": "Kusama (canary)",
+  "ss58.polkadot": "Polkadot (live)",
+  "ss58.substrate": "Substrate (generic)"
 }

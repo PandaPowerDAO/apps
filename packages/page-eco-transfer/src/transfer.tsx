@@ -11,12 +11,12 @@ import Panel from '@eco/eco-components/Panel';
 // import Button from '@eco/eco-components/Button';
 import TextArea from '@eco/eco-components/TextArea';
 // import Form from '@eco/eco-components/Form';
-import { Form, message } from 'antd';
+import { Form } from 'antd';
 import FieldDecorator from '@eco/eco-components/FormComponents';
 import { queryAsset, transferCarbonAsset, queryPotentialBalance, transfer, queryBalance, queryCarbonBalance } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { useApi } from '@polkadot/react-hooks';
-import { beautifulNumber, parseQuery, fromHex, keyring } from '@eco/eco-utils/utils';
+import { beautifulNumber, parseQuery, fromHex } from '@eco/eco-utils/utils';
 import SubmitBtn from '@eco/eco-components/SubmitBtn';
 import { useLocation } from 'react-router-dom';
 import { getValuesFromString } from '@polkadot/react-components/InputNumber';
@@ -24,7 +24,7 @@ import { getValuesFromString } from '@polkadot/react-components/InputNumber';
 // import Selected from '@polkadot/react-components/InputAddressMulti/Selected';
 import BN from 'bn.js';
 // import { checkAddress } from '@polkadot/util-crypto';
-import { useTranslation } from '@polkadot/app-accounts/translate';
+// import { useTranslation } from '@polkadot/app-accounts/translate';
 // import { Available } from '@polkadot/react-query';
 
 interface Props {
@@ -94,10 +94,10 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
   const [curAsset, updateCurAsset] = useState<Asset | null>(null);
 
   const [assetsList, updateAssetsList] = useState<Asset[]>([]);
-  const [recipientId, setRecipientId] = useState<string | null>(null);
+  const [, setRecipientId] = useState<string | null>(null);
   const tempAssetListRef = useRef<Asset[]>([]);
 
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const { api } = useApi();
   const [ecoAccount] = useECOAccount();
   const location = useLocation();
@@ -146,6 +146,11 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
 
       if (asset.assetId === 'eco2') {
         _item.symbol = 'ECO2';
+        _item.status = 1;
+      }
+
+      if (_item.status !== 1) {
+        return;
       }
 
       callback(_item, asset);
@@ -170,12 +175,14 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
         assetId: 'eco2',
         text: 'ECO2',
         value: 'eco2',
-        symbol: 'ECO2'
+        symbol: 'ECO2',
+        status: 1
       };
 
       console.log(_alist);
+      const _list = [_alist, ...result as unknown as Asset[]];
 
-      recursionQueryDetail([_alist, ...result as unknown as Asset[]], queryAssetInfo);
+      recursionQueryDetail(_list, queryAssetInfo);
 
       // updateAssetsList(() => {
       //   return (result.docs as Asset[]).map((doc: Asset): Asset => {
@@ -271,6 +278,8 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
     // });
 
     async function _transfer () {
+      let result;
+
       if (values.assetId === 'eco2') {
         const _amount = getValuesFromString(values.amount as string, {
           power: 0,
@@ -278,9 +287,9 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
           value: '-'
         }, 8, true);
 
-        await transfer(api, ecoAccount as string, values.to as string, (_amount[1] || 0).toString());
+        result = await transfer(api, ecoAccount as string, values.to as string, (_amount[1] || 0).toString());
       } else {
-        await transferCarbonAsset(
+        result = await transferCarbonAsset(
           api,
           ecoAccount as string,
           values.assetId as string,
@@ -289,7 +298,9 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
         );
       }
 
-      message.info('操作成功');
+      console.log('result', result);
+
+      // message.info('操作成功');
       form.resetFields();
       updateCurAsset(null);
       tempAssetListRef.current = [];

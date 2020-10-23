@@ -3,11 +3,11 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { Modal, Dropdown, Input, Button } from '@polkadot/react-components';
-import { Form, message } from 'antd';
+import { Form } from 'antd';
 import { useApi } from '@polkadot/react-hooks';
 
 import { queryAssetsList, makeOrder } from '@eco/eco-utils/service';
-import { requiredValidator } from '@eco/eco-utils/utils';
+import { requiredValidator, ecoToUnit } from '@eco/eco-utils/utils';
 import { ModalProps } from '@polkadot/react-components/Modal/types';
 import styled from 'styled-components';
 
@@ -76,13 +76,15 @@ function CreateModal (props: Props): React.ReactElement<Props> {
       try {
         const formValues = await form.validateFields();
 
-        await makeOrder(api, ecoAccount as string, formValues.assetId, '', formValues.price, formValues.amount, formValues.direction);
+        const _price = ecoToUnit(formValues.price).toString();
+
+        await makeOrder(api, ecoAccount as string, formValues.assetId, '', _price, formValues.amount, formValues.direction);
         onClose();
-        message.info('订单创建成功');
+        // message.info('订单创建成功');
       } catch (e) {
         console.log(e);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        message.info(e.msg || e.message || '创建失败');
+        // message.info(e.msg || e.message || '创建失败');
       }
     }
 
@@ -144,18 +146,17 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               </FieldDecorator>
             </Form.Item>
             <Form.Item
-              initialValue='_empty_'
               label='资产'
-              name='projectId'
+              name='assetId'
               rules={[{
                 validator: projectValidator
               }]}
               validateTrigger={['onSubmit']}>
               <FieldDecorator
+                onChange={(v) => { console.log(v); }}
                 required
               >
                 <Dropdown
-                  defaultValue={'_empty_'}
                   // onChange={(assetsType) => setFieldsValue(assetsType)}
                   label={<div>资产</div>}
                   options={assets}

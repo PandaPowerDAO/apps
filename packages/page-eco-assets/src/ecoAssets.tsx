@@ -254,7 +254,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
             return <tr key={rowIndex}>
               <td><IconLink href={`#/ecassets/assets-detail?asset=${v.assetId as string}`}
                 label={`${v.symbol as string}(${v.vintage as string})`}></IconLink></td>
-              <td>{v.type === 'standard' ? '碳汇资产' : '标准资产'}</td>
+              <td>{v.type === 'standard' ? '标准资产' : '碳汇资产'}</td>
               <td>{v.vintage}</td>
               <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td>
               <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td>

@@ -9,7 +9,7 @@ import Panel from '../Components/Panel';
 // import Button from '../Components/Button';
 import TextArea from '../Components/TextArea';
 // import Form from '../Components/Form';
-import { Form, message } from 'antd';
+import { Form } from 'antd';
 import FieldDecorator from '../Components/FormComponents';
 import { queryAssetsList, transferCarbonAsset } from '../service';
 import { useECOAccount } from '../Components/Account/accountContext';
@@ -140,7 +140,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
         values.to as string,
         values.amount as string
       );
-      message.info('操作成功');
+      // message.info('操作成功');
       form.resetFields();
 
       // setProtocals({

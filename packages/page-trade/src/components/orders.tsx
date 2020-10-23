@@ -11,7 +11,7 @@ import { useApi } from '@polkadot/react-hooks';
 import { queryOrder, queryCarbonOrders } from '@eco/eco-utils/service';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
-import { beautifulNumber } from '@eco/eco-utils/utils';
+import { beautifulNumber, unitToEco } from '@eco/eco-utils/utils';
 
 interface HanleAction {
   (orderItem: OrderItem): Promise<void> | void
@@ -64,6 +64,14 @@ const Sides = ['卖', '买'];
 
 const noop = (e: OrderItem) => Promise.resolve(undefined);
 
+const resolvePrice = (price:number|string):string|null|unknown => {
+  if (price !== 0 && !price) {
+    return price;
+  }
+
+  return beautifulNumber(unitToEco(price).toString());
+};
+
 function OrderList (props: Props): React.ReactElement<Props> {
   const { closed, title, reverse, action, handleAction = noop, isMine, refreshFlag } = props;
 
@@ -96,6 +104,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
     async function _queryDetail () {
       const result = await queryOrder(api, orderItem.orderId);
 
+      console.log('result', result, orderItem.orderId);
       tempRecordsRef.current.push({
         ...orderItem,
         ...(result as OrderDetail || {}),
@@ -170,6 +179,8 @@ function OrderList (props: Props): React.ReactElement<Props> {
         return;
       }
 
+      console.log('result.docs', result.docs);
+
       recursionQueryDetail(result.docs, queryAssetDetail);
     }
 
@@ -238,9 +249,9 @@ function OrderList (props: Props): React.ReactElement<Props> {
           {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
             return <tr key={rowIndex}>
               <td>{v.assetSymbol}</td>
-              <td>{beautifulNumber((v.amount))}</td>
-              <td>{beautifulNumber((v.price))}/kg</td>
-              <td>{Sides[v.direction as number]}</td>
+              <td>{beautifulNumber((v.amount)) || '-'}</td>
+              <td>{resolvePrice(v.price) || '-'}/g</td>
+              <td>{Sides[v.direction as number] || '-'}</td>
               {
                 action ? <td>
                   <ActionWrapper onClick={() => handleAction(v as OrderItem)}>

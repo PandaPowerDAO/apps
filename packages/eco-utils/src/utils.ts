@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Keyring } from '@polkadot/api';
+import BN from 'bn.js';
+import EventEmitter from 'eventemitter3';
 
 // eslint-disable-next-line header/header
 export function parseQuery (_query: string): Record<string, string> {
@@ -109,5 +111,19 @@ export function formatDate (datetime: number): string {
 }
 
 export function beautifulNumber (num: number | string): string {
+  if (num === undefined || num === null) {
+    return '';
+  }
+
   return (`${num}`).replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g, '$1,');
 }
+
+export function unitToEco (num: number | string) {
+  return new BN(num).div(new BN(10).pow(new BN(8)));
+}
+
+export function ecoToUnit (num: number | string) {
+  return new BN(num).mul(new BN(10).pow(new BN(8)));
+}
+
+export const EE = new EventEmitter();

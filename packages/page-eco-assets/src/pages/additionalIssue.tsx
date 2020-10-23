@@ -100,7 +100,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
       const result = await submitIssue(api, ecoAccount as string, assetId, amount, additionals);
 
       console.log('result ----', result);
-      message.info('申请提交成功');
+      // message.info('申请提交成功');
       form.resetFields();
       setProtocals({
         costPro: false,

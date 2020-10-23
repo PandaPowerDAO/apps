@@ -3,7 +3,7 @@
 
 // import { AppProps as Props } from '@polkadot/react-components/types';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 // import { Route, Switch } from 'react-router';
 import { IconLink } from '@polkadot/react-components';
 
@@ -11,11 +11,11 @@ import { IconLink } from '@polkadot/react-components';
 // import { useApi } from '@polkadot/react-hooks';
 import SubmitBtn from '@eco/eco-components/SubmitBtn';
 import styled from 'styled-components';
-import { queryCarbonBalance } from '@eco/eco-utils/service';
+// import { queryCarbonBalance } from '@eco/eco-utils/service';
 
-import { useECOAccount } from '@eco/eco-components/Account/accountContext';
+// import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { fromHex, beautifulNumber } from '@eco/eco-utils/utils';
-import { api } from '@polkadot/react-api';
+// import { api } from '@polkadot/react-api';
 
 const Content = styled.div`
   display: flex;
@@ -65,6 +65,9 @@ align-items: center;
 justify-content: space-between;
 button {
   width: 30%!important;
+}
+a {
+  color: white!important;
 }
 `;
 

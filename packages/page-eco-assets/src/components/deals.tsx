@@ -1,7 +1,7 @@
 // Copyright 2017-2020 @polkadot/app-democracy authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Table } from '@polkadot/react-components';
 import { Pagination } from 'antd';
 import Panel from '@eco/eco-components/Panel';
@@ -45,7 +45,7 @@ interface QueryDetailFn {
   (assetItem: OrderItem): Promise<void>
 }
 
-const noop = (e: OrderItem) => Promise.resolve(undefined);
+// const noop = (e: OrderItem) => Promise.resolve(undefined);
 
 function OrderList (props: Props): React.ReactElement<Props> {
   const header = useMemo(() => [
@@ -56,7 +56,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
     ['时间', 'header']
 
   ], []);
-  const { title, reverse, action, handleAction = noop, isMine } = props;
+  const { title, reverse, isMine } = props;
 
   const [pagination, updatePagination] = useState<PageType>({
     total: 0,
