@@ -2,42 +2,45 @@
 // SPDX-License-Identifier: Apache-2.0
 /* eslint-disable sort-keys */
 
-import acala from './acala';
+import canvas from './canvas';
 import centrifugeChain from './centrifuge-chain';
 import crab from './crab';
 import crust from './crust';
 import darwiniaParachain from './darwinia-parachain';
+import dock from './dock';
 import testPara from './cumulus-test-parachain';
 import edgeware from './edgeware';
 import encointerNodeNotee from './encointer-node-notee';
 import encointerNodeTeeproxy from './encointer-node-teeproxy';
+import equilibrium from './equilibrium';
 import kilt from './kilt';
 import kulupu from './kulupu';
-import laminar from './laminar';
 import nodeTemplate from './node-template';
 import nodle from './nodle';
 import plasm from './plasm';
 import robonomics from './robonomics';
 import stablePoc from './stable-poc';
 import stafi from './stafi';
-import subsocialNode from './subsocial';
+import subsocial from './subsocial';
 
 import ecoNode from './eco';
 
 export default {
   Crab: crab,
-  acala,
+  Equilibrium: equilibrium,
+  canvas,
   'centrifuge-chain': centrifugeChain,
   crust,
   'cumulus-test-parachain': testPara,
   'darwinia-parachain': darwiniaParachain,
+  'dock-main-runtime': dock,
+  'dock-testnet': dock,
   dusty3: plasm,
   edgeware,
   'encointer-node': encointerNodeNotee,
   'encointer-node-notee': encointerNodeNotee,
   'encointer-node-teeproxy': encointerNodeTeeproxy,
   kulupu,
-  laminar,
   'mashnet-node': kilt,
   'node-template': nodeTemplate,
   'nodle-chain': nodle,
@@ -46,6 +49,6 @@ export default {
   'stable-poc': stablePoc,
   stable_poc: stablePoc,
   stafi,
-  subsocial: subsocialNode,
-  eco: ecoNode
+  eco: ecoNode,
+  subsocial
 };

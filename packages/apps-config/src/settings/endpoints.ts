@@ -10,6 +10,7 @@ export interface LinkOption extends Option {
   dnslink?: string;
   isChild?: boolean;
   isDevelopment?: boolean;
+  textBy: string;
 }
 
 interface EnvWindow {
@@ -19,6 +20,12 @@ interface EnvWindow {
   }
 }
 
+// The available endpoints that will show in the dropdown. For the most part (with the exception of
+// Polkadot) we try to keep this to live chains only, with RPCs hosted by the community/chain vendor
+//   info: The chain logo name as defined in ../ui/logos/index.ts in namedLogos (this also needs to align with @polkadot/networks)
+//   text: The text to display on the dropdown
+//   value: The actual hosted secure websocket endpoint
+
 function createOwn (t: TFunction): LinkOption[] {
   try {
     const storedItems = localStorage.getItem(CUSTOM_ENDPOINT_KEY);
@@ -26,10 +33,11 @@ function createOwn (t: TFunction): LinkOption[] {
     if (storedItems) {
       const items = JSON.parse(storedItems) as string[];
 
-      return items.map((item) => ({
+      return items.map((textBy) => ({
         info: 'local',
-        text: t<string>('rpc.custom.entry', 'Custom (custom, {{WS_URL}})', { ns: 'apps-config', replace: { WS_URL: item } }),
-        value: item
+        text: t('rpc.custom.entry', 'Custom', { ns: 'apps-config' }),
+        textBy,
+        value: textBy
       }));
     }
   } catch (e) {
@@ -45,7 +53,8 @@ function createDev (t: TFunction): LinkOption[] {
       dnslink: 'local',
       info: 'local',
       text: t<string>('rpc.local', 'Local Node (Own, 49.233.3.48:9944)', { ns: 'apps-config' }),
-      value: 'ws://49.233.3.48:9944'
+      value: 'ws://49.233.3.48:9944',
+      textBy: t<string>('rpc.local', 'Local Node (Own, 49.233.3.48:9944)', { ns: 'apps-config' })
     }
   ];
 }
@@ -129,7 +138,8 @@ function createLiveNetworks (t: TFunction): LinkOption[] {
       dnslink: 'eco2-live',
       info: 'eco2-live',
       text: t<string>('rpc.ECO2', 'ECO2 (hosted by ECO2)', { ns: 'apps-config' }),
-      value: 'ws://49.233.3.48:9944'
+      value: 'ws://49.233.3.48:9944',
+      textBy: t<string>('rpc.ECO2', 'ECO2 (hosted by ECO2)', { ns: 'apps-config' })
     }
   ];
 }
@@ -252,7 +262,8 @@ function createTestNetworks (t: TFunction): LinkOption[] {
       dnslink: 'eco2-test',
       info: 'eco2-test',
       text: t<string>('rpc.ECO2', 'ECO2 (hosted by ECO2)', { ns: 'apps-config' }),
-      value: 'ws://49.233.3.48:9944'
+      value: 'ws://49.233.3.48:9944',
+      textBy: t<string>('rpc.ECO2', 'ECO2 (hosted by ECO2)', { ns: 'apps-config' })
     }
   ];
 }
@@ -267,42 +278,42 @@ function createCustom (t: TFunction): LinkOption[] {
     ? [
       {
         isHeader: true,
-        text: t<string>('rpc.custom', 'Custom environment', { ns: 'apps-config' }),
+        text: t('rpc.custom', 'Custom environment', { ns: 'apps-config' }),
+        textBy: '',
         value: ''
       },
       {
         info: 'WS_URL',
-        text: t<string>('rpc.custom.entry', 'Custom {{WS_URL}}', { ns: 'apps-config', replace: { WS_URL } }),
+        text: t('rpc.custom.entry', 'Custom {{WS_URL}}', { ns: 'apps-config', replace: { WS_URL } }),
+        textBy: WS_URL,
         value: WS_URL
       }
     ]
     : [];
 }
 
-// The available endpoints that will show in the dropdown. For the most part (with the exception of
-// Polkadot) we try to keep this to live chains only, with RPCs hosted by the community/chain vendor
-//   info: The chain logo name as defined in ../logos, specifically in namedLogos
-//   text: The text to display on the dropdown
-//   value: The actual hosted secure websocket endpoint
 export default function create (t: TFunction): LinkOption[] {
   return [
     ...createCustom(t),
     {
       isHeader: true,
-      text: t<string>('rpc.header.live', 'Live networks', { ns: 'apps-config' }),
+      text: t('rpc.header.live', 'Live networks', { ns: 'apps-config' }),
+      textBy: '',
       value: ''
     },
     ...createLiveNetworks(t),
     {
       isHeader: true,
-      text: t<string>('rpc.header.test', 'Test networks', { ns: 'apps-config' }),
+      text: t('rpc.header.test', 'Test networks', { ns: 'apps-config' }),
+      textBy: '',
       value: ''
     },
     ...createTestNetworks(t),
     {
       isDevelopment: true,
       isHeader: true,
-      text: t<string>('rpc.header.dev', 'Development', { ns: 'apps-config' }),
+      text: t('rpc.header.dev', 'Development', { ns: 'apps-config' }),
+      textBy: '',
       value: ''
     },
     ...createDev(t),

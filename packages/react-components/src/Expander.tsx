@@ -22,6 +22,7 @@ export interface Props {
   helpIcon?: IconName;
   isOpen?: boolean;
   isPadded?: boolean;
+  onClick?: (isOpen: boolean) => void;
   summary?: React.ReactNode;
   summaryHead?: React.ReactNode;
   summaryMeta?: Meta;
@@ -46,26 +47,30 @@ function formatMeta (meta?: Meta): React.ReactNode | null {
 
   const strings = meta.documentation.map((doc) => doc.toString().trim());
   const firstEmpty = strings.findIndex((doc) => !doc.length);
-  const parts = splitParts((
+  const combined = (
     firstEmpty === -1
       ? strings
       : strings.slice(0, firstEmpty)
-  ).join(' ').replace(/\\/g, '').replace(/`/g, ''));
+  ).join(' ').replace(/#(<weight>| <weight>).*<\/weight>/, '');
+  const parts = splitParts(combined.replace(/\\/g, '').replace(/`/g, ''));
 
   return <>{parts.map((part, index) => index % 2 ? <em key={index}>[{part}]</em> : <span key={index}>{part}</span>)}&nbsp;</>;
 }
 
-function Expander ({ children, className = '', help, helpIcon, isOpen, isPadded, summary, summaryHead, summaryMeta, summarySub, withHidden }: Props): React.ReactElement<Props> {
+function Expander ({ children, className = '', help, helpIcon, isOpen, isPadded, onClick, summary, summaryHead, summaryMeta, summarySub, withHidden }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const [isExpanded, toggleExpanded] = useToggle(isOpen);
+  const [isExpanded, toggleExpanded] = useToggle(isOpen, onClick);
+
   const headerMain = useMemo(
     () => summary || formatMeta(summaryMeta),
     [summary, summaryMeta]
   );
+
   const headerSub = useMemo(
     () => summary ? (formatMeta(summaryMeta) || summarySub) : null,
     [summary, summaryMeta, summarySub]
   );
+
   const hasContent = useMemo(
     () => !!children && (!Array.isArray(children) || children.length !== 0),
     [children]
@@ -145,6 +150,10 @@ export default React.memo(styled(Expander)`
       text-overflow: ellipsis;
       vertical-align: middle;
       white-space: nowrap;
+
+      span {
+        white-space: normal;
+      }
     }
 
     .ui--Icon {
