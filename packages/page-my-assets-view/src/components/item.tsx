@@ -14,8 +14,9 @@ import styled from 'styled-components';
 import { queryCarbonBalance } from '@eco/eco-utils/service';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
-import { fromHex } from '@eco/eco-utils/utils';
+import { fromHex, beautifulNumber } from '@eco/eco-utils/utils';
 import { api } from '@polkadot/react-api';
+
 const Content = styled.div`
   display: flex;
   align-items: center;
@@ -24,10 +25,15 @@ const Content = styled.div`
   }
 `;
 
+interface Balance {
+  balance: string | number,
+  [key: string]: string | number,
+}
 interface AssetItemType {
   asset: Record<string, string | number>,
   type: string,
-
+  balance: Balance,
+  [key: string]: any,
 }
 
 const Icon = styled.div`
@@ -63,24 +69,24 @@ button {
 `;
 
 function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
-  const { type, asset } = props;
+  const { type, asset, balance } = props;
 
-  const [balance, updateBalance] = useState<Record<string, string | number>>({});
+  // const [balance, updateBalance] = useState<Record<string, string | number>>({});
 
-  const [ecoAccount] = useECOAccount();
+  // const [ecoAccount] = useECOAccount();
 
-  useEffect(() => {
-    if (ecoAccount && asset && asset.assetId) {
-      _query();
-    }
+  // useEffect(() => {
+  //   if (ecoAccount && asset && asset.assetId) {
+  //     _query();
+  //   }
 
-    async function _query () {
-      const result = await queryCarbonBalance(api, asset.assetId as string, ecoAccount as string);
+  //   async function _query () {
+  //     const result = await queryCarbonBalance(api, asset.assetId as string, ecoAccount as string);
 
-      console.log('balance', result);
-      updateBalance(result);
-    }
-  }, [asset, ecoAccount]);
+  //     console.log('balance', result);
+  //     updateBalance(result);
+  //   }
+  // }, [asset, ecoAccount]);
 
   return (
     <ItemWrapper>
@@ -89,7 +95,7 @@ function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
         <div>
           <div className='title'>{fromHex(asset.symbol as string)}</div>
           <div>
-          持有量： {balance.balance || 0}
+          持有量： {beautifulNumber(balance.balance) || 0}
           </div>
         </div>
       </Content>
@@ -98,12 +104,14 @@ function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
           <IconLink href={`#/ectransfer?asset=${asset.assetId}`}
             label='转账' />
         </SubmitBtn>
-        {/* <SubmitBtn>收款</SubmitBtn> */}
         {
-          type === 'standard' ? <SubmitBtn>兑换</SubmitBtn> : <SubmitBtn>
+          asset.assetId === 'eco2' ? <SubmitBtn>赎回</SubmitBtn> : <SubmitBtn>收款</SubmitBtn>
+        }
+        {
+          type === 'carbon' ? <SubmitBtn>
             <IconLink href={`#/neutralization?asset=${asset.assetId}`}
               label='碳中和' />
-          </SubmitBtn>
+          </SubmitBtn> : null
         }
       </ButtonWrapper>
     </ItemWrapper>

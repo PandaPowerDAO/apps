@@ -57,12 +57,17 @@ export async function submitTx (label: string, tx: SubmittableExtrinsic<'promise
   });
 }
 
-export async function queryBalance (api: ApiPromise, address: string):Promise<void> {
+export async function queryBalance (api: ApiPromise, address: string):Promise<Record<string, any>> {
   const account = await api.query.system.account(address);
 
   console.log(`queryBalance for ${address}'`);
   console.log('account:', account.toJSON());
   console.log('balance:', account.data.free.toHuman(), account.data.free.toString());
+
+  return {
+    address: address,
+    balance: account.data.free.toString()
+  };
 }
 
 export async function voteProposal (api: ApiPromise, sender: KeyringPair | string, id: string, index: number, approve: boolean):Promise<void> {
@@ -234,11 +239,17 @@ export async function queryStandardAsset (api: ApiPromise, moneyId: string):Prom
   console.log('queryStandardBalance:', asset.toJSON());
 }
 
-export async function queryStandardBalance (api: ApiPromise, moneyId: string, address: string):Promise<void> {
+export async function queryStandardBalance (api: ApiPromise, moneyId: string, address: string):Promise<Record<string, any>> {
   const key = createTypeUnsafe(typeRegistry, '(Hash, AccountId)', [[moneyId, address]]);
   const balance = await api.query.standardAssets.balances(key.toHex());
 
   console.log(`queryStandardBalance: (${moneyId}, ${address}) => ${balance.toHuman()}`);
+
+  return {
+    assetId: '',
+    moneyId,
+    balance: balance.toString()
+  };
 }
 
 export async function makeOrder (api: ApiPromise, sender: KeyringPair | string, assetId: string, moneyId: string, price: string, amount: string, direction: number):Promise<void> {

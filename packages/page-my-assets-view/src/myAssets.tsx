@@ -1,14 +1,18 @@
 // Copyright 2017-2020 @polkadot/app-democracy authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import Panel from '@eco/eco-components/Panel';
-import { queryAsset, queryPotentialBalance } from '@eco/eco-utils/service';
+import { queryAsset, queryPotentialBalance, queryBalance, queryCarbonBalance, queryStandardBalance } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { useApi } from '@polkadot/react-hooks';
 import AssetViewItem from './components/item';
+
+import BN from 'bn.js';
 
 interface Props {
   className?: string,
@@ -20,7 +24,11 @@ interface Props {
 
 interface Asset {
   assetId: string,
-  [key:string]: string | number
+  balance: {
+    balance: string | number,
+    [key:string]: string | number,
+  },
+  [key:string]: any,
 }
 
 interface QueryDetailFn {
@@ -44,12 +52,35 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
 
   const queryAssetInfo = useCallback((asset: Asset) => {
     async function _query () {
-      const result = await queryAsset(api, asset.assetId);
+      let result: any = null;
+      let balance: any = {
+        balance: 0
+      };
+
+      if (asset.assetId === 'eco2') {
+        result = {
+          ...asset
+        };
+      } else {
+        result = await queryAsset(api, asset.assetId);
+      }
+
+      if (asset.assetId === 'eco2') {
+        balance = await queryBalance(api, ecoAccount as string);
+        console.log('balance', balance);
+        balance.balance = new BN(balance.balance || 0).div(new BN(10).pow(new BN(8))).toString();
+      } else if (asset.type === 'carbon') {
+        balance = await queryCarbonBalance(api, asset.assetId, ecoAccount as string);
+      } else {
+        balance = await queryStandardBalance(api, asset.moneyId as string, ecoAccount as string);
+      }
 
       tempAssetListRef.current.push({
-        ...result.asset,
-        ...result.additionals,
-        ...asset
+        ...(result.asset || {}),
+        ...(result.additionals || {}),
+        ...asset,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        balance
       });
       console.log('result', tempAssetListRef.current);
 
@@ -71,8 +102,16 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
       });
 
       console.log('queryPotentialBalance', result);
+      const _assetli = [...(result as unknown as Asset[] || []), {
+        assetId: 'eco2',
+        type: 'standard',
+        account: ecoAccount,
+        symbol: 'ECO2'
+      }];
 
-      recursionQueryDetail(result as unknown as Asset[], queryAssetInfo);
+      console.log('_assetli', _assetli);
+
+      recursionQueryDetail(_assetli as unknown as Asset[], queryAssetInfo);
 
       // updateAssetsList(() => {
       //   return (result.docs as Asset[]).map((doc: Asset): Asset => {
@@ -101,7 +140,7 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
         console.log('tempAssetListRef.current', tempAssetListRef.current);
         setTimeout(() => {
           updateAssetsList(() => {
-            return tempAssetListRef.current;
+            return tempAssetListRef.current.slice(0);
           });
         }, 1500);
         // tempAssetListRef.current = [];
@@ -145,6 +184,7 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
         {standards.map((standardAsset: Asset) => {
           return <AssetViewItem
             asset={standardAsset}
+            balance={standardAsset.balance}
             key={standardAsset.assetId}
             type='standard'
           />;
@@ -154,10 +194,11 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
       <Panel
         title='碳汇资产'
       >
-        {carbons.map((standardAsset: Asset) => {
+        {carbons.map((carbonAsset: Asset) => {
           return <AssetViewItem
-            asset={standardAsset}
-            key={standardAsset.assetId}
+            asset={carbonAsset}
+            balance={carbonAsset.balance}
+            key={carbonAsset.assetId}
             type='carbon'
           />;
         })}

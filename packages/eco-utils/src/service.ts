@@ -171,6 +171,8 @@ export async function queryAsset (api: ApiPromise, assetId: string):Promise<Reco
   const asset = await api.query.carbonAssets.assets(assetId);
   const additionals = await api.query.carbonAssets.assetAdditionals(assetId);
 
+  console.log('queryAssett:', asset.toJSON(), JSON.parse(toUtf8(additionals.toU8a(true))));
+
   return {
     asset: asset.toJSON(),
     // asset: toUtf8JSON(asset.toU8a(true)),

@@ -49,10 +49,11 @@ const noop = (e: OrderItem) => Promise.resolve(undefined);
 
 function OrderList (props: Props): React.ReactElement<Props> {
   const header = useMemo(() => [
-    ['时间', 'header'],
-    ['资产', 'header'],
-    ['价格', 'header'],
-    ['数量', 'header']
+    ['地址', 'header'],
+    ['交易ID', 'header'],
+    ['备注', 'header'],
+    ['金额', 'header'],
+    ['时间', 'header']
 
   ], []);
   const { title, reverse, action, handleAction = noop, isMine } = props;
@@ -147,34 +148,34 @@ function OrderList (props: Props): React.ReactElement<Props> {
     queryOrderList((page - 1) * pagination.pageSize);
   }, 4000), []);
 
-  useEffect(() => {
-    console.log('aaaaa');
+  // useEffect(() => {
+  //   console.log('aaaaa');
 
-    if (isMine) {
-      if (ecoAccount) {
-        handlePageChange(1);
-      }
-    } else {
-      handlePageChange(1);
-    }
-  }, [ecoAccount]);
+  //   if (isMine) {
+  //     if (ecoAccount) {
+  //       handlePageChange(1);
+  //     }
+  //   } else {
+  //     handlePageChange(1);
+  //   }
+  // }, [ecoAccount]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      updatePagination((_pagination) => {
-        handlePageChange(+(_pagination.current as number));
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     updatePagination((_pagination) => {
+  //       handlePageChange(+(_pagination.current as number));
 
-        return _pagination;
-      });
-    }, 10000);
+  //       return _pagination;
+  //     });
+  //   }, 10000);
 
-    return () => {
-      if (timer) {
-        clearInterval(timer);
-        // timer = null;
-      }
-    };
-  }, []);
+  //   return () => {
+  //     if (timer) {
+  //       clearInterval(timer);
+  //       // timer = null;
+  //     }
+  //   };
+  // }, []);
 
   return (
     <Panel title={title}>

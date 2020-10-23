@@ -12,9 +12,9 @@ export default function create (t: <T = string> (key: string, text: string, opti
     display: {
       needsApi: []
     },
-    group: 'eco',
+    group: 'ecoassetsview',
     icon: 'users',
     name: 'assetsview',
-    text: t<string>('余额', '余额', { ns: 'apps-routing' })
+    text: t<string>('钱包', '钱包', { ns: 'apps-routing' })
   };
 }

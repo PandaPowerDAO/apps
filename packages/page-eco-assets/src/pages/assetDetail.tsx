@@ -8,7 +8,7 @@ import QRCode from 'qrcode.react';
 import { useApi } from '@polkadot/react-hooks';
 import Panel from '@eco/eco-components/Panel';
 // import { Table } from '@polkadot/react-components';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 // import { NoPaddingTable } from '@eco/eco-components/Table';
 import { parseQuery, beautifulNumber, fromHex } from '@eco/eco-utils/utils';
 import { AnyObj } from '@eco/eco-utils/types';
@@ -17,7 +17,12 @@ import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 
 import { queryAsset, queryCarbonBalance, queryCarbonDeals } from '@eco/eco-utils/service';
 import { Tooltip } from 'antd';
-import CmptDeals from '@eco/page-trade/components/deals';
+import CmptDeals from '../components/deals';
+import { CopyButton, Button } from '@polkadot/react-components';
+// import { push } from 'history';
+import TranserSvg from '../assets/transfer.svg';
+import NeutralizationSvg from '../assets/neutralization.svg';
+// import CollectionSvg from '../assets/collection.svg';
 
 interface Props {
   className?: string,
@@ -64,12 +69,29 @@ const Icon = styled.div`
 const AssetsOperations = styled(Flex)`
   .operation{
     text-align: center;
+    cursor: pointer;
   }
   .operation + .operation {
     margin-left: 20px;
   }
   .operation-name{
     margin-top: 8px;
+  }
+`;
+
+const AddressWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  .address {
+    display: inline-block;
+    flex: 1;
+    font-family: monospace;
+    margin-left: 1rem;
+    opacity: 0.5;
+    overflow: hidden;
+    text-align: right;
+    text-overflow: ellipsis;
+    max-width: 14rem;
   }
 `;
 
@@ -99,12 +121,16 @@ const PanelTitle = styled.div`
   // padding:12px 0;
 `;
 
+const NOOP = () => undefined;
+
 function Home ({ className }: Props): React.ReactElement<Props> {
   const [pagination, updatePagination] = useState<PageType>({
     total: 0,
     current: 0,
     pageSize: 10
   });
+
+  const history = useHistory();
 
   // const [showTransferModal, updateTransferModalStatus] = useState<boolean>(false);
 
@@ -165,34 +191,54 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     queryDeals(0);
   }, []);
 
+  const goTransfer = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    history.push(`/ectransfer?asset=${assetId}`);
+  }, [assetId]);
+  const goNeutralization = useCallback(() => {
+    history.push(`/neutralization?asset=${assetId}`);
+  }, []);
+
   return <div className={className}>
     <AssetsPanel>
       <div>
         <PanelTitle>{fromHex(assetInfo.symbol as string || '')}</PanelTitle>
-        <div>
-          <span>收款地址: {assetInfo.owner}</span>
+        <AddressWrapper>
+          <span> 收款地址: </span>
+          <span className='address'>{ecoAccount as string}</span>
           {/* <span><CopyToClipBoard text={assetInfo.owner as string as unknown || ''} >copy</CopyToClipBoard></span> */}
-          <span><Tooltip title={<QRCode value={assetInfo.owner as string || ''} />}>
-            二维码
+          <CopyButton isAddress
+            value={ecoAccount}>
+          </CopyButton>
+          <span><Tooltip color='#fff'
+            title={<QRCode value={ecoAccount as string || ''} />}>
+            <Button
+              className='icon-button show-on-hover'
+              icon={'qrcode'}
+              onClick={NOOP}
+            />
           </Tooltip></span>
-        </div>
+        </AddressWrapper>
         <div>
           {beautifulNumber(assetInfo.balance || 0)}
         </div>
       </div>
       <AssetsOperations>
-        <div className='operation'>
-          <Icon style={{ backgroundImage: 'url(\'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=754965456,2244508514&fm=26&gp=0.jpg\')', width: 50, height: 50 }} />
-          <div className='operation-name'>转账</div>
+        <div className='operation'
+          onClick={goTransfer}>
+          <Icon style={{ backgroundImage: `url('${TranserSvg as string}')`, width: 50, height: 50 }} />
+          <div className='operation-name'
+          >转账</div>
         </div>
-        <div className='operation'>
-          <Icon style={{ backgroundImage: 'url(\'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=754965456,2244508514&fm=26&gp=0.jpg\')', width: 50, height: 50 }} />
-          <div className='operation-name'>收款</div>
+        <div className='operation'
+          onClick={goNeutralization}>
+          <Icon style={{ backgroundImage: `url('${NeutralizationSvg as string}')`, width: 50, height: 50 }} />
+          <div className='operation-name'>碳中和</div>
         </div>
-        <div className='operation'>
-          <Icon style={{ backgroundImage: 'url(\'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=754965456,2244508514&fm=26&gp=0.jpg\')', width: 50, height: 50 }} />
+        {/* <div className='operation'>
+          <Icon style={{ backgroundImage: `url('${CollectionSvg as string}')`, width: 50, height: 50 }} />
           <div className='operation-name'>兑换</div>
-        </div>
+        </div> */}
       </AssetsOperations>
     </AssetsPanel>
     <Panel title='资产介绍'>

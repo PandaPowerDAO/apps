@@ -11,6 +11,7 @@ import { useApi } from '@polkadot/react-hooks';
 import { queryOrder, queryCarbonOrders } from '@eco/eco-utils/service';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
+import { beautifulNumber } from '@eco/eco-utils/utils';
 
 interface HanleAction {
   (orderItem: OrderItem): Promise<void> | void
@@ -212,7 +213,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
 
         return _pagination;
       });
-    }, 5000);
+    }, 10000);
 
     return () => {
       if (timer) {
@@ -243,8 +244,8 @@ function OrderList (props: Props): React.ReactElement<Props> {
           {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
             return <tr key={rowIndex}>
               <td>{v.name}</td>
-              <td>{v.amount}</td>
-              <td>{v.price}</td>
+              <td>{beautifulNumber(v.amount)}</td>
+              <td>{beautifulNumber(v.price)}/kg</td>
               <td>{Sides[v.direction as number]}</td>
               {
                 action ? <td>

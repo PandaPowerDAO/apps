@@ -121,6 +121,7 @@
     "antd": "^4.6.6",
     "axios": "^0.20.0",
     "copy-to-clipboard": "^3.3.1",
+    "eco-util": "^1.0.1",
     "qrcode.react": "^1.0.0",
     "rc-form": "^2.4.11"
   }
