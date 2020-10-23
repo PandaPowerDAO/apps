@@ -60,9 +60,9 @@ export async function submitTx (label: string, tx: SubmittableExtrinsic<'promise
 export async function queryBalance (api: ApiPromise, address: string):Promise<Record<string, any>> {
   const account = await api.query.system.account(address);
 
-  console.log(`queryBalance for ${address}'`);
-  console.log('account:', account.toJSON());
-  console.log('balance:', account.data.free.toHuman(), account.data.free.toString());
+  // console.log(`queryBalance for ${address}'`);
+  // console.log('account:', account.toJSON());
+  // console.log('balance:', account.data.free.toHuman(), account.data.free.toString());
 
   return {
     assetId: 'eco2',
@@ -171,7 +171,7 @@ export async function queryAsset (api: ApiPromise, assetId: string):Promise<Reco
   const asset = await api.query.carbonAssets.assets(assetId);
   const additionals = await api.query.carbonAssets.assetAdditionals(assetId);
 
-  console.log('queryAssett:', asset.toJSON(), JSON.parse(toUtf8(additionals.toU8a(true))));
+  // console.log('queryAssett:', asset.toJSON(), JSON.parse(toUtf8(additionals.toU8a(true))));
 
   return {
     asset: asset.toJSON(),
@@ -247,11 +247,16 @@ export async function queryStandardAsset (api: ApiPromise, moneyId: string):Prom
   // console.log('queryStandardBalance:', asset.toJSON());
 }
 
-export async function queryStandardBalance (api: ApiPromise, moneyId: string, address: string):Promise<void> {
+export async function queryStandardBalance (api: ApiPromise, moneyId: string, address: string):Promise<Record<string, any>> {
   const key = createTypeUnsafe(typeRegistry, '(Hash, AccountId)', [[moneyId, address]]);
   const balance = await api.query.standardAssets.balances(key.toHex());
 
-  console.log(`queryStandardBalance: (${moneyId}, ${address}) => ${balance.toHuman()}`);
+  // console.log(`queryStandardBalance: (${moneyId}, ${address}) => ${balance.toHuman()}`);
+  return {
+    asset: '',
+    moneyId,
+    balance: balance.toHuman()
+  };
 }
 
 export async function makeOrder (api: ApiPromise, sender: KeyringPair | string, assetId: string, moneyId: string, price: string, amount: string, direction: number):Promise<void> {
@@ -267,7 +272,7 @@ interface OrderDetail {
 export async function queryOrder (api: ApiPromise, orderId: string):Promise<OrderDetail> {
   const order = await api.query.carbonExchange.orders(orderId);
 
-  console.log('order', order.toJSON());
+  // console.log('order', order.toJSON());
 
   return order.toJSON() as OrderDetail;
   // console.log('queryOrder:', order.toJSON());

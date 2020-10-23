@@ -107,15 +107,12 @@ function CreateModal (props: Props): React.ReactElement<Props> {
             name='take-order-form'
           >
             <Form.Item
-              initialValue={(orderDetail || {}).price}
               label='资产'
             >
-              <FieldDecorator
-                required
-              >
+              <FieldDecorator>
                 <Input
                   isDisabled
-                  value={String((orderDetail || {}).price)}
+                  value={String((orderDetail || {}).assetSymbol)}
                 />
               </FieldDecorator>
             </Form.Item>

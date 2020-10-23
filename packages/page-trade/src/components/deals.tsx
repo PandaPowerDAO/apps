@@ -131,12 +131,10 @@ function OrderList (props: Props): React.ReactElement<Props> {
       if (result && result.docs.length > 0) {
         updateRecords([]);
       } else {
-        return;
+
       }
 
       // recursionQueryDetail(result.docs, queryAssetDetail);
-
-      console.log('queryAssets', result);
     }
 
     return query();
@@ -147,8 +145,6 @@ function OrderList (props: Props): React.ReactElement<Props> {
   }, 4000), []);
 
   useEffect(() => {
-    console.log('aaaaa');
-
     if (isMine) {
       if (ecoAccount) {
         handlePageChange(1);

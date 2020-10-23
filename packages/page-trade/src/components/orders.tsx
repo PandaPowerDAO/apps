@@ -145,7 +145,6 @@ function OrderList (props: Props): React.ReactElement<Props> {
 
   const queryOrderList = useCallback((offset = 0) => {
     async function query () {
-      // console.log('ecoAccount -----', ecoAccount);
       const result = await queryCarbonOrders({
         owner: isMine ? (ecoAccount as string || '') : '',
         offset: (offset || 0) as number,
@@ -172,8 +171,6 @@ function OrderList (props: Props): React.ReactElement<Props> {
       }
 
       recursionQueryDetail(result.docs, queryAssetDetail);
-
-      // console.log('queryAssets', result);
     }
 
     return query();
@@ -184,8 +181,6 @@ function OrderList (props: Props): React.ReactElement<Props> {
   }, []);
 
   useEffect(() => {
-    console.log('aaaaa');
-
     if (isMine) {
       if (ecoAccount) {
         handlePageChange(1);

@@ -19,8 +19,6 @@ function MyOrderList (props: Props): React.ReactElement<Props> {
   const [ecoAccount] = useECOAccount();
   const { api } = useApi();
   const handleAction = useCallback((orderItem: OrderItem): void => {
-    console.log(orderItem);
-
     async function _cancel () {
       try {
         await cancelOrder(api, ecoAccount as string, orderItem.orderId);
