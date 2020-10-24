@@ -92,7 +92,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
   const [pagination, updatePagination] = useState<PageType>({
     total: 0,
     current: 1,
-    pageSize: 2
+    pageSize: 10
   });
   const [records, updateRecords] = useState<Record<string, any>[]>([]);
   const [ecoAccount] = useECOAccount();
@@ -156,7 +156,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
     async function query () {
       const result = await queryCarbonOrders({
         owner: isMine ? (ecoAccount as string || '') : '',
-        offset: (offset || 0) as number,
+        offset: (offset || 0) as number * pagination.pageSize,
         limit: pagination.pageSize,
         closed,
         reverse
@@ -188,7 +188,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
   }, [ecoAccount]);
 
   const handlePageChange = useCallback((page) => {
-    queryOrderList((page - 1) * pagination.pageSize);
+    queryOrderList((page - 1));
   }, []);
 
   useEffect(() => {

@@ -134,7 +134,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
       // console.log('ecoAccount -----', ecoAccount);
       const result = await queryOrderDeals({
         owner: isMine ? (ecoAccount as string || '') : '',
-        offset: (offset || 0) as number,
+        offset: (offset || 0) as number * pagination.pageSize,
         limit: pagination.pageSize,
         // closed,
         reverse: reverse || 0
@@ -166,7 +166,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
 
   const handlePageChange = useCallback(debounce((page) => {
     console.log('query page', page);
-    queryOrderList((page - 1) * pagination.pageSize);
+    queryOrderList((page - 1));
   }, 300), []);
 
   useEffect(() => {
