@@ -47,7 +47,7 @@ interface ProtocalProps {
 function PageBurning ({ className }: Props): React.ReactElement<Props> {
   const [protocals, setProtocals] = useState<ProtocalProps>({
     costPro: false,
-    registerPro: false,
+    // registerPro: false,
     agreed3: false,
     agreed2: false
   });
@@ -78,7 +78,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
         balance
       } = await queryCarbonBalance(api, assetId, address);
       const assetDetail = await queryAsset(api, assetId);
-
+      console.log(assetDetail, '==============')
       console.log('additionals', balance);
       updateAssetsInfo({
         ...(assetDetail.asset || {}),
@@ -116,7 +116,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
       form.resetFields();
       setProtocals({
         costPro: false,
-        registerPro: false,
+        // registerPro: false,
         agreed2: false,
         agreed3: false
       });
@@ -172,7 +172,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isDisabled
                   isFull={false}
-                  label={<div>资产上限</div>}
+                  label={<div>已发行总量</div>}
                   labelExtra={<div>克</div>}
                   maxLength={500}
                   value={beautifulNumber(assetsInfo.total_supply as string || '')}
@@ -254,13 +254,13 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
             />
 
           </div>
-          <div>
+          {/* <div>
             <Checkbox
               label='销毁资产会优先扣除您资产可发行但未发行的额度，该部分不足的，将扣除您钱包账户的余额'
               onChange={(registerPro: boolean) => setProtocalValue({ registerPro })}
               value={protocals.registerPro}
             />
-          </div>
+          </div> */}
           <div>
             <Checkbox
               label='销毁碳汇资产需要等待资产审查委员会审查通过后，您的碳汇数字资产将被扣除，同时会将您的真实碳汇资产原路转回到您的碳汇资产账户中'

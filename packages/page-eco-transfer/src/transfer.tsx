@@ -105,11 +105,12 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
 
   const hanleUpdateTempList = useCallback((_item:Asset, item:Asset) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     tempAssetListRef.current = [
       ...tempAssetListRef.current,
       {
         ..._item,
-        text: fromHex(_item.symbol as string),
+        text: item.symbol,
         value: item.assetId,
         assetId: item.assetId
       }
@@ -152,7 +153,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
       if (_item.status !== 1) {
         return;
       }
-
+      
       callback(_item, asset);
 
       // updateCurAsset({
@@ -210,7 +211,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
       }
 
       const _curItem = arr.slice(0, 1)[0];
-
+      
       if (!_curItem) {
         console.log('tempAssetListRef.current', tempAssetListRef.current);
         setTimeout(() => {
@@ -221,7 +222,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
 
         return;
       }
-
+      
       await queryFn(_curItem, hanleUpdateTempList);
 
       if (arr.length > 0) {
@@ -243,6 +244,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
         });
       }, 100);
     }
+    // console.log(assetsList, 'assetsList ==================')
   }, [assetsList]);
 
   useEffect(() => {

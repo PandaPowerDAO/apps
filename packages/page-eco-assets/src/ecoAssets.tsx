@@ -122,9 +122,9 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     ['签发年限', 'header'],
     ['资产上限', 'header'],
     ['可发行上限', 'header'],
-    ['可发行总量', 'header'],
-    ['资产精度', 'header'],
-    ['发行商', 'header'],
+    ['已发行总量', 'header'],
+    // ['资产精度', 'header'],
+    // ['发行商', 'header'],
     ['注册时间', 'header'],
     ['状态', 'header']
     // ['操作', 'header']
@@ -257,10 +257,10 @@ function Home ({ className }: Props): React.ReactElement<Props> {
               <td>{v.type === 'standard' ? '标准资产' : '碳汇资产'}</td>
               <td>{v.vintage}</td>
               <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td>
-              <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td>
-              <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td>
-              <td>{v.precision || '-'}</td>
-              <OwnerTd>{v.owner}</OwnerTd>
+              <td>{beautifulNumber((v as DataItem).assetDetail.asset.initial_supply)}</td>
+              {/* <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td> */}
+              {/* <td>{v.precision || '-'}</td> */}
+              {/* <OwnerTd>{v.owner}</OwnerTd> */}
               <td>{formatDate(v.timestamp)}</td>
               <td>{StatusMap[v.approved === 1 ? '1' : '0'] || StatusMap[0]}</td>
               <td>

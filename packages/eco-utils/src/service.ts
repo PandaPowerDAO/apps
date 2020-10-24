@@ -199,7 +199,7 @@ export async function queryAsset (api: ApiPromise, assetId: string):Promise<Reco
   const asset = await api.query.carbonAssets.assets(assetId);
   const additionals = await api.query.carbonAssets.assetAdditionals(assetId);
 
-  // console.log('queryAssett:', asset.toJSON(), JSON.parse(toUtf8(additionals.toU8a(true))));
+  // console.log('queryAssett:', asset.toJSON(), JSON.parse(toUtf8(additionals.toU8a(true))), '====================');
 
   return {
     asset: asset.toJSON(),
@@ -237,7 +237,6 @@ export async function approveBurn (api: ApiPromise, sender: KeyringPair | string
 export async function queryCarbonBalance (api: ApiPromise, assetId: string, address: string):Promise<Record<string, any>> {
   const key = createTypeUnsafe(typeRegistry, '(Hash, AccountId)', [[assetId, address]]);
   const balance = await api.query.carbonAssets.balances(key.toHex());
-
   return {
     assetId,
     balance: balance.toString()

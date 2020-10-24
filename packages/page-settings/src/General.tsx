@@ -88,7 +88,7 @@ function General ({ className = '' }: Props): React.ReactElement<Props> {
 
   return (
     <div className={className}>
-      <div className='ui--row'>
+      {/* <div className='ui--row'>
         <Dropdown
           defaultValue={prefix}
           help={t<string>('Override the default ss58 prefix for address generation')}
@@ -96,7 +96,7 @@ function General ({ className = '' }: Props): React.ReactElement<Props> {
           onChange={_handleChange('prefix')}
           options={prefixOptions}
         />
-      </div>
+      </div> */}
       <div className='ui--row'>
         <Dropdown
           defaultValue={icon}
@@ -117,14 +117,14 @@ function General ({ className = '' }: Props): React.ReactElement<Props> {
           />
         </div>
       )}
-      <div className='ui--row'>
+      {/* <div className='ui--row'>
         <Dropdown
           defaultValue={uiTheme}
           label={t<string>('default interface theme')}
           onChange={_handleChange('uiTheme')}
           options={themeOptions}
         />
-      </div>
+      </div> */}
       <div className='ui--row'>
         <Dropdown
           defaultValue={i18nLang}

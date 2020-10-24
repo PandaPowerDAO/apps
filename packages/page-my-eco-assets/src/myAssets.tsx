@@ -51,6 +51,8 @@ const TableWrapper = styled.div`
 
 const OperationSpan = styled.span`
   cursor: pointer;
+  text-decoration: underline;
+  color: #f19134;
 `;
 
 const OperationSpanWrapper = styled.span`
@@ -112,10 +114,10 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     ['资产类型', 'header'],
     ['签发年限', 'header'],
     ['资产上限', 'header'],
-    ['可发行上限', 'header'],
-    ['可发行总量', 'header'],
-    ['资产精度', 'header'],
-    ['发行商', 'header'],
+    ['已发行总量', 'header'],
+    // ['可发行总量', 'header'],
+    // ['资产精度', 'header'],
+    // ['发行商', 'header'],
     ['注册时间', 'header'],
     ['状态', 'header'],
     ['操作', 'header']
@@ -192,7 +194,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
 
       recursionQueryDetail(result.docs, queryAssetDetail);
 
-      console.log('queryAssets', result);
+      console.log('queryAssets==============', result);
     }
 
     return query();
@@ -231,7 +233,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     <div className={className}>
       <Panel title={
         <TitleWrapper>
-          <div>ECO2 Block</div>
+          <div>我发行的碳汇资产</div>
           <OperationBtnWrapper>
             <OperationBtn>
               <IconLink href='#/ecassets/register-project'
@@ -249,9 +251,9 @@ function Home ({ className }: Props): React.ReactElement<Props> {
       }>
         {/* <BannerImg style={{ backgroundImage: "url('https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2716489749,1188114940&fm=26&gp=0.jpg')" }} /> */}
 
-        <div>
+        {/* <div>
         ECO2 Ledger是个专为碳汇资产设计的区块链⽹络，让碳汇资产可以在去中⼼化、安全和⽆法窜 改的区块链⽹络当中⾃由流通，提升碳中和⾏动的个⼈参与度，并强化碳汇交易的流动性。 ECO2 Ledger的使⽤者可在任何时候、任何地点，完成碳汇资产的即时转移，并且使⽤者可以选 择其拥有的任⼀碳汇资产为碳⾜迹进⾏抵消，当碳中和完成时，其相关信息会⽴即在链上发 布，提升⽓候⾏动的全球宣传⼒度
-        </div>
+        </div> */}
       </Panel>
       <TableWrapper>
         <Table
@@ -274,13 +276,13 @@ function Home ({ className }: Props): React.ReactElement<Props> {
             return <tr key={rowIndex}>
               <td><IconLink href={`#/ecassets/assets-detail?asset=${v.assetId as string}`}
                 label={`${v.symbol as string}(${v.vintage as string})`}></IconLink></td>
-              <td>{v.type === 'standard' ? '标准' : '碳汇资产'}</td>
+              <td>{v.type === 'standard' ? '标准资产' : '碳汇资产'}</td>
               <td>{v.vintage}</td>
               <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td>
-              <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td>
-              <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td>
-              <td>{v.precision || '-'}</td>
-              <OwnerTd>{v.owner}</OwnerTd>
+              <td>{beautifulNumber((v as DataItem).assetDetail.asset.initial_supply)}</td>
+              {/* <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td> */}
+              {/* <td>{v.precision || '-'}</td> */}
+              {/* <OwnerTd>{v.owner}</OwnerTd>*/}
               <td>{formatDate(v.timestamp)}</td>
               <td>{StatusMap[v.approved === 1 ? '1' : '0'] || StatusMap[0]}</td>
               <td>

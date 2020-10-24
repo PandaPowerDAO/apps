@@ -12,7 +12,7 @@ export default function create (t: <T = string> (key: string, text: string, opti
     display: {
       needsApi: []
     },
-    group: 'ecoassetsview',
+    group: 'ecobalance',
     icon: 'users',
     name: 'assetsview',
     text: t<string>('钱包', '钱包', { ns: 'apps-routing' })
