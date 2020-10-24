@@ -1,14 +1,14 @@
 // Copyright 2017-2020 @polkadot/app-democracy authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Table } from '@polkadot/react-components';
 import { Pagination } from 'antd';
 import Panel from '@eco/eco-components/Panel';
 import { useApi } from '@polkadot/react-hooks';
 
 import { queryOrderDeals, queryOrder } from '@eco/eco-utils/service';
-import { formatDate } from '@eco/eco-utils/utils';
+import { formatDate, unitToEco, beautifulNumber } from '@eco/eco-utils/utils';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { debounce } from 'lodash';
@@ -47,6 +47,14 @@ interface QueryDetailFn {
 
 // const noop = (e: OrderItem) => Promise.resolve(undefined);
 
+const resolvePrice = (price:number|string):string|null|unknown => {
+  if (price !== 0 && !price) {
+    return price;
+  }
+
+  return beautifulNumber(unitToEco(price).toString());
+};
+
 function OrderList (props: Props): React.ReactElement<Props> {
   const header = useMemo(() => [
     ['时间', 'header'],
@@ -59,10 +67,11 @@ function OrderList (props: Props): React.ReactElement<Props> {
 
   const [pagination, updatePagination] = useState<PageType>({
     total: 0,
-    current: 0,
+    current: 1,
     pageSize: 10
   });
   const [records, updateRecords] = useState<Record<string, any>[]>([]);
+  const tempRecordsRef = useRef<Record<string, any>[]>([]);
   const [ecoAccount] = useECOAccount();
 
   const { api } = useApi();
@@ -72,16 +81,24 @@ function OrderList (props: Props): React.ReactElement<Props> {
       const result = await queryOrder(api, orderItem.orderId);
 
       console.log('sssss', result);
+
+      tempRecordsRef.current = [
+        ...tempRecordsRef.current,
+        {
+          ...orderItem,
+          orderDetail: result
+        }
+      ];
       // const projectDetail = await queryProject(api, assetItem.projectId);
-      updateRecords((_records) => {
-        return [
-          ..._records,
-          {
-            ...orderItem,
-            orderDetail: result
-          }
-        ];
-      });
+      // updateRecords((_records) => {
+      //   return [
+      //     ..._records,
+      //     {
+      //       ...orderItem,
+      //       orderDetail: result
+      //     }
+      //   ];
+      // });
     }
 
     return _queryDetail();
@@ -93,6 +110,10 @@ function OrderList (props: Props): React.ReactElement<Props> {
       const _curItem = arr.slice(0, 1)[0];
 
       if (!_curItem) {
+        updateRecords(() => {
+          return tempRecordsRef.current.slice(0);
+        });
+
         return;
       }
 
@@ -127,12 +148,14 @@ function OrderList (props: Props): React.ReactElement<Props> {
           total: result.count || 0
         };
       });
+      console.log('queryOrderList');
+      tempRecordsRef.current = [];
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (result && result.docs.length > 0) {
-        updateRecords([]);
+        // updateRecords([]);
 
-        return;
+        // return;
       }
 
       recursionQueryDetail(result.docs, queryAssetDetail);
@@ -142,8 +165,9 @@ function OrderList (props: Props): React.ReactElement<Props> {
   }, [ecoAccount]);
 
   const handlePageChange = useCallback(debounce((page) => {
+    console.log('query page', page);
     queryOrderList((page - 1) * pagination.pageSize);
-  }, 4000), []);
+  }, 300), []);
 
   useEffect(() => {
     if (isMine) {
@@ -158,7 +182,8 @@ function OrderList (props: Props): React.ReactElement<Props> {
   useEffect(() => {
     const timer = setInterval(() => {
       updatePagination((_pagination) => {
-        handlePageChange(+(_pagination.current as number));
+        console.log('_pagination.current ', _pagination.current);
+        queryOrderList(+(_pagination.current as number) - 1);
 
         return _pagination;
       });
@@ -191,8 +216,10 @@ function OrderList (props: Props): React.ReactElement<Props> {
       >
         {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
           return <tr key={rowIndex}>
+
             <td>{formatDate(v.timestamp as number)}</td>
-            <td>{v.price}</td>
+            <td>{v.assetSymbol}</td>
+            <td>{resolvePrice(v.price as string || 0) as string || '-'}</td>
             <td>{v.amount}</td>
             {/* {
               action ? <td>
