@@ -91,8 +91,8 @@ function OrderList (props: Props): React.ReactElement<Props> {
 
   const [pagination, updatePagination] = useState<PageType>({
     total: 0,
-    current: 0,
-    pageSize: 15
+    current: 1,
+    pageSize: 10
   });
   const [records, updateRecords] = useState<Record<string, any>[]>([]);
   const [ecoAccount] = useECOAccount();
@@ -156,7 +156,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
     async function query () {
       const result = await queryCarbonOrders({
         owner: isMine ? (ecoAccount as string || '') : '',
-        offset: (offset || 0) as number,
+        offset: (offset || 0) as number * pagination.pageSize,
         limit: pagination.pageSize,
         closed,
         reverse
@@ -188,7 +188,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
   }, [ecoAccount]);
 
   const handlePageChange = useCallback((page) => {
-    queryOrderList((page - 1) * pagination.pageSize);
+    queryOrderList((page - 1));
   }, []);
 
   useEffect(() => {
@@ -201,20 +201,20 @@ function OrderList (props: Props): React.ReactElement<Props> {
     }
   }, [ecoAccount]);
 
-  useEffect(() => {
-    if (refreshFlag) {
-      updatePagination((_pagination) => {
-        handlePageChange(_pagination.current);
+  // useEffect(() => {
+  //   if (refreshFlag) {
+  //     updatePagination((_pagination) => {
+  //       handlePageChange(+(_pagination.current as number) + 1);
 
-        return _pagination;
-      });
-    }
-  }, [refreshFlag]);
+  //       return _pagination;
+  //     });
+  //   }
+  // }, [refreshFlag]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       updatePagination((_pagination) => {
-        handlePageChange(_pagination.current);
+        queryOrderList(+(_pagination.current as number) - 1);
 
         return _pagination;
       });
