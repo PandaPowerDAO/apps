@@ -153,7 +153,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
       if (_item.status !== 1) {
         return;
       }
-      
+
       callback(_item, asset);
 
       // updateCurAsset({
@@ -211,7 +211,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
       }
 
       const _curItem = arr.slice(0, 1)[0];
-      
+
       if (!_curItem) {
         console.log('tempAssetListRef.current', tempAssetListRef.current);
         setTimeout(() => {
@@ -222,7 +222,7 @@ function PageTransfer ({ className }: Props): React.ReactElement<Props> {
 
         return;
       }
-      
+
       await queryFn(_curItem, hanleUpdateTempList);
 
       if (arr.length > 0) {
