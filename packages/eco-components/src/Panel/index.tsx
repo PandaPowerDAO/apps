@@ -7,7 +7,8 @@ import styled from 'styled-components';
 import clsx from 'clsx';
 
 interface Props extends BareProps {
-  title?: string | React.ReactElement,
+  title?: string | React.ReactElement;
+  css?: string
 }
 
 const PanelWrapper = styled.div`
@@ -33,7 +34,7 @@ export default function Panel ({ title, children, className } : Props): React.Re
       {
         title && <div className='cmpt-panel-title'>{title}</div>
       }
-      <div>
+      <div className='panel-content'>
         {children}
       </div>
     </PanelWrapper>

@@ -118,12 +118,12 @@ export function beautifulNumber (num: number | string): string {
   return (`${num}`).replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g, '$1,');
 }
 
-export function unitToEco (num: number | string) {
-  return new BN(num).div(new BN(10).pow(new BN(8)));
+export function unitToEco (num: number | string, power = 8) {
+  return new BN(num).div(new BN(10).pow(new BN(power)));
 }
 
-export function ecoToUnit (num: number | string) {
-  return new BN(num).mul(new BN(10).pow(new BN(8)));
+export function ecoToUnit (num: number | string, power = 8) {
+  return new BN(num).mul(new BN(10).pow(new BN(power)));
 }
 
 export const EE = new EventEmitter();

@@ -1,13 +1,12 @@
 // Copyright 2017-2020 @polkadot/react-components authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { TxButtonProps as Props } from './types';
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { SubmittableResult } from '@polkadot/api';
-import { useApi, useIsMountedRef } from '@polkadot/react-hooks';
-import { assert, isFunction } from '@polkadot/util';
+import React, { useContext, useEffect } from 'react';
 
 // import Button from './Button';
 import { StatusContext } from './Status';
@@ -15,90 +14,18 @@ import { StatusContext } from './Status';
 
 import { EE } from '@eco/eco-utils/utils';
 
-function TxButton ({ accountId, className = '', extrinsic: propsExtrinsic, icon, isBasic, isBusy, isDisabled, isIcon, isToplevel, isUnsigned, label, onClick, onFailed, onSendRef, onStart, onSuccess, onUpdate, params, tooltip, tx, withSpinner, withoutLink }: Props): React.ReactElement {
+function RootNotice ({ accountId, className = '', extrinsic: propsExtrinsic, icon, isBasic, isBusy, isDisabled, isIcon, isToplevel, isUnsigned, label, onClick, onFailed, onSendRef, onStart, onSuccess, onUpdate, params, tooltip, tx, withSpinner, withoutLink }: Props): React.ReactElement {
   // const { t } = useTranslation();
-  const { api } = useApi();
-  const mountedRef = useIsMountedRef();
+  // const { api } = useApi();
+  // const mountedRef = useIsMountedRef();
   const { queueExtrinsic } = useContext(StatusContext);
-  const [, setIsSending] = useState(false);
-  const [isStarted, setIsStarted] = useState(false);
+  // const [, setIsSending] = useState(false);
+  // const [isStarted, setIsStarted] = useState(false);
   // const needsAccount = !isUnsigned && !accountId;
 
-  useEffect((): void => {
-    (isStarted && onStart) && onStart();
-  }, [isStarted, onStart]);
-
-  const _onFailed = useCallback(
-    (result: SubmittableResult | null): void => {
-      mountedRef.current && setIsSending(false);
-
-      onFailed && onFailed(result);
-    },
-    [onFailed, setIsSending, mountedRef]
-  );
-
-  const _onSuccess = useCallback(
-    (result: SubmittableResult): void => {
-      mountedRef.current && setIsSending(false);
-
-      onSuccess && onSuccess(result);
-    },
-    [onSuccess, setIsSending, mountedRef]
-  );
-
-  const _onStart = useCallback(
-    (): void => {
-      mountedRef.current && setIsStarted(true);
-    },
-    [setIsStarted, mountedRef]
-  );
-
-  const _onSend = useCallback(
-    (): void => {
-      let extrinsics: SubmittableExtrinsic<'promise'>[];
-
-      if (propsExtrinsic) {
-        extrinsics = Array.isArray(propsExtrinsic)
-          ? propsExtrinsic
-          : [propsExtrinsic];
-      } else {
-        const [section, method] = (tx || '').split('.');
-
-        assert(api.tx[section] && api.tx[section][method], `Unable to find api.tx.${section}.${method}`);
-
-        extrinsics = [
-          api.tx[section][method](...(
-            isFunction(params)
-              ? params()
-              : (params || [])
-          ))
-        ];
-      }
-
-      assert(extrinsics?.length, 'Expected generated extrinsic passed to TxButton');
-
-      mountedRef.current && withSpinner && setIsSending(true);
-
-      extrinsics.forEach((extrinsic): void => {
-        queueExtrinsic({
-          accountId: accountId && accountId.toString(),
-          extrinsic,
-          isUnsigned,
-          txFailedCb: withSpinner ? _onFailed : onFailed,
-          txStartCb: _onStart,
-          txSuccessCb: withSpinner ? _onSuccess : onSuccess,
-          txUpdateCb: onUpdate
-        });
-      });
-
-      onClick && onClick();
-    },
-    [_onFailed, _onStart, _onSuccess, accountId, api.tx, isUnsigned, onClick, onFailed, onSuccess, onUpdate, params, propsExtrinsic, queueExtrinsic, setIsSending, tx, withSpinner, mountedRef]
-  );
-
-  if (onSendRef) {
-    onSendRef.current = _onSend;
-  }
+  // useEffect((): void => {
+  //   (isStarted && onStart) && onStart();
+  // }, [isStarted, onStart]);
 
   useEffect(() => {
     EE.on('__ss__quq_event', ({
@@ -110,12 +37,12 @@ function TxButton ({ accountId, className = '', extrinsic: propsExtrinsic, icon,
       (txs as SubmittableExtrinsic<'promise'>[]).forEach((extrinsic: SubmittableExtrinsic<'promise'>): void => {
         queueExtrinsic({
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          accountId: sender && sender.toString(),
+          accountId: sender && (sender as string).toString(),
           extrinsic,
           isUnsigned,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           txFailedCb: _failedFn,
-          txStartCb: _onStart,
+          // txStartCb: _onStart,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           txSuccessCb: _successFn,
           txUpdateCb: onUpdate
@@ -125,22 +52,6 @@ function TxButton ({ accountId, className = '', extrinsic: propsExtrinsic, icon,
   }, []);
 
   return <div></div>;
-
-  // return (
-  //   <Button
-  //     className={className}
-  //     icon={icon || 'check'}
-  //     isBasic={isBasic}
-  //     isBusy={isBusy}
-  //     isDisabled={isSending || isDisabled || needsAccount}
-  //     isIcon={isIcon}
-  //     isToplevel={isToplevel}
-  //     label={label || (isIcon ? '' : t<string>('Submit'))}
-  //     onClick={_onSend}
-  //     tooltip={tooltip}
-  //     withoutLink={withoutLink}
-  //   />
-  // );
 }
 
-export default React.memo(TxButton);
+export default React.memo(RootNotice);

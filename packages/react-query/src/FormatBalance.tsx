@@ -18,29 +18,32 @@ interface Props {
   value?: Compact<any> | BN | string | null | 'all';
   withCurrency?: boolean;
   withSi?: boolean;
+  si?: string;
 }
 
 // for million, 2 * 3-grouping + comma
 const M_LENGTH = 6 + 1;
 const K_LENGTH = 3 + 1;
 
-function format (value: Compact<any> | BN | string, withCurrency = true, withSi?: boolean, _isShort?: boolean, labelPost?: string): React.ReactNode {
+function format (value: Compact<any> | BN | string, withCurrency = true, withSi?: boolean, _isShort?: boolean, labelPost?: string, si?: string): React.ReactNode {
   const [prefix, postfix] = formatBalance(value, { forceUnit: '-', withSi: false }).split('.');
   const isShort = _isShort || (withSi && prefix.length >= K_LENGTH);
-  const unitPost = withCurrency ? formatBalance.getDefaults().unit : '';
+  const unitPost = si || (withCurrency ? formatBalance.getDefaults().unit : '');
 
   if (prefix.length > M_LENGTH) {
     const [major, rest] = formatBalance(value, { withUnit: false }).split('.');
     const minor = rest.substr(0, 4);
     const unit = rest.substr(4);
 
-    return <>{major}.<span className='ui--FormatBalance-postfix'>{minor}</span><span className='ui--FormatBalance-unit'>{unit}{unit ? unitPost : ` ${unitPost}`}</span>{labelPost || ''}</>;
+    // const _unit = si || unit;
+
+    return <>{major}.<span className='ui--FormatBalance-postfix'>{minor}</span><span className='ui--FormatBalance-unit'>{unit} {unit ? unitPost : ` ${unitPost}`}</span>{labelPost || ''}</>;
   }
 
   return <>{`${prefix}${isShort ? '' : '.'}`}{!isShort && <span className='ui--FormatBalance-postfix'>{`0000${postfix || ''}`.slice(-4)}</span>}<span className='ui--FormatBalance-unit'> {unitPost}</span>{labelPost || ''}</>;
 }
 
-function FormatBalance ({ children, className = '', isShort, label, labelPost, value, withCurrency, withSi }: Props): React.ReactElement<Props> {
+function FormatBalance ({ children, className = '', isShort, label, labelPost, value, withCurrency, withSi, si = '' }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
 
   // labelPost here looks messy, however we ensure we have one less text node
@@ -50,7 +53,7 @@ function FormatBalance ({ children, className = '', isShort, label, labelPost, v
         value
           ? value === 'all'
             ? t<string>('everything{{labelPost}}', { replace: { labelPost } })
-            : format(value, withCurrency, withSi, isShort, labelPost)
+            : format(value, withCurrency, withSi, isShort, labelPost, si)
           : `-${labelPost || ''}`
       }</span>{children}
     </div>

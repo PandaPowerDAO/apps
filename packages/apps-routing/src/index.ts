@@ -14,7 +14,7 @@ import democracy from './democracy';
 import explorer from './explorer';
 import extrinsics from './extrinsics';
 import genericAsset from './generic-asset';
-// import js from './js';
+import js from './js';
 import parachains from './parachains';
 import poll from './poll';
 import rpc from './rpc';
@@ -25,7 +25,7 @@ import staking from './staking';
 import storage from './storage';
 import sudo from './sudo';
 import techcomm from './techcomm';
-// import transfer from './transfer';
+import transfer from './transfer';
 import treasury from './treasury';
 // import eco from './eco';
 import ecoNeutralization from './eco-neutralization';
@@ -48,7 +48,7 @@ export default function create (t: TFunction): Routes {
     explorer(t),
     claims(t),
     poll(t),
-    // transfer(t),
+    transfer(t),
     genericAsset(t),
     staking(t),
     democracy(t),
@@ -64,7 +64,7 @@ export default function create (t: TFunction): Routes {
     rpc(t),
     signing(t),
     sudo(t),
-    // js(t),
+    js(t),
     settings(t)
     // eco(t),
 

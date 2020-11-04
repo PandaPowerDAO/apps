@@ -404,6 +404,11 @@ function Account ({ account: { address, meta }, className = '', delegation, filt
       <td className='number'>
         <AddressInfo
           address={address}
+          css={`
+        & .column--expander{
+          width: auto!important
+        }
+      `}
           withBalance
           withBalanceToggle
           withExtended={false}

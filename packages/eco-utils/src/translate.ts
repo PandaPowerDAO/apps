@@ -6,3 +6,9 @@ import { useTranslation as useTranslationBase, UseTranslationResponse } from 're
 export function useTranslation (): UseTranslationResponse {
   return useTranslationBase('app-democracy');
 }
+
+export function genTranslation (type: string) {
+  return function _useTranslation (): UseTranslationResponse {
+    return useTranslationBase(type);
+  };
+}

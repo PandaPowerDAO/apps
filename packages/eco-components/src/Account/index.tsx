@@ -13,7 +13,7 @@ type ECOAccount = BareProps
 export default function ECOAccountComponent ({ children }: ECOAccount): React.ReactElement {
   const [ecoAccount, updateECOAccount] = useState<string>('');
 
-  const _context = useMemo(() => {
+  const _context = useMemo(():[string, React.Dispatch<React.SetStateAction<string>>] => {
     return [ecoAccount, updateECOAccount];
   }, [ecoAccount]);
 
@@ -26,7 +26,11 @@ export default function ECOAccountComponent ({ children }: ECOAccount): React.Re
 
 export function AccountSelector (props: BareProps): React.ReactElement {
   const [ecoAccount, updateECOAccount]: ContextProps = useContext(AccountContext);
-  const handleChange = updateECOAccount as React.Dispatch<React.SetStateAction<string>>;
+
+  const handleChange = (val: string) => {
+    window.localStorage.setItem('__eco_account', val);
+    updateECOAccount(val);
+  };
 
   return (
     <InputAddress
@@ -45,7 +49,7 @@ export function AccountSelector (props: BareProps): React.ReactElement {
 export function AccountUpdator (props: BareProps): React.ReactElement {
   const [ecoAccount] = useContext(AccountContext);
 
-  return <div key={ecoAccount as string}>
+  return <div key={ecoAccount}>
     {props.children}
   </div>;
 }

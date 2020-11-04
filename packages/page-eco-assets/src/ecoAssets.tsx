@@ -1,6 +1,8 @@
 // Copyright 2017-2020 @polkadot/app-democracy authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -15,11 +17,11 @@ import { queryAsset, queryAssetsList, queryProject } from '@eco/eco-utils/servic
 import { formatDate, beautifulNumber } from '@eco/eco-utils/utils';
 import BannerImgSource from './banner.png';
 
-const OwnerTd = styled.td`
-    overflow: hidden;
-    max-width: 200px;
-    text-overflow: ellipsis;
-`;
+// const OwnerTd = styled.td`
+//     overflow: hidden;
+//     max-width: 200px;
+//     text-overflow: ellipsis;
+// `;
 
 // const OperationBtnWrapper = styled.div`
 //   display: flex;
@@ -121,7 +123,6 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     ['资产类型', 'header'],
     ['签发年限', 'header'],
     ['资产上限', 'header'],
-    ['可发行上限', 'header'],
     ['已发行总量', 'header'],
     // ['资产精度', 'header'],
     // ['发行商', 'header'],
@@ -235,6 +236,13 @@ function Home ({ className }: Props): React.ReactElement<Props> {
       </Panel>
       <TableWrapper>
         <Table
+          css={
+            `
+            & th {
+              border: none!important;
+            }
+            `
+          }
           empty={'暂无数据'}
           footer={
             <tr>
@@ -252,12 +260,12 @@ function Home ({ className }: Props): React.ReactElement<Props> {
         >
           {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
             return <tr key={rowIndex}>
-              <td><IconLink href={`#/ecassets/assets-detail?asset=${v.assetId as string}`}
+              <td><IconLink href={`#/ecassets/assets-detail?asset=${v.assetId as string}&symbol=${`${v.symbol as string}(${v.vintage as string})`}`}
                 label={`${v.symbol as string}(${v.vintage as string})`}></IconLink></td>
               <td>{v.type === 'standard' ? '标准资产' : '碳汇资产'}</td>
               <td>{v.vintage}</td>
+              <td>{beautifulNumber((v as DataItem).projectDetail.project.max_supply)}</td>
               <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td>
-              <td>{beautifulNumber((v as DataItem).assetDetail.asset.initial_supply)}</td>
               {/* <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td> */}
               {/* <td>{v.precision || '-'}</td> */}
               {/* <OwnerTd>{v.owner}</OwnerTd> */}

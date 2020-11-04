@@ -34,6 +34,7 @@ interface AssetItemType {
   type: string,
   balance: Balance,
   [key: string]: any,
+  handleTransfer: (v: Record<string, string | number>) => void
 }
 
 const Icon = styled.div`
@@ -54,7 +55,8 @@ const ItemWrapper = styled.div`
   min-width: 30%;
 
   & + & {
-    margin-left: 20px;
+    // margin-left: 20px;
+    margin-bottom: 30px;
   }
 
 `;
@@ -72,7 +74,7 @@ a {
 `;
 
 function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
-  const { type, asset, balance } = props;
+  const { type, asset, balance, handleTransfer } = props;
 
   // const [balance, updateBalance] = useState<Record<string, string | number>>({});
 
@@ -103,9 +105,8 @@ function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
         </div>
       </Content>
       <ButtonWrapper>
-        <SubmitBtn>
-          <IconLink href={`#/ectransfer?asset=${asset.assetId}`}
-            label='转账' />
+        <SubmitBtn onClick={() => handleTransfer(asset)}>
+          转账
         </SubmitBtn>
         {
           asset.assetId === 'eco2' ? <SubmitBtn>赎回</SubmitBtn> : <SubmitBtn>收款</SubmitBtn>

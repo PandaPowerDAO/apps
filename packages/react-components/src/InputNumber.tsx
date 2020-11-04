@@ -8,13 +8,14 @@ import BN from 'bn.js';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { registry } from '@polkadot/react-api';
-import { BN_ZERO, BN_TEN, formatBalance, isBn } from '@polkadot/util';
+import { BN_ZERO, BN_TEN, isBn } from '@polkadot/util';
 
 import { classes } from './util';
 import { BitLengthOption } from './constants';
 import Dropdown from './Dropdown';
 import Input, { KEYS_PRE } from './Input';
 import { useTranslation } from './translate';
+import { formatBalance } from '@eco/polka-util-fork';
 
 interface Props {
   autoFocus?: boolean;
@@ -47,6 +48,7 @@ interface Props {
 const DEFAULT_BITLENGTH = BitLengthOption.NORMAL_NUMBERS as BitLength;
 
 export class TokenUnit {
+  public static initAbbr = 'ECO2';
   public static abbr = 'ECO2';
 
   public static setAbbr (abbr: string = TokenUnit.abbr): void {
@@ -70,12 +72,12 @@ function getRegex (isDecimal: boolean): RegExp {
 
 function getSiOptions (): { text: string; value: string }[] {
   // 修改配置, 用SIOptions 替换formatBalance.getOptions()
-  const SIOptions = [{ power: 0, text: 'ECO2', value: '-' }];
+  // const SIOptions = [{ power: 0, text: 'ECO2', value: '-' }];
 
-  return SIOptions.map(({ power, text, value }): { text: string; value: string } => ({
+  return formatBalance.getOptions().map(({ power, text, value }): { text: string; value: string } => ({
     text: power === 0
       ? TokenUnit.abbr
-      : text,
+      : `${text} ${TokenUnit.abbr}`,
     value
   }));
 }
@@ -195,7 +197,10 @@ function InputNumber ({ autoFocus, bitLength = DEFAULT_BITLENGTH, children, clas
   );
 
   const _onChange = useCallback(
-    (input: string) => _onChangeWithSi(input, si),
+    (input: string) => {
+      console.log(input);
+      _onChangeWithSi(input, si);
+    },
     [_onChangeWithSi, si]
   );
 

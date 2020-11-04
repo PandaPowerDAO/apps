@@ -161,7 +161,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
 
       await submitAsset(
         api,
-        ecoAccount as string,
+        ecoAccount,
         projectId as string,
         vintage as string,
         initialSupply as string,
@@ -212,7 +212,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
             </Form.Item>
           </Row>
           <Row>
-            <Form.Item
+            {/* <Form.Item
               label=' '
               name='symbol'
               rules={[{
@@ -231,7 +231,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   withLabel
                 />
               </FieldDecorator>
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item
               label=' '
               name='vintage'

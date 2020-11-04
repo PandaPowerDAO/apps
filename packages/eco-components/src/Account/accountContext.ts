@@ -5,7 +5,7 @@ import React, { Dispatch, SetStateAction, useContext } from 'react';
 // interface ContextProps {
 //   [key: string]: any
 // }
-export type ContextProps = (string | Dispatch<SetStateAction<string>>)[];
+export type ContextProps = [string, Dispatch<SetStateAction<string>>];
 
 const AccountContext: React.Context<ContextProps> = React.createContext([] as unknown as ContextProps);
 

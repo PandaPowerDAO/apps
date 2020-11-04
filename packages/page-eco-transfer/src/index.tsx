@@ -11,7 +11,7 @@ import { useApi } from '@polkadot/react-hooks';
 // import { useTranslation } from './translate';
 
 import 'antd/dist/antd.css';
-import PageTransfer from './transfer';
+import PageTransfer from './newTransfer';
 
 import ECOAccountProvider, { AccountSelector, AccountUpdator } from '@eco/eco-components/Account';
 import styled from 'styled-components';

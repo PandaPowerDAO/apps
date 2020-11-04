@@ -19,10 +19,10 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { EE } from '@eco/eco-utils/utils';
 
 const typeRegistry = new TypeRegistry();
-let gApi: ApiPromise;
+// let gApi: ApiPromise;
 
 export function setGaApi (api: ApiPromise): void {
-  gApi = api;
+  // gApi = api;
 }
 
 export function toUtf8 (data: Uint8Array): string {
@@ -63,26 +63,26 @@ export async function submitTx (label: string, tx: SubmittableExtrinsic<'promise
   });
 
   return;
-  const unsub = await tx.signAndSend(sender, (result: { status: { isInBlock: any; isFinalized: any; }; events: { event: any; phase: any; }[]; }): void => {
-    if (result.status.isInBlock) {
-      result.events.forEach(({ event, phase }) => {
-        const { data, method } = event;
+  // const unsub = await tx.signAndSend(sender, (result: { status: { isInBlock: any; isFinalized: any; }; events: { event: any; phase: any; }[]; }): void => {
+  //   if (result.status.isInBlock) {
+  //     result.events.forEach(({ event, phase }) => {
+  //       const { data, method } = event;
 
-        // notification.open({
-        //   message: method
-        //   // description: phase.toString()
-        //   // icon: <SmileOutlined style={{ color: '#108ee9' }} />,
-        // });
+  //       // notification.open({
+  //       //   message: method
+  //       //   // description: phase.toString()
+  //       //   // icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+  //       // });
 
-        if (method === 'ExtrinsicFailed') {
-          gApi.registry.findMetaError(data[0].asModule);
-          // const { documentation, name, section } = decoded;
-        }
-      });
-    } else if (result.status.isFinalized) {
-      unsub();
-    }
-  });
+  //       if (method === 'ExtrinsicFailed') {
+  //         gApi.registry.findMetaError(data[0].asModule);
+  //         // const { documentation, name, section } = decoded;
+  //       }
+  //     });
+  //   } else if (result.status.isFinalized) {
+  //     unsub();
+  //   }
+  // });
 }
 
 export async function queryBalance (api: ApiPromise, address: string):Promise<Record<string, any>> {
@@ -237,12 +237,19 @@ export async function approveBurn (api: ApiPromise, sender: KeyringPair | string
 export async function queryCarbonBalance (api: ApiPromise, assetId: string, address: string):Promise<Record<string, any>> {
   const key = createTypeUnsafe(typeRegistry, '(Hash, AccountId)', [[assetId, address]]);
   const balance = await api.query.carbonAssets.balances(key.toHex());
+
   return {
     assetId,
     balance: balance.toString()
   };
 
   // console.log(`queryCarbonBalance: (${assetId}, ${address}) => ${balance.toHuman()}`);
+}
+
+export function queryCarbonBalanceKey (assetId: string, address: string):string {
+  const key = createTypeUnsafe(typeRegistry, '(Hash, AccountId)', [[assetId, address]]);
+
+  return key.toHex();
 }
 
 export async function transferCarbonAsset (api: ApiPromise, sender: KeyringPair | string, assetId: string, to: string, amount: string):Promise<void> {
@@ -284,6 +291,13 @@ export async function queryStandardBalance (api: ApiPromise, moneyId: string, ad
     moneyId,
     balance: balance.toHuman()
   };
+}
+
+export function queryStandardBalanceKey (moneyId: string, address: string):string {
+  const key = createTypeUnsafe(typeRegistry, '(Hash, AccountId)', [[moneyId, address]]);
+
+  return key.toHex();
+  // console.log(`queryStandardBalance: (${moneyId}, ${address}) => ${balance.toHuman()}`);
 }
 
 export async function makeOrder (api: ApiPromise, sender: KeyringPair | string, assetId: string, moneyId: string, price: string, amount: string, direction: number):Promise<void> {

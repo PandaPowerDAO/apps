@@ -84,7 +84,7 @@ function General ({ className = '' }: Props): React.ReactElement<Props> {
     [settings]
   );
 
-  const { i18nLang, icon, ledgerConn, prefix, uiTheme } = settings;
+  const { i18nLang, icon, ledgerConn } = settings;
 
   return (
     <div className={className}>

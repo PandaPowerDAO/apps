@@ -1,6 +1,8 @@
 // Copyright 2017-2020 @polkadot/app-democracy authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -14,12 +16,6 @@ import { queryAsset, queryAssetsList, queryProject } from '@eco/eco-utils/servic
 import { formatDate, beautifulNumber } from '@eco/eco-utils/utils';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
-
-const OwnerTd = styled.td`
-    overflow: hidden;
-    max-width: 200px;
-    text-overflow: ellipsis;
-`;
 
 const OperationBtnWrapper = styled.div`
   display: flex;
@@ -171,7 +167,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     async function query () {
       console.log('ecoAccount -----', ecoAccount);
       const result = await queryAssetsList({
-        owner: (ecoAccount || '') as string,
+        owner: (ecoAccount || ''),
         offset: (offset || 0) as number,
         limit: pagination.pageSize
       });
@@ -193,8 +189,6 @@ function Home ({ className }: Props): React.ReactElement<Props> {
       }
 
       recursionQueryDetail(result.docs, queryAssetDetail);
-
-      console.log('queryAssets==============', result);
     }
 
     return query();
@@ -274,15 +268,15 @@ function Home ({ className }: Props): React.ReactElement<Props> {
         >
           {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
             return <tr key={rowIndex}>
-              <td><IconLink href={`#/ecassets/assets-detail?asset=${v.assetId as string}`}
+              <td><IconLink href={`#/ecassets/assets-detail?asset=${v.assetId as string}&symbol=${`${v.symbol as string}(${v.vintage as string})`}`}
                 label={`${v.symbol as string}(${v.vintage as string})`}></IconLink></td>
               <td>{v.type === 'standard' ? '标准资产' : '碳汇资产'}</td>
               <td>{v.vintage}</td>
+              <td>{beautifulNumber((v as DataItem).projectDetail.project.max_supply)}</td>
               <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td>
-              <td>{beautifulNumber((v as DataItem).assetDetail.asset.initial_supply)}</td>
               {/* <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td> */}
               {/* <td>{v.precision || '-'}</td> */}
-              {/* <OwnerTd>{v.owner}</OwnerTd>*/}
+              {/* <OwnerTd>{v.owner}</OwnerTd> */}
               <td>{formatDate(v.timestamp)}</td>
               <td>{StatusMap[v.approved === 1 ? '1' : '0'] || StatusMap[0]}</td>
               <td>

@@ -69,17 +69,17 @@ const resolvePrice = (price:number|string):string|null|unknown => {
     return price;
   }
 
-  return beautifulNumber(unitToEco(price).toString());
+  return beautifulNumber(unitToEco(price, 2).toString());
 };
 
 function OrderList (props: Props): React.ReactElement<Props> {
-  const { closed, title, reverse, action, handleAction = noop, isMine, refreshFlag } = props;
+  const { closed, title, reverse, action, handleAction = noop, isMine } = props;
 
   const header = useMemo(() => {
     const _header = [
       ['资产', 'header'],
       ['数量', 'header'],
-      ['价格', 'header'],
+      ['价格(吨/ECO2)', 'header'],
       ['方向', 'header'],
       ['操作', 'header']
 
@@ -104,23 +104,11 @@ function OrderList (props: Props): React.ReactElement<Props> {
     async function _queryDetail () {
       const result = await queryOrder(api, orderItem.orderId);
 
-      console.log('result', result, orderItem.orderId);
       tempRecordsRef.current.push({
         ...orderItem,
         ...(result as OrderDetail || {}),
         orderId: orderItem.orderId
       });
-
-      // const projectDetail = await queryProject(api, assetItem.projectId);
-      // updateRecords((_records) => {
-      //   return [
-      //     ..._records,
-      //     {
-      //       ...orderItem,
-      //       ...(result as OrderDetail || {})
-      //     }
-      //   ];
-      // });
     }
 
     return _queryDetail();
@@ -139,6 +127,8 @@ function OrderList (props: Props): React.ReactElement<Props> {
         return;
       }
 
+      console.log('query', _curItem);
+
       await queryFn(_curItem);
 
       if (arr.length > 0) {
@@ -155,7 +145,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
   const queryOrderList = useCallback((offset = 0) => {
     async function query () {
       const result = await queryCarbonOrders({
-        owner: isMine ? (ecoAccount as string || '') : '',
+        owner: isMine ? (ecoAccount || '') : '',
         offset: (offset || 0) as number * pagination.pageSize,
         limit: pagination.pageSize,
         closed,
@@ -172,14 +162,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
       });
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (result && result.docs.length > 0) {
-        // updateRecords([]);
-        tempRecordsRef.current = [];
-      } else {
-        return;
-      }
-
-      console.log('result.docs', result.docs);
+      tempRecordsRef.current = [];
 
       recursionQueryDetail(result.docs, queryAssetDetail);
     }
@@ -200,16 +183,6 @@ function OrderList (props: Props): React.ReactElement<Props> {
       handlePageChange(1);
     }
   }, [ecoAccount]);
-
-  // useEffect(() => {
-  //   if (refreshFlag) {
-  //     updatePagination((_pagination) => {
-  //       handlePageChange(+(_pagination.current as number) + 1);
-
-  //       return _pagination;
-  //     });
-  //   }
-  // }, [refreshFlag]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -250,7 +223,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
             return <tr key={rowIndex}>
               <td>{v.assetSymbol}</td>
               <td>{beautifulNumber((v.amount)) || '-'}</td>
-              <td>{resolvePrice(v.price) || '-'}/g</td>
+              <td>{resolvePrice(v.price) as string || '-'}</td>
               <td>{Sides[v.direction as number] || '-'}</td>
               {
                 action ? <td>

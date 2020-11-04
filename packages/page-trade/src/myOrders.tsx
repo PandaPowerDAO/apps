@@ -21,7 +21,7 @@ function MyOrderList (props: Props): React.ReactElement<Props> {
   const handleAction = useCallback((orderItem: OrderItem): void => {
     async function _cancel () {
       try {
-        await cancelOrder(api, ecoAccount as string, orderItem.orderId);
+        await cancelOrder(api, ecoAccount, orderItem.orderId);
         // message.info('取消成功');
       } catch (e) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -40,7 +40,7 @@ function MyOrderList (props: Props): React.ReactElement<Props> {
         closed={0}
         handleAction={handleAction}
         isMine
-        reverse={0}
+        reverse={1}
         title='所有订单'
       />
       <div>
@@ -49,7 +49,7 @@ function MyOrderList (props: Props): React.ReactElement<Props> {
           closed={1}
           // handleAction={handleAction}
           isMine
-          reverse={0}
+          reverse={1}
           title='历史挂单'
         />
       </div>

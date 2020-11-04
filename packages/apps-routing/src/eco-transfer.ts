@@ -3,14 +3,19 @@
 
 import { Route } from './types';
 
-import Component from '@eco/page-eco-transfer';
+import Modal from '@eco/page-eco-transfer/newTransfer';
 
 export default function create (t: <T = string> (key: string, text: string, options: { ns: string }) => T): Route {
   return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    Component,
+    Component: Modal,
+    Modal,
     display: {
-      needsApi: []
+      needsApi: [
+        'tx.balances.transfer',
+        'tx.carbonAssets.transfer',
+        'tx.standardAssets.transfer'
+      ]
     },
     group: 'ecotransfer',
     icon: 'paper-plane',

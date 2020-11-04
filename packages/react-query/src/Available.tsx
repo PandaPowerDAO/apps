@@ -20,6 +20,8 @@ function AvailableDisplay ({ children, className = '', label, params }: Props): 
   const { api } = useApi();
   const allBalances = useCall<DeriveBalancesAll>(api.derive.balances.all, [params]);
 
+  console.log('allBalances', allBalances, allBalances?.availableBalance.toHuman());
+
   return (
     <FormatBalance
       className={className}

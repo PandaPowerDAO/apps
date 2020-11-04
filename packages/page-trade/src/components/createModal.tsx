@@ -6,7 +6,7 @@ import { Modal, Dropdown, Input, Button } from '@polkadot/react-components';
 import { Form } from 'antd';
 import { useApi } from '@polkadot/react-hooks';
 
-import { queryAssetsList, makeOrder } from '@eco/eco-utils/service';
+import { queryAssetsList, makeOrder, queryPotentialBalance } from '@eco/eco-utils/service';
 import { requiredValidator, ecoToUnit } from '@eco/eco-utils/utils';
 import { ModalProps } from '@polkadot/react-components/Modal/types';
 import styled from 'styled-components';
@@ -32,6 +32,7 @@ const FormWrapper = styled.div`
     border-color: #e0b4b4!important;
   }
 }
+
 .ui--Labelled {
   padding-left: 0!important
   label {
@@ -76,9 +77,9 @@ function CreateModal (props: Props): React.ReactElement<Props> {
       try {
         const formValues = await form.validateFields();
 
-        const _price = ecoToUnit(formValues.price).toString();
+        const _price = ecoToUnit(formValues.price, 2).toString();
 
-        await makeOrder(api, ecoAccount as string, formValues.assetId, '', _price, formValues.amount, formValues.direction);
+        await makeOrder(api, ecoAccount, formValues.assetId, '', _price, formValues.amount, formValues.direction);
         onClose();
         // message.info('订单创建成功');
       } catch (e) {
@@ -91,30 +92,50 @@ function CreateModal (props: Props): React.ReactElement<Props> {
     _commit();
   }, []);
 
-  const getAssets = useCallback(() => {
+  const getAssets = useCallback((direction) => {
     async function _query () {
-      const result = await queryAssetsList({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      // const direction = form.getFieldValue('assetId');
+      const method = direction === 'buy' ? queryAssetsList : queryPotentialBalance;
+      const result = await method({
         limit: 100,
-        offset: 0
+        offset: 0,
+        owner: direction === 'sell' ? ecoAccount : ''
       });
 
-      updateAssets(result.docs.map((doc: AssetItemType): AssetItemType => {
-        return {
-          ...doc,
-          text: `${doc.symbol as string}(${doc.vintage as string})`,
-          value: doc.assetId
-        };
-      }));
+      const _result = direction === 'buy' ? result.docs : result;
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      updateAssets(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        (_result as AssetItemType[]).map((doc: AssetItemType): AssetItemType => {
+          return {
+            ...doc,
+            text: `${doc.symbol as string}${doc.vintage ? `.${doc.vintage as string}` : ''}`,
+            value: doc.assetId
+          };
+        }).filter((v: AssetItemType) => (direction === 'buy' && v.approved === 1) || direction === 'sell'));
 
       console.log(result);
     }
 
     _query();
-  }, []);
+  }, [ecoAccount]);
 
   useEffect(() => {
-    getAssets();
-  }, []);
+    if (ecoAccount) {
+      console.log('ecoAccount', ecoAccount);
+      getAssets('buy');
+    }
+  }, [ecoAccount, getAssets]);
+
+  const priceValidator = async (rule: any, value: string): Promise<void> => {
+    if (!/^(([1-9][0-9]*)|0)(\.?\d{0,2})$/.test(value)) {
+      throw new Error('请输入正确的数字，最大支持2位精度');
+    }
+
+    await Promise.resolve();
+  };
 
   return (
     <Modal
@@ -134,6 +155,11 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               name='direction'
             >
               <FieldDecorator
+                onChange={(v) => {
+                  if (v) {
+                    getAssets(v === '1' ? 'buy' : 'sell');
+                  }
+                }}
               >
                 <Dropdown
                   defaultValue={'1'}
@@ -153,7 +179,6 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               }]}
               validateTrigger={['onSubmit']}>
               <FieldDecorator
-                onChange={(v) => { console.log(v); }}
                 required
               >
                 <Dropdown
@@ -170,13 +195,18 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               name='price'
               rules={[{
                 validator: requiredValidator
-              }]}>
+              }, {
+                validator: priceValidator
+              }]}
+              validateFirst
+            >
               <FieldDecorator
                 required
               >
                 <Input
                   isFull={false}
                   label={<div>价格</div>}
+                  labelExtra='吨'
                   maxLength={500}
                   // onChange={(name: string) => setFieldsValue({ name })}
                   placeholder='请输入价格'

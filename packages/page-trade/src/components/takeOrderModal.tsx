@@ -73,7 +73,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
       try {
         const formValues = await form.validateFields();
 
-        await takeOrder(api, ecoAccount as string, orderItem.orderId, formValues.amount);
+        await takeOrder(api, ecoAccount, orderItem.orderId, formValues.amount);
         onClose();
         // message.info('发送成功');
       } catch (e) {

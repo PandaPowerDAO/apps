@@ -5,13 +5,14 @@ import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Table } from '@polkadot/react-components';
 import { Pagination } from 'antd';
 import Panel from '@eco/eco-components/Panel';
-import { useApi } from '@polkadot/react-hooks';
+// import { useApi } from '@polkadot/react-hooks';
 
-import { queryOrderDeals, queryOrder } from '@eco/eco-utils/service';
+import { queryOrderDeals } from '@eco/eco-utils/service';
 import { formatDate, unitToEco, beautifulNumber } from '@eco/eco-utils/utils';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { debounce } from 'lodash';
+import styled from 'styled-components';
 
 interface HanleAction {
   (orderItem: OrderItem): Promise<void> | void
@@ -45,6 +46,12 @@ interface QueryDetailFn {
   (assetItem: OrderItem): Promise<void>
 }
 
+const DealsWrapper = styled.div`
+  tbody tr td {
+    text-align: right!important;
+  }
+`;
+
 // const noop = (e: OrderItem) => Promise.resolve(undefined);
 
 const resolvePrice = (price:number|string):string|null|unknown => {
@@ -52,7 +59,7 @@ const resolvePrice = (price:number|string):string|null|unknown => {
     return price;
   }
 
-  return beautifulNumber(unitToEco(price).toString());
+  return beautifulNumber(unitToEco(price, 2).toString());
 };
 
 function OrderList (props: Props): React.ReactElement<Props> {
@@ -74,35 +81,23 @@ function OrderList (props: Props): React.ReactElement<Props> {
   const tempRecordsRef = useRef<Record<string, any>[]>([]);
   const [ecoAccount] = useECOAccount();
 
-  const { api } = useApi();
+  // const { api } = useApi();
 
-  const queryAssetDetail = useCallback((orderItem: OrderItem): Promise<void> => {
-    async function _queryDetail () {
-      const result = await queryOrder(api, orderItem.orderId);
+  // const queryAssetDetail = useCallback((orderItem: OrderItem): Promise<void> => {
+  //   async function _queryDetail () {
+  //     const result = await queryOrder(api, orderItem.orderId);
 
-      console.log('sssss', result);
+  //     tempRecordsRef.current = [
+  //       ...tempRecordsRef.current,
+  //       {
+  //         ...orderItem,
+  //         orderDetail: result
+  //       }
+  //     ];
+  //   }
 
-      tempRecordsRef.current = [
-        ...tempRecordsRef.current,
-        {
-          ...orderItem,
-          orderDetail: result
-        }
-      ];
-      // const projectDetail = await queryProject(api, assetItem.projectId);
-      // updateRecords((_records) => {
-      //   return [
-      //     ..._records,
-      //     {
-      //       ...orderItem,
-      //       orderDetail: result
-      //     }
-      //   ];
-      // });
-    }
-
-    return _queryDetail();
-  }, []);
+  //   return _queryDetail();
+  // }, []);
 
   // 递归查询资产详情
   const recursionQueryDetail = useCallback((arr: OrderItem[], queryFn: QueryDetailFn) => {
@@ -133,11 +128,11 @@ function OrderList (props: Props): React.ReactElement<Props> {
     async function query () {
       // console.log('ecoAccount -----', ecoAccount);
       const result = await queryOrderDeals({
-        owner: isMine ? (ecoAccount as string || '') : '',
+        owner: isMine ? (ecoAccount || '') : '',
         offset: (offset || 0) as number * pagination.pageSize,
         limit: pagination.pageSize,
         // closed,
-        reverse: reverse || 0
+        reverse: reverse || 1
       });
 
       updatePagination((_pagination) => {
@@ -158,14 +153,15 @@ function OrderList (props: Props): React.ReactElement<Props> {
         // return;
       }
 
-      recursionQueryDetail(result.docs, queryAssetDetail);
+      updateRecords(result.docs);
+
+      // recursionQueryDetail(result.docs, queryAssetDetail);
     }
 
     return query();
   }, [ecoAccount]);
 
   const handlePageChange = useCallback(debounce((page) => {
-    console.log('query page', page);
     queryOrderList((page - 1));
   }, 300), []);
 
@@ -182,7 +178,6 @@ function OrderList (props: Props): React.ReactElement<Props> {
   useEffect(() => {
     const timer = setInterval(() => {
       updatePagination((_pagination) => {
-        console.log('_pagination.current ', _pagination.current);
         queryOrderList(+(_pagination.current as number) - 1);
 
         return _pagination;
@@ -198,41 +193,44 @@ function OrderList (props: Props): React.ReactElement<Props> {
   }, []);
 
   return (
-    <Panel title={title}>
-      <Table
-        empty={<div style={{ textAlign: 'center' }}>暂无数据</div>}
-        footer={
-          <tr>
-            <td colSpan={100}>
-              <Pagination
-                {...pagination}
-                onChange={handlePageChange}
-              />
-            </td>
-          </tr>
-        }
-        header={header}
-        remainHeader
-      >
-        {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
-          return <tr key={rowIndex}>
+    <DealsWrapper>
+      <Panel title={title}>
+        <Table
+          empty={<div style={{ textAlign: 'center' }}>暂无数据</div>}
+          footer={
+            <tr>
+              <td colSpan={100}>
+                <Pagination
+                  {...pagination}
+                  onChange={handlePageChange}
+                />
+              </td>
+            </tr>
+          }
+          header={header}
+          remainHeader
+        >
+          {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
+            return <tr key={rowIndex}>
 
-            <td>{formatDate(v.timestamp as number)}</td>
-            <td>{v.assetSymbol}</td>
-            <td>{resolvePrice(v.price as string || 0) as string || '-'}</td>
-            <td>{v.amount}</td>
-            {/* {
+              <td>{formatDate(v.timestamp as number)}</td>
+              <td>{v.assetSymbol}</td>
+              <td>{resolvePrice(v.price as string || 0) as string || '-'}吨/ECO2</td>
+              <td>{beautifulNumber(v.amount || '0')}</td>
+              {/* {
               action ? <td>
                 <div onClick={() => handleAction(v as OrderItem)}>
                   {action}
                 </div>
               </td> : null
             } */}
-          </tr>;
-        })}
-      </Table>
+            </tr>;
+          })}
+        </Table>
 
-    </Panel>);
+      </Panel>
+    </DealsWrapper>
+  );
 }
 
 export default OrderList;

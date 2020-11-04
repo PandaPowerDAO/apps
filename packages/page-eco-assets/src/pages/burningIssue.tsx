@@ -78,8 +78,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
         balance
       } = await queryCarbonBalance(api, assetId, address);
       const assetDetail = await queryAsset(api, assetId);
-      console.log(assetDetail, '==============')
-      console.log('additionals', balance);
+
       updateAssetsInfo({
         ...(assetDetail.asset || {}),
         ...(assetDetail.additionals || {}),
@@ -110,7 +109,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
     async function submit () {
       // form.proponent
       const { amount, ...additionals } = values;
-      const result = await submitBurn(api, ecoAccount as string, assetId, amount, additionals);
+      const result = await submitBurn(api, ecoAccount, assetId, amount, additionals);
 
       // message.info('申请提交成功');
       form.resetFields();

@@ -9,9 +9,10 @@ import styled from 'styled-components';
 import Panel from '@eco/eco-components/Panel';
 import { queryAsset, queryPotentialBalance, queryBalance, queryCarbonBalance, queryStandardBalance } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
-import { useApi } from '@polkadot/react-hooks';
+import { useApi, useToggle } from '@polkadot/react-hooks';
 import AssetViewItem from './components/item';
-
+import EcoTransfer from '@eco/page-eco-transfer/newTransfer';
+import store from 'store';
 import BN from 'bn.js';
 
 interface Props {
@@ -49,6 +50,7 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
 
   const { api } = useApi();
   const [ecoAccount] = useECOAccount();
+  const [isModalVisible, toggleModal] = useToggle();
 
   const queryAssetInfo = useCallback((asset: Asset) => {
     async function _query () {
@@ -66,13 +68,13 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
       }
 
       if (asset.assetId === 'eco2') {
-        balance = await queryBalance(api, ecoAccount as string);
+        balance = await queryBalance(api, ecoAccount);
         console.log('balance', balance);
         balance.balance = new BN(balance.balance || 0).div(new BN(10).pow(new BN(8))).toString();
       } else if (asset.type === 'carbon') {
-        balance = await queryCarbonBalance(api, asset.assetId, ecoAccount as string);
+        balance = await queryCarbonBalance(api, asset.assetId, ecoAccount);
       } else {
-        balance = await queryStandardBalance(api, asset.moneyId as string, ecoAccount as string);
+        balance = await queryStandardBalance(api, asset.moneyId as string, ecoAccount);
       }
 
       tempAssetListRef.current.push({
@@ -169,6 +171,11 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
   const standards: Asset[] = assetsList.filter((_assetItem: Asset) => _assetItem.type === 'standard');
   const carbons: Asset[] = assetsList.filter((_assetItem: Asset) => _assetItem.type !== 'standard');
 
+  const handleTransfer = useCallback((asset: Record<string, string | number>) => {
+    store.set('__eco_asset_detail_id', asset.assetId);
+    toggleModal();
+  }, []);
+
   console.log('carbons', carbons);
 
   return (
@@ -179,12 +186,22 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
         <p>3、阿斯顿发送到发送到发的是发送到发送到发送到</p>
       </Panel> */}
       <Panel
+        css={`
+          & .panel-content{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+          }
+          `
+        }
         title='标准资产'
       >
         {standards.map((standardAsset: Asset) => {
           return <AssetViewItem
             asset={standardAsset}
             balance={standardAsset.balance}
+            handleTransfer={handleTransfer}
             key={standardAsset.assetId}
             type='standard'
           />;
@@ -192,18 +209,31 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
         {!standards.length && <Empty>暂无数据</Empty>}
       </Panel>
       <Panel
+        css={`
+          & .panel-content{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+          }
+          `
+        }
         title='碳汇资产'
       >
         {carbons.map((carbonAsset: Asset) => {
           return <AssetViewItem
             asset={carbonAsset}
             balance={carbonAsset.balance}
+            handleTransfer={handleTransfer}
             key={carbonAsset.assetId}
             type='carbon'
           />;
         })}
         {!carbons.length && <Empty>暂无数据</Empty>}
       </Panel>
+      {
+        isModalVisible && <EcoTransfer onClose={toggleModal} />
+      }
     </div>
   );
 }

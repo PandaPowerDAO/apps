@@ -5,7 +5,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import QRCode from 'qrcode.react';
 // import CopyToClipBoard from 'copy-to-clipboard';
-import { useApi } from '@polkadot/react-hooks';
+import { useApi, useToggle } from '@polkadot/react-hooks';
 import Panel from '@eco/eco-components/Panel';
 // import { Table } from '@polkadot/react-components';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -22,6 +22,8 @@ import { CopyButton, Button } from '@polkadot/react-components';
 // import { push } from 'history';
 import TranserSvg from '../assets/transfer.svg';
 import NeutralizationSvg from '../assets/neutralization.svg';
+import EcoTransfer from '@eco/page-eco-transfer/newTransfer';
+import store from 'store';
 // import CollectionSvg from '../assets/collection.svg';
 
 interface Props {
@@ -129,6 +131,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     current: 0,
     pageSize: 10
   });
+  const [isModalVisible, toggleModal] = useToggle();
 
   const history = useHistory();
 
@@ -139,7 +142,8 @@ function Home ({ className }: Props): React.ReactElement<Props> {
   const [assetInfo, updateAssetInfo] = useState<AnyObj>({});
   const { api } = useApi();
   const location = useLocation();
-  const assetId = parseQuery(location.search || '').asset || '';
+  const queryObj = parseQuery(location.search || '') || {};
+  const { asset: assetId, symbol = '' } = queryObj;
   const [ecoAccount] = useECOAccount();
 
   useEffect(() => {
@@ -148,7 +152,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
 
       const {
         balance
-      } = await queryCarbonBalance(api, assetId, ecoAccount as string);
+      } = await queryCarbonBalance(api, assetId, ecoAccount);
 
       console.log('assetDetail', assetDetail);
 
@@ -192,9 +196,10 @@ function Home ({ className }: Props): React.ReactElement<Props> {
   }, []);
 
   const goTransfer = useCallback(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    history.push(`/ectransfer?asset=${assetId}`);
-  }, [assetId]);
+    store.set('__eco_asset_detail_id', assetId);
+    toggleModal();
+  }, []);
+
   const goNeutralization = useCallback(() => {
     history.push(`/neutralization?asset=${assetId}`);
   }, []);
@@ -202,16 +207,16 @@ function Home ({ className }: Props): React.ReactElement<Props> {
   return <div className={className}>
     <AssetsPanel>
       <div>
-        <PanelTitle>{fromHex(assetInfo.symbol as string || '')}</PanelTitle>
+        <PanelTitle>{symbol || fromHex(assetInfo.symbol as string || '')}</PanelTitle>
         <AddressWrapper>
           <span> 收款地址: </span>
-          <span className='address'>{ecoAccount as string}</span>
+          <span className='address'>{ecoAccount}</span>
           {/* <span><CopyToClipBoard text={assetInfo.owner as string as unknown || ''} >copy</CopyToClipBoard></span> */}
           <CopyButton isAddress
             value={ecoAccount}>
           </CopyButton>
           <span><Tooltip color='#fff'
-            title={<QRCode value={ecoAccount as string || ''} />}>
+            title={<QRCode value={ecoAccount || ''} />}>
             <Button
               className='icon-button show-on-hover'
               icon={'qrcode'}
@@ -246,40 +251,13 @@ function Home ({ className }: Props): React.ReactElement<Props> {
           资产介绍说明
       </div>
     </Panel>
-    {/* <Panel title='最近交易'>
-      <NoPaddingTable
-        columns={columns}
-        datasource={records}
-        empty={<div style={{ textAlign: 'center' }}>暂无数据</div>}
-        onChange={queryDeals}
-        pagination={{
-          ...pagination
-          // curPage: pagination.current as number
-        }}
-        remainHeader
-      />
-
-    </Panel> */}
     <CmptDeals closed={1}
       isMine={false}
       reverse={0}
       title='最近交易' />
-    {/* <Modal
-      open={showTransferModal}
-
-    >
-      <Modal.Content>
-        <div>
-          <InputAddress />
-        </div>
-        <div>
-          <Input />
-        </div>
-      </Modal.Content>
-      <Modal.Actions onCancel={onClose}>
-
-      </Modal.Actions>
-    </Modal> */}
+    {isModalVisible && (
+      <EcoTransfer onClose={toggleModal} />
+    )}
   </div>;
 }
 
