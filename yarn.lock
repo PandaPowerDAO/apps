@@ -5938,6 +5938,62 @@ __metadata:
   languageName: node
   linkType: hard
 
+"apps@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "apps@workspace:."
+  dependencies:
+    "@babel/core": ^7.12.3
+    "@babel/register": ^7.12.1
+    "@babel/runtime": ^7.12.1
+    "@material-ui/core": ^4.11.0
+    "@pinata/sdk": ^1.1.11
+    "@polkadot/dev": ^0.58.4
+    "@polkadot/ts": ^0.3.49
+    "@polkadot/x-textdecoder": ^0.3.3
+    "@polkadot/x-textencoder": ^0.3.3
+    "@types/bn.js": ^4.11.6
+    "@types/chart.js": ^2.9.25
+    "@types/file-saver": ^2.0.1
+    "@types/jest": ^26.0.14
+    "@types/qrcode.react": ^1.0.1
+    "@types/react-beautiful-dnd": ^13.0.0
+    "@types/react-copy-to-clipboard": ^4.3.0
+    "@types/react-dom": ^16.9.8
+    "@types/react-router-dom": ^5.1.6
+    "@types/store": ^2.0.2
+    "@types/styled-components": ^5.1.4
+    "@types/styled-theming": ^2.2.5
+    antd: ^4.6.6
+    axios: ^0.20.0
+    bn.js: ^5.1.3
+    camelcase: ^5.3.1
+    chalk: ^4.1.0
+    concurrently: ^5.3.0
+    copy-to-clipboard: ^3.3.1
+    devtron: ^1.4.0
+    dnslink-cloudflare: ^3.0.0
+    electron: ^9.3.2
+    electron-builder: ^22.9.1
+    electron-builder-notarize: ^1.2.0
+    i18next-scanner: ^2.11.0
+    ip-regex: ^4.2.0
+    lerna: ^3.20.2
+    qrcode.react: ^1.0.0
+    rc-form: ^2.4.11
+    react: ^16.14.0
+    react-dom: ^16.14.0
+    source-map-explorer: ^2.5.0
+    stylelint: ^13.7.2
+    stylelint-config-recommended: ^3.0.0
+    stylelint-config-styled-components: ^0.1.1
+    terser-webpack-plugin: ^4.2.3
+    webpack: ^4.44.2
+    webpack-cli: ^3.3.12
+    webpack-merge: ^5.2.0
+    webpack-plugin-serve: ^1.1.0
+  languageName: unknown
+  linkType: soft
+
 "aproba@npm:^1.0.3, aproba@npm:^1.1.1":
   version: 1.2.0
   resolution: "aproba@npm:1.2.0"
@@ -17259,62 +17315,6 @@ fsevents@^1.2.7:
   checksum: 5251b470a0c8e5181ac7e1d61028553f90cb2c85c34b8e468cea269ae715499524546c2c3681029ef5697d86c54bfb12e49388f5cc6082051e84f5888588f4ec
   languageName: node
   linkType: hard
-
-"polkadot-apps@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "polkadot-apps@workspace:."
-  dependencies:
-    "@babel/core": ^7.12.3
-    "@babel/register": ^7.12.1
-    "@babel/runtime": ^7.12.1
-    "@material-ui/core": ^4.11.0
-    "@pinata/sdk": ^1.1.11
-    "@polkadot/dev": ^0.58.4
-    "@polkadot/ts": ^0.3.49
-    "@polkadot/x-textdecoder": ^0.3.3
-    "@polkadot/x-textencoder": ^0.3.3
-    "@types/bn.js": ^4.11.6
-    "@types/chart.js": ^2.9.25
-    "@types/file-saver": ^2.0.1
-    "@types/jest": ^26.0.14
-    "@types/qrcode.react": ^1.0.1
-    "@types/react-beautiful-dnd": ^13.0.0
-    "@types/react-copy-to-clipboard": ^4.3.0
-    "@types/react-dom": ^16.9.8
-    "@types/react-router-dom": ^5.1.6
-    "@types/store": ^2.0.2
-    "@types/styled-components": ^5.1.4
-    "@types/styled-theming": ^2.2.5
-    antd: ^4.6.6
-    axios: ^0.20.0
-    bn.js: ^5.1.3
-    camelcase: ^5.3.1
-    chalk: ^4.1.0
-    concurrently: ^5.3.0
-    copy-to-clipboard: ^3.3.1
-    devtron: ^1.4.0
-    dnslink-cloudflare: ^3.0.0
-    electron: ^9.3.2
-    electron-builder: ^22.9.1
-    electron-builder-notarize: ^1.2.0
-    i18next-scanner: ^2.11.0
-    ip-regex: ^4.2.0
-    lerna: ^3.20.2
-    qrcode.react: ^1.0.0
-    rc-form: ^2.4.11
-    react: ^16.14.0
-    react-dom: ^16.14.0
-    source-map-explorer: ^2.5.0
-    stylelint: ^13.7.2
-    stylelint-config-recommended: ^3.0.0
-    stylelint-config-styled-components: ^0.1.1
-    terser-webpack-plugin: ^4.2.3
-    webpack: ^4.44.2
-    webpack-cli: ^3.3.12
-    webpack-merge: ^5.2.0
-    webpack-plugin-serve: ^1.1.0
-  languageName: unknown
-  linkType: soft
 
 "popper.js@npm:1.16.1-lts":
   version: 1.16.1-lts
