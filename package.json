@@ -1,10 +1,10 @@
 {
-  "name": "polkadot-apps",
+  "name": "eco2-apps",
   "repository": "https://github.com/polkadot-js/apps",
   "main": "packages/apps-electron/build/electron.js",
   "description": "An Apps portal into the Polkadot network",
   "author": "Jaco Greeff <jacogr@gmail.com>",
-  "version": "0.63.1",
+  "version": "1.0.0",
   "license": "Apache-2",
   "private": true,
   "homepage": ".",
