@@ -161,7 +161,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
 
     async function _queryDeals () {
       const result = await queryCarbonDeals({
-        owner: (ecoAccount || '') as string,
+        owner: '',
         offset: (offset || 0) as number,
         limit: pagination.pageSize
       });
@@ -231,12 +231,13 @@ function Home ({ className }: Props): React.ReactElement<Props> {
       <NoPaddingTable
         columns={columns}
         datasource={records}
-        empty='暂无数据'
+        empty={<div style={{ textAlign: 'center' }}>暂无数据</div>}
         onChange={queryDeals}
         pagination={{
           ...pagination
           // curPage: pagination.current as number
         }}
+        remainHeader
       />
     </Panel>
     {/* <Modal

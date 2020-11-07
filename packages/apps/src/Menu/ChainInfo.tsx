@@ -1,25 +1,25 @@
 // Copyright 2017-2020 @polkadot/apps authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { RuntimeVersion } from '@polkadot/types/interfaces';
+// import { RuntimeVersion } from '@polkadot/types/interfaces';
 
 import React from 'react';
 import styled from 'styled-components';
 import { ChainImg, Icon } from '@polkadot/react-components';
-import { useApi, useCall, useIpfs, useToggle } from '@polkadot/react-hooks';
+import { useIpfs, useToggle } from '@polkadot/react-hooks';
 import { BestNumber, Chain } from '@polkadot/react-query';
 
 import Endpoints from '../Endpoints';
-import { useTranslation } from '../translate';
+// import { useTranslation } from '../translate';
 
 interface Props {
   className?: string;
 }
 
 function ChainInfo ({ className }: Props): React.ReactElement<Props> {
-  const { t } = useTranslation();
-  const { api } = useApi();
-  const runtimeVersion = useCall<RuntimeVersion>(api.rpc.state.subscribeRuntimeVersion);
+  // const { t } = useTranslation();
+  // const { api } = useApi();
+  // const runtimeVersion = useCall<RuntimeVersion>(api.rpc.state.subscribeRuntimeVersion);
   const { ipnsChain } = useIpfs();
   const [isEndpointsVisible, toggleEndpoints] = useToggle();
   const canToggle = !ipnsChain;
@@ -33,9 +33,9 @@ function ChainInfo ({ className }: Props): React.ReactElement<Props> {
         <ChainImg />
         <div className='info media--1000'>
           <Chain className='chain' />
-          {runtimeVersion && (
+          {/* {runtimeVersion && (
             <div className='runtimeVersion'>{t<string>('version {{version}}', { replace: { version: runtimeVersion.specVersion.toNumber() } })}</div>
-          )}
+          )} */}
           <BestNumber
             className='bestNumber'
             label='#'
@@ -70,7 +70,6 @@ export default React.memo(styled(ChainInfo)`
     }
 
     img {
-      flex: 0;
       height: 3rem;
       margin-right: 0.5rem;
       width: 3rem;

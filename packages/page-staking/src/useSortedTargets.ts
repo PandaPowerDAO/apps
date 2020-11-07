@@ -7,6 +7,7 @@ import { SortedTargets, TargetSortBy, ValidatorInfo } from './types';
 
 import BN from 'bn.js';
 import { useMemo, useState } from 'react';
+import { registry } from '@polkadot/react-api';
 import { useAccounts, useApi, useCall, useDebounce } from '@polkadot/react-hooks';
 import { Option } from '@polkadot/types';
 import { BN_ONE, BN_ZERO, formatBalance } from '@polkadot/util';
@@ -64,9 +65,11 @@ function sortValidators (list: ValidatorInfo[]): ValidatorInfo[] {
 
 function extractSingle (allAccounts: string[], amount: BN = baseBalance(), { info }: DeriveStakingElected | DeriveStakingWaiting, favorites: string[], perValidatorReward: BN, isElected: boolean): [ValidatorInfo[], string[]] {
   const nominators: Record<string, boolean> = {};
-  const list = info.map(({ accountId, exposure, stakingLedger, validatorPrefs }): ValidatorInfo => {
-    let bondOwn = exposure.own.unwrap();
-    let bondTotal = exposure.total.unwrap();
+  const emptyExposure = registry.createType('Exposure');
+  const list = info.map(({ accountId, exposure = emptyExposure, stakingLedger, validatorPrefs }): ValidatorInfo => {
+    // some overrides (e.g. Darwinia Crab) does not have the own field in Exposure
+    let bondOwn = exposure.own?.unwrap() || BN_ZERO;
+    let bondTotal = exposure.total?.unwrap() || BN_ZERO;
     const skipRewards = bondTotal.isZero();
 
     if (bondTotal.isZero()) {
@@ -81,7 +84,7 @@ function extractSingle (allAccounts: string[], amount: BN = baseBalance(), { inf
     const rewardPayout = amount.isZero() || rewardSplit.isZero()
       ? BN_ZERO
       : amount.mul(rewardSplit).div(amount.add(bondTotal));
-    const isNominating = exposure.others.reduce((isNominating, indv): boolean => {
+    const isNominating = (exposure.others || []).reduce((isNominating, indv): boolean => {
       const nominator = indv.who.toString();
 
       nominators[nominator] = true;
@@ -104,7 +107,7 @@ function extractSingle (allAccounts: string[], amount: BN = baseBalance(), { inf
       isFavorite: favorites.includes(key),
       isNominating,
       key,
-      numNominators: exposure.others.length,
+      numNominators: (exposure.others || []).length,
       rankBondOther: 0,
       rankBondOwn: 0,
       rankBondTotal: 0,

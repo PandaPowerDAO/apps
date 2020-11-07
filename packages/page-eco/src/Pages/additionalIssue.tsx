@@ -100,7 +100,9 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
       const result = await submitIssue(api, ecoAccount as string, assetId, amount, additionals);
 
       console.log('result ----', result);
-      message.info('申请提交成功');
+
+      // message.info('申请提交成功');
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       form.resetFields();
       setProtocals({
         costPro: false,
@@ -274,7 +276,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
         <Panel>
           <div>
             <Checkbox
-              label='注册成为发行商，将消耗 100ECO及 10,000 ECC'
+              label='增发碳汇资产需要等待资产审查委员会审查通过后，您发行的碳汇资产会增加相应的可发行上限'
               onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
               value={protocals.costPro}
             />
@@ -282,7 +284,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
           </div>
           <div>
             <Checkbox
-              label='我同意遵守TOS协议内容'
+              label='发布提案将消耗 100ECO及 10,000 ECC'
               onChange={(registerPro: boolean) => setProtocalValue({ registerPro })}
               value={protocals.registerPro}
             />

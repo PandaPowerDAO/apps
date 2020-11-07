@@ -44,7 +44,7 @@ interface ProtocalProps {
 
 function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
   const [protocals, setProtocals] = useState<ProtocalProps>({
-    costPro: false,
+    // costPro: false,
     registerPro: false
   });
 
@@ -111,7 +111,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       message.info('申请提交成功');
       form.resetFields();
       setProtocals({
-        costPro: false,
+        // costPro: false,
         registerPro: false
       });
 
@@ -245,9 +245,24 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
           </Row>
         </Panel>
         <Panel>
+          {/* <div>
+            <Checkbox
+              label='请知晓，资产一旦销毁，不可撤回'
+              onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
+              value={protocals.costPro}
+            />
+
+          </div> */}
           <div>
             <Checkbox
-              label='注册成为发行商，将消耗 100ECO及 10,000 ECC'
+              label='销毁资产会优先扣除您资产可发行但未发行的额度，该部分不足的，将扣除您钱包账户的余额'
+              onChange={(registerPro: boolean) => setProtocalValue({ registerPro })}
+              value={protocals.registerPro}
+            />
+          </div>
+          <div>
+            <Checkbox
+              label='销毁碳汇资产需要等待资产审查委员会审查通过后，您的碳汇数字资产将被扣除，同时会将您的真实碳汇资产原路转回到您的碳汇资产账户中'
               onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
               value={protocals.costPro}
             />
@@ -255,7 +270,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
           </div>
           <div>
             <Checkbox
-              label='我同意遵守TOS协议内容'
+              label='销毁碳汇资产将消耗 100 ECO2 及 10,000 ECC'
               onChange={(registerPro: boolean) => setProtocalValue({ registerPro })}
               value={protocals.registerPro}
             />
@@ -264,7 +279,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
             textAlign: 'center',
             marginTop: '24px'
           }}>
-            <Button htmlType='submit'>申请</Button>
+            <Button htmlType='submit'>立即销毁</Button>
           </div>
         </Panel>
       </div>

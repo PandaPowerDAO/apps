@@ -5,6 +5,8 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { chainLogos, emptyLogo, namedLogos, nodeLogos } from '@polkadot/apps-config/ui/logos';
 import { useApi } from '@polkadot/react-hooks';
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+const logoImg = nodeLogos.eco2;
 
 interface Props {
   className?: string;
@@ -18,7 +20,7 @@ function sanitize (value?: string): string {
 
 function ChainImg ({ className = '', logo, onClick }: Props): React.ReactElement<Props> {
   const { systemChain, systemName } = useApi();
-  const [isEmpty, img] = useMemo((): [boolean, string] => {
+  const [isEmpty] = useMemo((): [boolean, string] => {
     const found: unknown = namedLogos[logo || ''] || chainLogos[sanitize(systemChain)] || nodeLogos[sanitize(systemName)];
 
     return [!found || logo === 'empty', (found || emptyLogo) as string];
@@ -29,7 +31,7 @@ function ChainImg ({ className = '', logo, onClick }: Props): React.ReactElement
       alt='chain logo'
       className={`${className}${isEmpty ? ' highlight--bg' : ''}`}
       onClick={onClick}
-      src={img}
+      src={logoImg as unknown as string}
     />
   );
 }

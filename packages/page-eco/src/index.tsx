@@ -13,18 +13,18 @@ import { useApi } from '@polkadot/react-hooks';
 import 'antd/dist/antd.css';
 import PageHome from './Pages/Home/home';
 import PageAssetsDetail from './Pages/Assets/detail';
-import PageRegisterIssuer from './Pages/RegisterIssuer';
+// import PageRegisterIssuer from './Pages/RegisterIssuer';
 import PageRegisterAssets from './Pages/registerAssets';
 import PageRegisterProject from './Pages/registerProject';
 import PageBurning from './Pages/burningIssue';
 import PageAdditional from './Pages/additionalIssue';
-import PageNeutralization from './Pages/neutralization';
-import PageAssetsList from './Pages/assetsList';
-import PageTransfer from './Pages/transfer';
+// import PageNeutralization from './Pages/neutralization';
+// import PageAssetsList from './Pages/assetsList';
+// import PageTransfer from './Pages/transfer';
 import ECOAccountProvider, { AccountSelector, AccountUpdator } from './Components/Account';
 import styled from 'styled-components';
 
-import { typesSpec } from '@polkadot/apps-config/api';
+// import { typesSpec } from '@polkadot/apps-config/api';
 
 import { setGaApi } from './service';
 
@@ -78,24 +78,24 @@ function EcoApp ({ basePath }: Props): React.ReactElement<Props> {
     //   // text: t<string>('Democracy overview')
     //   text: '资产详情'
     // },
+    // {
+    //   isRoot: false,
+    //   name: 'register-issuer',
+    //   // text: t<string>('Democracy overview')
+    //   text: '注册发行商'
+    // },
     {
       isRoot: false,
-      name: 'register-issuer',
+      name: 'register-assets',
       // text: t<string>('Democracy overview')
-      text: '注册发行商'
+      text: '注册碳汇资产'
     },
-    // {
-    //   isRoot: false,
-    //   name: 'register-assets',
-    //   // text: t<string>('Democracy overview')
-    //   text: '注册碳汇资产'
-    // },
-    // {
-    //   isRoot: false,
-    //   name: 'register-project',
-    //   // text: t<string>('Democracy overview')
-    //   text: '注册碳汇项目'
-    // },
+    {
+      isRoot: false,
+      name: 'register-project',
+      // text: t<string>('Democracy overview')
+      text: '注册碳汇项目'
+    }
     // {
     //   isRoot: false,
     //   name: 'additional',
@@ -108,25 +108,25 @@ function EcoApp ({ basePath }: Props): React.ReactElement<Props> {
     //   // text: t<string>('Democracy overview')
     //   text: '销毁'
     // },
-    {
-      isRoot: false,
-      name: 'neutralization',
-      text: '碳中和'
-    },
-    {
-      isRoot: false,
-      name: 'transfer',
-      text: '转账'
-    },
-    {
-      name: 'assets-list',
-      text: '我发行的碳汇资产'
-    }
+    // {
+    //   isRoot: false,
+    //   name: 'neutralization',
+    //   text: '碳中和'
+    // },
+    // {
+    //   isRoot: false,
+    //   name: 'transfer',
+    //   text: '转账'
+    // },
+    // {
+    //   name: 'assets-list',
+    //   text: '我发行的碳汇资产'
+    // }
   ], []);
 
   const { api } = useApi();
 
-  api.registerTypes(typesSpec.eco);
+  // api.registerTypes(typesSpec.eco);
 
   useEffect(() => {
     setGaApi(api);
@@ -158,11 +158,11 @@ function EcoApp ({ basePath }: Props): React.ReactElement<Props> {
               >
                 <PageAssetsDetail />
               </Route>
-              <Route
+              {/* <Route
                 path={`${basePath}/register-issuer`}
               >
                 <PageRegisterIssuer />
-              </Route>
+              </Route> */}
               <Route
                 path={`${basePath}/register-project`}
               >
@@ -178,21 +178,21 @@ function EcoApp ({ basePath }: Props): React.ReactElement<Props> {
               >
                 <PageBurning />
               </Route>
-              <Route
+              {/* <Route
                 path={`${basePath}/neutralization`}
               >
                 <PageNeutralization />
-              </Route>
-              <Route
+              </Route> */}
+              {/* <Route
                 path={`${basePath}/assets-list`}
               >
                 <PageAssetsList />
-              </Route>
-              <Route
+              </Route> */}
+              {/* <Route
                 path={`${basePath}/transfer`}
               >
                 <PageTransfer />
-              </Route>
+              </Route> */}
               <Route exact>
                 <PageHome />
               </Route>

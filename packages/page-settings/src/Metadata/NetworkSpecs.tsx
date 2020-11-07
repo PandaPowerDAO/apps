@@ -129,13 +129,13 @@ function NetworkSpecs ({ chainInfo, className }: Props): React.ReactElement<Prop
           label={t<string>('Unit')}
           value={networkSpecs.unit}
         />
-        <Input
+        {/* <Input
           className='full'
           help={t<string>('Prefix indicates the ss58 address format in this network, it is a number between 0 ~ 255 that describes the precise format of the bytes of the address')}
           isDisabled
           label={t<string>('Address Prefix')}
           value={networkSpecs.prefix.toString()}
-        />
+        /> */}
         <Input
           className='full'
           help={t<string>('Decimals decides the smallest unit of the token, which is 1/10^decimals')}

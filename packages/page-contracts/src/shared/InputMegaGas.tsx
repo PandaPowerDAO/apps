@@ -4,7 +4,7 @@
 import BN from 'bn.js';
 import React from 'react';
 import styled from 'styled-components';
-import { InputNumber, Progress } from '@polkadot/react-components';
+import { InputNumber } from '@polkadot/react-components';
 
 import { useTranslation } from '../translate';
 
@@ -14,70 +14,35 @@ interface Props {
   help: React.ReactNode;
   isValid: boolean;
   label: React.ReactNode;
+  labelExtra?: React.ReactNode;
   megaGas: BN;
   percentage: number;
   setMegaGas: (value?: BN) => void;
 }
 
-function InputMegaGas ({ className, executionTime, help, isValid, label, megaGas, percentage, setMegaGas }: Props): React.ReactElement<Props> {
+function InputMegaGas ({ className, executionTime, help, isValid, label, labelExtra, megaGas, percentage, setMegaGas }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
 
   return (
     <div className={className}>
       <InputNumber
-        className='contracts--InputMegaGas-input'
         help={help}
         isError={!isValid}
         label={label}
+        labelExtra={labelExtra}
         onChange={setMegaGas}
         value={megaGas}
-      >
-        <div className='contracts--InputMegaGas-meter'>
-          {t<string>('{{executionTime}}s execution time', { replace: { executionTime: executionTime.toFixed(3) } })}
-          <aside>
-            {t<string>('{{percentage}}% of block time', { replace: { percentage } })}
-          </aside>
-          <Progress
-            className='contracts--InputMegaGas-progress'
-            total={100}
-            value={percentage}
-          />
-        </div>
-      </InputNumber>
+      />
+      <div className='contracts--InputMegaGas-meter'>
+        {t<string>('{{executionTime}}s execution time', { replace: { executionTime: executionTime.toFixed(3) } })}{', '}
+        {t<string>('{{percentage}}% of block weight', { replace: { percentage } })}
+      </div>
     </div>
   );
 }
 
-export default React.memo(
-  styled(InputMegaGas)`
-    .contracts--InputMegaGas-input {
-
-      .ui.input {
-        display: flex;
-
-        input {
-          max-width: 15rem;
-        }
-
-        .contracts--InputMegaGas-meter {
-          flex: 1;
-          padding: 0.8rem 0.8rem 0;
-
-          aside {
-            float: right;
-          }
-
-          .contracts--InputMegaGas-progress {
-            margin-top: 0.4rem;
-            position: relative;
-            bottom: 0;
-            left: 0;
-            right: 0;
-          }
-        }
-
-      }
-    }
-
-  `
-);
+export default React.memo(styled(InputMegaGas)`
+  .contracts--InputMegaGas-meter {
+    text-align: right;
+  }
+`);

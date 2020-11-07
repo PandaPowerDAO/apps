@@ -1,0 +1,22 @@
+{
+  "name": "@eco/eco-utils",
+  "version": "0.63.1",
+  "description": "> TODO: description",
+  "author": "my <yang.yang@kucoinc.com>",
+  "homepage": "http://./packages/eco-utils",
+  "license": "ISC",
+  "main": "index.js",
+  "publishConfig": {
+    "registry": "https://registry.npm.taobao.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PandaPowerDAO/apps.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/PandaPowerDAO/apps/issues"
+  }
+}

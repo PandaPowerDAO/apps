@@ -9,7 +9,7 @@ import Panel from '../Components/Panel';
 // import Button from '../Components/Button';
 import TextArea from '../Components/TextArea';
 // import Form from '../Components/Form';
-import { Form, message } from 'antd';
+import { Form } from 'antd';
 import FieldDecorator from '../Components/FormComponents';
 import { queryAssetsList, transferCarbonAsset } from '../service';
 import { useECOAccount } from '../Components/Account/accountContext';
@@ -140,7 +140,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
         values.to as string,
         values.amount as string
       );
-      message.info('操作成功');
+      // message.info('操作成功');
       form.resetFields();
 
       // setProtocals({
@@ -170,11 +170,6 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
 
   return (
     <div className={className}>
-      <Panel title='您好，A女士'>
-        <p>1、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-        <p>2、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-        <p>3、阿斯顿发送到发送到发的是发送到发送到发送到</p>
-      </Panel>
       <Panel
         title='完善提案细节'
       >
@@ -281,7 +276,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               withLabel={true}
             />
           </Row>
-          <Row>
+          {/* <Row>
             <Input
               isDisabled
               isFull={false}
@@ -291,7 +286,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               value={beautifulNumber(10000)}
               withLabel
             />
-          </Row>
+          </Row> */}
           <div style={{
             textAlign: 'center',
             marginTop: '24px'
