@@ -104,14 +104,12 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
       });
 
       console.log('queryPotentialBalance', result);
-      const _assetli = [...(result as unknown as Asset[] || []), {
+      const _assetli = [{
         assetId: 'eco2',
         type: 'standard',
         account: ecoAccount,
         symbol: 'ECO2'
-      }];
-
-      console.log('_assetli', _assetli);
+      }, ...(result as unknown as Asset[] || []).reverse()];
 
       recursionQueryDetail(_assetli as unknown as Asset[], queryAssetInfo);
 
@@ -190,7 +188,7 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
           & .panel-content{
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content:  flex-start;
             flex-wrap: wrap;
           }
           `
@@ -213,7 +211,7 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
           & .panel-content{
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start;
             flex-wrap: wrap;
           }
           `

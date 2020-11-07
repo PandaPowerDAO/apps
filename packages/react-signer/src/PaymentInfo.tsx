@@ -9,7 +9,8 @@ import React, { useState, useEffect } from 'react';
 import { Trans } from 'react-i18next';
 import { Expander } from '@polkadot/react-components';
 import { useApi, useIsMountedRef } from '@polkadot/react-hooks';
-import { formatBalance, isFunction } from '@polkadot/util';
+import { isFunction } from '@polkadot/util';
+import { formatBalance } from '@eco/polka-util-fork';
 
 interface Props {
   accountId?: string | null;
@@ -49,7 +50,7 @@ function PaymentInfo ({ accountId, className = '', extrinsic }: Props): React.Re
       className={className}
       summary={
         <Trans i18nKey='feesForSubmission'>
-          Fees of <span className='highlight'>{formatBalance(dispatchInfo.partialFee, { withSiFull: true })}</span> will be applied to the submission
+          Fees of <span className='highlight'>{formatBalance(dispatchInfo.partialFee, { withSiFull: false })}</span> will be applied to the submission
         </Trans>
       }
     />

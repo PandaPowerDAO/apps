@@ -127,3 +127,22 @@ export function ecoToUnit (num: number | string, power = 8) {
 }
 
 export const EE = new EventEmitter();
+
+export const ProjectTypes = [
+  '能源(可再⽣/不可再⽣) Energy (renewable/non-renewable)',
+  '能源分配 Energy distribution',
+  '能源需求 Energy demand',
+  '制造业 Manufacturing idustries',
+  '化学⼯业 Chemical industry',
+  '建筑业 Construction',
+  '交通 Transport',
+  '采矿业/矿业 Mining/Mineral production',
+  '⾦属制造 Metal production',
+  '燃料⻜逸性排放 Fugitive emissions from fuels',
+  '⼯业⽓体⻜逸性排放 Fugitive emissions from idustrial gases',
+  '溶剂使⽤ Solvents use',
+  '废弃物处⾥与填埋 Waste handling and disposal',
+  '农业，林业，⼟地利⽤ Agriculture, Forestry, Land Use',
+  '畜牧与肥料管理 Livestock and manure management',
+  'Other 其他'
+];

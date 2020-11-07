@@ -25,6 +25,7 @@ import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { notAllprotocalChecked,
   requiredValidator,
   urlValidator,
+  ecoToUnit,
   dateValidator, yearValidator, numberValidator } from '@eco/eco-utils/utils';
 
 interface Props {
@@ -164,7 +165,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
         ecoAccount,
         projectId as string,
         vintage as string,
-        initialSupply as string,
+        ecoToUnit(initialSupply as string, 6).toString(),
         additional
       );
 
@@ -273,8 +274,8 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目发行数量</div>}
-                  labelExtra={<div>克</div>}
+                  label={<div>碳汇发行数量</div>}
+                  labelExtra={<div>吨</div>}
                   maxLength={500}
                   // onChange={(initialSupply: string) => setFieldsValue({ initialSupply })}
                   placeholder='请输入您签发的数量'
@@ -298,7 +299,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目签发日期</div>}
+                  label={<div>碳汇签发日期</div>}
                   maxLength={500}
                   // onChange={(issuanceDate: string) => setFieldsValue({ issuanceDate })}
                   placeholder='日期格式如 2020-10-10'
@@ -324,7 +325,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目起始日期</div>}
+                  label={<div>碳汇起始日期</div>}
                   maxLength={500}
                   // onChange={(startDate: string) => setFieldsValue({ startDate })}
                   placeholder='日期格式如 2020-10-10'
@@ -348,7 +349,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目终止日期</div>}
+                  label={<div>碳汇终止日期</div>}
                   maxLength={500}
                   // onChange={(endDate: string) => setFieldsValue({ endDate })}
                   placeholder='日期格式如 2020-10-10'
@@ -409,14 +410,11 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               label=' '
               name='issuanceNumbers'
               rules={[{
-                validator: requiredValidator
-              }, {
                 validator: numberValidator
               }]}
               validateFirst
             >
               <FieldDecorator
-                required
               >
                 <Input
                   isFull={false}
@@ -460,14 +458,11 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               label=' '
               name='extraCertificate'
               rules={[{
-                validator: requiredValidator
-              }, {
                 validator: urlValidator
               }]}
               validateFirst
             >
               <FieldDecorator
-                required
               >
                 <Input
                   isFull={false}
@@ -513,11 +508,8 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
             <Form.Item
               label=' '
               name='remark'
-              rules={[{
-                // validator: requiredValidator
-              }]}>
+            >
               <FieldDecorator
-                required
               >
                 <TextArea
                   isFull={false}

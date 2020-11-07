@@ -62,7 +62,7 @@ export async function submitTx (label: string, tx: SubmittableExtrinsic<'promise
     });
   });
 
-  return;
+  // return;
   // const unsub = await tx.signAndSend(sender, (result: { status: { isInBlock: any; isFinalized: any; }; events: { event: any; phase: any; }[]; }): void => {
   //   if (result.status.isInBlock) {
   //     result.events.forEach(({ event, phase }) => {

@@ -44,7 +44,7 @@ const DefaultECO2Asset = {
 };
 
 const calcAmount = (amount: BN, decimals: number): BN => {
-  return new BN(amount).div(new BN(10).pow(new BN(15).sub(new BN(decimals || 0))));
+  return new BN(amount).mul(new BN(10).pow(new BN(15)));
 };
 
 const AmountAfterDecimals = (amount: BN, decimals?: number) => {
@@ -163,7 +163,8 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
         params: canToggleAll && isAll
           ? [recipientId, maxTransfer]
           // : [recipientId, calcAmount(amount as BN, 0)]
-          : [recipientId, calcAmount(amount as BN, 8)]
+          // : [recipientId, calcAmount(amount as BN, 1)]
+          : [recipientId, amount]
       };
     } else if (curAsset.type === 'carbon') {
       // carbonAssets.transfer(assetId, to, amount)

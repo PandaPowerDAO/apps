@@ -24,7 +24,9 @@ import { parseQuery,
   numberValidator,
   notAllprotocalChecked,
   fromHex,
-  beautifulNumber } from '@eco/eco-utils/utils';
+  beautifulNumber,
+  unitToEco,
+  ecoToUnit } from '@eco/eco-utils/utils';
 
 import { submitBurn, queryAsset, queryCarbonBalance } from '@eco/eco-utils/service';
 
@@ -62,7 +64,10 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
   const { api } = useApi();
   const location = useLocation();
 
-  const assetId = parseQuery(location.search || '').asset || '';
+  const _query = parseQuery(location.search || '') || {};
+
+  const assetId = _query.asset || '';
+  const assetName = _query.assetName || '';
 
   const setProtocalValue = useCallback((protocal): void => {
     setProtocals({
@@ -109,7 +114,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
     async function submit () {
       // form.proponent
       const { amount, ...additionals } = values;
-      const result = await submitBurn(api, ecoAccount, assetId, amount, additionals);
+      const result = await submitBurn(api, ecoAccount, assetId, ecoToUnit(amount, 6).toString(), additionals);
 
       // message.info('申请提交成功');
       form.resetFields();
@@ -144,7 +149,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                   isDisabled
                   isFull={false}
                   label={<div>当前资产</div>}
-                  value={fromHex(assetsInfo.symbol as string)}
+                  value={assetName}
                   withLabel={true}
                 />
               </FieldDecorator>
@@ -159,7 +164,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                   isDisabled
                   isFull={false}
                   label={<div>资产年限</div>}
-                  value={assetsInfo.vintage as string}
+                  value={fromHex(assetsInfo.vintage as string)}
                   withLabel={true}
                 />
               </FieldDecorator>
@@ -172,9 +177,9 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                   isDisabled
                   isFull={false}
                   label={<div>已发行总量</div>}
-                  labelExtra={<div>克</div>}
+                  labelExtra={<div>吨</div>}
                   maxLength={500}
-                  value={beautifulNumber(assetsInfo.total_supply as string || '')}
+                  value={beautifulNumber(unitToEco(assetsInfo.total_supply as string, 6).toString() || '')}
                   withLabel={true}
                 />
               </FieldDecorator>
@@ -197,6 +202,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isFull={false}
                   label={<div>申请销毁数量</div>}
+                  labelExtra={<div>吨</div>}
                   maxLength={500}
                   // onChange={(description: string) => setFieldsValue({ description })}
                   placeholder='请输入'

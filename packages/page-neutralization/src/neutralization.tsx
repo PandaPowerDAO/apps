@@ -201,7 +201,7 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
     _neutralize();
 
     async function _neutralize () {
-      await neutralize(api, ecoAccount as string, assetId, amount, additionals);
+      await neutralize(api, ecoAccount, assetId, amount, additionals);
       // message.info('提交成功');
       form.resetFields();
     }
@@ -282,9 +282,9 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>抵消人名称</div>}
+                  label={<div>抵消受益人名称</div>}
                   maxLength={500}
-                  placeholder='抵消人名称'
+                  placeholder='请输入抵消受益人名称'
                   withLabel
                 />
               </FieldDecorator>

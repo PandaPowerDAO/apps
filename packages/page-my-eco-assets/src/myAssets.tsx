@@ -205,12 +205,12 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     }
   }, [ecoAccount, accountLoaded]);
 
-  const goAdditionalPage = useCallback((asset: string) => {
-    window.location.hash = `#/ecassets/additional?asset=${asset}`;
+  const goAdditionalPage = useCallback((asset: string, assetName: string) => {
+    window.location.hash = `#/ecassets/additional?asset=${asset}&assetName=${assetName}`;
   }, []);
 
-  const goBurningPage = useCallback((asset: string) => {
-    window.location.hash = `#/ecassets/burning?asset=${asset}`;
+  const goBurningPage = useCallback((asset: string, assetName: string) => {
+    window.location.hash = `#/ecassets/burning?asset=${asset}&assetName=${assetName}`;
   }, []);
 
   const handlePageChange = useCallback((page) => {
@@ -267,9 +267,11 @@ function Home ({ className }: Props): React.ReactElement<Props> {
           remainHeader
         >
           {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
+            const assetName = `${v.symbol as string}(${v.vintage as string})`;
+
             return <tr key={rowIndex}>
               <td><IconLink href={`#/ecassets/assets-detail?asset=${v.assetId as string}&symbol=${`${v.symbol as string}(${v.vintage as string})`}`}
-                label={`${v.symbol as string}(${v.vintage as string})`}></IconLink></td>
+                label={assetName}></IconLink></td>
               <td>{v.type === 'standard' ? '标准资产' : '碳汇资产'}</td>
               <td>{v.vintage}</td>
               <td>{beautifulNumber((v as DataItem).projectDetail.project.max_supply)}</td>
@@ -282,9 +284,9 @@ function Home ({ className }: Props): React.ReactElement<Props> {
               <td>
                 {
                   v.approved === 1 ? <OperationSpanWrapper>
-                    <OperationSpan onClick={() => goAdditionalPage(v.assetId)}>增发</OperationSpan>
+                    <OperationSpan onClick={() => goAdditionalPage(v.assetId, assetName)}>增发</OperationSpan>
                     <Divider type='vertical' />
-                    <OperationSpan onClick={() => goBurningPage(v.assetId)}>销毁</OperationSpan>
+                    <OperationSpan onClick={() => goBurningPage(v.assetId, assetName)}>销毁</OperationSpan>
                   </OperationSpanWrapper> : '-'
                 }
               </td>

@@ -1,9 +1,12 @@
 // Copyright 2017-2020 @polkadot/app-democracy authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import React, { useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { Form, Button, message } from 'antd';
 
 import { Input,
@@ -23,8 +26,8 @@ import { parseQuery,
   requiredValidator,
   urlValidator,
   // dateValidator,
-  notAllprotocalChecked, numberValidator } from '@eco/eco-utils/utils';
-import { queryAsset, submitIssue } from '@eco/eco-utils/service';
+  notAllprotocalChecked, numberValidator, fromHex, unitToEco, ecoToUnit } from '@eco/eco-utils/utils';
+import { queryAsset, submitIssue, queryProject } from '@eco/eco-utils/service';
 
 interface Props {
   className?: string,
@@ -51,6 +54,7 @@ const Hidden = styled.div`
 function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
   const [form] = Form.useForm();
   const [ecoAccount] = useECOAccount();
+  const history = useHistory();
 
   const [assetsInfo, updateAssetsInfo] = useState<AnyObj>({});
 
@@ -61,7 +65,10 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
 
   const { api } = useApi();
   const location = useLocation();
-  const assetId = parseQuery(location.search || '').asset || '';
+  const _query = parseQuery(location.search || '') || {};
+
+  const assetId = _query.asset || '';
+  const assetName = _query.assetName || '';
 
   const setProtocalValue = useCallback((protocal): void => {
     setProtocals({
@@ -75,12 +82,13 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
 
     async function init () {
       const assetDetail = await queryAsset(api, assetId);
-
-      console.log('additionals ---', assetDetail);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const projectDetail = await queryProject(api, (assetDetail?.asset || {}).project_id || '');
 
       updateAssetsInfo({
         ...(assetDetail.asset || {}),
-        ...(assetDetail.additionals || {})
+        ...(assetDetail.additionals || {}),
+        max_supply: (projectDetail?.project || {}).max_supply || 0
       });
     }
 
@@ -97,7 +105,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
     async function submit () {
       // form.proponent
       const { amount, ...additionals } = values;
-      const result = await submitIssue(api, ecoAccount as string, assetId, amount, additionals);
+      const result = await submitIssue(api, ecoAccount, assetId, ecoToUnit(amount, 6).toString(), additionals);
 
       console.log('result ----', result);
       // message.info('申请提交成功');
@@ -106,6 +114,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
         costPro: false,
         registerPro: false
       });
+      history.push('/myassets');
     }
 
     submit();
@@ -146,7 +155,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
                   isDisabled
                   isFull={false}
                   label={<div>当前资产</div>}
-                  value={assetsInfo.symbol as string}
+                  value={assetName}
                   withLabel
                 />
               </FieldDecorator>
@@ -160,7 +169,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
                   isDisabled
                   isFull={false}
                   label={<div>资产年限</div>}
-                  value={assetsInfo.vintage as string}
+                  value={fromHex(assetsInfo.vintage as string)}
                   withLabel
                 />
               </FieldDecorator>
@@ -175,8 +184,8 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
                   isDisabled
                   isFull={false}
                   label={<div>资产上限</div>}
-                  labelExtra={<div>克</div>}
-                  value={assetsInfo.total_supply as string}
+                  labelExtra={<div>吨</div>}
+                  value={unitToEco(assetsInfo.max_supply as string, 6).toString() }
                   withLabel
                 />
               </FieldDecorator>
@@ -189,8 +198,10 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
                   isDisabled
                   isFull={false}
                   label={<div>已发行总量</div>}
+                  labelExtra={<div>吨</div>}
                   maxLength={500}
-                  value={assetsInfo.total_supply as string}
+                  // value={assetsInfo.total_supply as string}
+                  value={unitToEco(assetsInfo.total_supply as string, 6).toString() }
                   withLabel
                 />
               </FieldDecorator>
@@ -213,6 +224,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isFull={false}
                   label={<div>申请增发数量</div>}
+                  labelExtra={<div>吨</div>}
                   maxLength={500}
                   // onChange={(amount: string) => setFieldsValue({ amount })}
                   placeholder='请填写'

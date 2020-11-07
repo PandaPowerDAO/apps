@@ -248,7 +248,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     </AssetsPanel>
     <Panel title='资产介绍'>
       <div>
-          资产介绍说明
+        {assetInfo.remark || '-'}
       </div>
     </Panel>
     <CmptDeals closed={1}

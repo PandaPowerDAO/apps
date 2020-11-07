@@ -53,10 +53,10 @@ const ItemWrapper = styled.div`
   border-radius: 5px;
   display: inline-block;
   min-width: 30%;
-
+  margin-bottom: 30px;
+  margin-right: 3%;
   & + & {
     // margin-left: 20px;
-    margin-bottom: 30px;
   }
 
 `;

@@ -20,12 +20,14 @@ import { submitProject } from '@eco/eco-utils/service';
 import FieldDecorator from '@eco/eco-components/FormComponents';
 import Row from '@eco/eco-components/Row';
 import SubmitBtn from '@eco/eco-components/SubmitBtn';
+import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 
 import { notAllprotocalChecked,
   requiredValidator,
   urlValidator,
   dateValidator,
-  numberValidator, yearValidator } from '@eco/eco-utils/utils';
+  ProjectTypes,
+  numberValidator, yearValidator, ecoToUnit } from '@eco/eco-utils/utils';
 
 interface Props {
   className?: string,
@@ -35,6 +37,13 @@ interface Props {
 //   [key: string]: string | null
 // }
 
+const ProjectTypeOptions = ProjectTypes.map((val, index) => {
+  return {
+    text: val,
+    value: val
+  };
+});
+
 interface ProtocalProps {
   [key: string]: undefined | null | boolean
 }
@@ -43,6 +52,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
   const { api } = useApi();
 
   const [form] = Form.useForm();
+  const [ecoAccount] = useECOAccount();
 
   // const [formAddress, setFormAddress] = useState<string>('');
   const [errorMap] = useState<Record<string, boolean | undefined>>({});
@@ -63,14 +73,26 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
     return [{
       text: '碳汇资产',
       value: 'carbon'
-    }, {
-      text: '标准资产',
-      value: 'standard'
-    }];
+    }
+    // , {
+    //   text: '标准资产',
+    //   value: 'standard'
+    // }
+    ];
   }, []);
 
+  const assetsNameValidator = async (rule: any, value: any): Promise<void> => {
+    const _reg = /^[A-Z]{1,6}$/;
+
+    if (!_reg.test(value)) {
+      throw new Error('仅支持1到6位大写字母');
+    }
+
+    return Promise.resolve();
+  };
+
   const onFinish = (values: Record<string, string>) => {
-    const { proponent, symbol, maxSupply, ...rest } = values;
+    const { symbol, maxSupply, annualEmissionCuts, ...rest } = values;
 
     if (notAllprotocalChecked(protocals)) {
       message.error('请先确定协议');
@@ -83,10 +105,13 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
     async function submit () {
       await submitProject(
         api,
-        proponent || '',
+        ecoAccount || '',
         symbol || '',
-        maxSupply || '',
-        rest
+        ecoToUnit(maxSupply, 6).toString(),
+        {
+          ...rest,
+          annualEmissionCuts: ecoToUnit(annualEmissionCuts, 6).toString()
+        }
       );
 
       // message.info('申请提交成功');
@@ -114,6 +139,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
             <Form.Item>
               <Dropdown
                 defaultValue={'carbon'}
+                isDisabled
                 label={<div>资产类型</div>}
                 options={AssetsOpts}
                 placeholder='请选择'
@@ -127,7 +153,11 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               name='symbol'
               rules={[{
                 validator: requiredValidator
-              }]}>
+              }, {
+                validator: assetsNameValidator
+              }]}
+              validateFirst
+            >
               <FieldDecorator
                 required
               >
@@ -198,8 +228,9 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               <FieldDecorator
                 required
               >
-                <InputAddress
+                <Input
                   isError={!!errorMap.proponent}
+                  isFull={false}
                   label={<div>项目发起人</div>}
                   placeholder='请输入项目发起人名称'
                   withLabel
@@ -224,7 +255,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isFull={false}
                   label={<div>项目碳汇总数</div>}
-                  labelExtra='克'
+                  labelExtra='吨'
                   placeholder='请输入该笔碳汇总数，仅支持数字'
                   withLabel={true}
                 />
@@ -356,13 +387,22 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               <FieldDecorator
                 required
               >
-                <Input
+                {/* <Input
                   isFull={false}
                   label={<div>项目类型</div>}
                   maxLength={500}
                   placeholder='请输入'
                   withLabel
-                />
+                /> */}
+                <Dropdown
+                  defaultValue={ProjectTypeOptions[0].value}
+                  label={<div>项目类型</div>}
+                  options={ProjectTypeOptions}
+                  placeholder='请选择'
+                  withLabel
+                >
+
+                </Dropdown>
               </FieldDecorator>
             </Form.Item>
             <Form.Item
@@ -410,11 +450,14 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               label=''
               name='validator'
               rules={[{
+                validator: requiredValidator
+              }, {
                 validator: urlValidator
               }]}
               validateFirst
             >
               <FieldDecorator
+                required
               >
                 <Input
                   isFull={false}
@@ -451,9 +494,12 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
             <Form.Item
               label=''
               name='registryId'
-              // rules={}
+              rules={[{
+                validator: requiredValidator
+              }]}
             >
               <FieldDecorator
+                required
               >
                 <Input
                   isFull={false}
@@ -568,11 +614,14 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               label=''
               name='website'
               rules={[{
+                validator: requiredValidator
+              }, {
                 validator: urlValidator
               }]}
               validateFirst
             >
               <FieldDecorator
+                required
               >
                 <Input
                   isFull={false}
@@ -587,14 +636,11 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               label=''
               name='projectInformationUrl'
               rules={[{
-                validator: requiredValidator
-              }, {
                 validator: urlValidator
               }]}
               validateFirst
             >
               <FieldDecorator
-                required
               >
                 <Input
                   isFull={false}
@@ -654,12 +700,8 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
             <Form.Item
               label=''
               name='remark'
-              rules={[{
-                validator: requiredValidator
-              }]}
             >
               <FieldDecorator
-                required
               >
                 <TextArea
                   isFull={false}

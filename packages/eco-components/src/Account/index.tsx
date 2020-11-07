@@ -41,6 +41,7 @@ export function AccountSelector (props: BareProps): React.ReactElement {
           handleChange(val);
         }
       }}
+      type='account'
       value={ecoAccount as unknown as string}
     />
   );
