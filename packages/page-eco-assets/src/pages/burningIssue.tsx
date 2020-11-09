@@ -220,8 +220,10 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                   isDisabled
                   isFull={false}
                   label={<div>当前账户余额</div>}
+                  labelExtra={<div>吨</div>}
                   // onChange={(description: string) => setFieldsValue({ description })}
-                  value={beautifulNumber(assetsInfo.balance as string || '')}
+                  value={beautifulNumber(unitToEco(assetsInfo.balance as string || '', 6).toString())}
+                  // value={beautifulNumber(assetsInfo.balance as string || '')}
                   withLabel={true}
                 />
               </FieldDecorator>

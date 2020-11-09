@@ -109,7 +109,7 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
         type: 'standard',
         account: ecoAccount,
         symbol: 'ECO2'
-      }, ...(result as unknown as Asset[] || []).reverse()];
+      }, ...(result as unknown as Asset[] || [])];
 
       recursionQueryDetail(_assetli as unknown as Asset[], queryAssetInfo);
 

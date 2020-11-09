@@ -81,7 +81,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
 
   useEffect(() => {
     async function init () {
-      const projects = await queryProjectsList();
+      const projects = await queryProjectsList(ecoAccount);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (projects && (projects.docs as Project[])) {
@@ -100,8 +100,10 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       // console.log(projects);
     }
 
-    init();
-  }, []);
+    if (ecoAccount) {
+      init();
+    }
+  }, [ecoAccount]);
 
   // const handleSubmit = useCallback(() => {
   //   async function _submit () {

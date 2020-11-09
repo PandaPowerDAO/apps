@@ -351,12 +351,16 @@ axiosInstance.interceptors.response.use(function (response: AxiosResponse<any>) 
   return Promise.reject(error);
 });
 
-export async function queryProjectsList (): Promise<CustomAxoisResponse> {
+export async function queryProjectsList (owner = ''): Promise<CustomAxoisResponse> {
   // const result: AxiosResponse<any> = await axiosInstance.get('/carbon_projects');
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   // return result.data;
-  return axiosInstance.get('/carbon_projects');
+  return axiosInstance.get('/carbon_projects', {
+    params: {
+      owner: owner || undefined
+    }
+  });
 }
 
 interface AssetsListParams {

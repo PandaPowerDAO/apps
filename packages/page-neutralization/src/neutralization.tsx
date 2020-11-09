@@ -19,7 +19,7 @@ import { useLocation } from 'react-router-dom';
 import { queryAsset, neutralize, queryPotentialBalance } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { requiredValidator,
-  numberValidator, fromHex, parseQuery } from '@eco/eco-utils/utils';
+  numberValidator, fromHex, parseQuery, Countries } from '@eco/eco-utils/utils';
 
 interface Props {
   className?: string,
@@ -45,6 +45,13 @@ interface Asset {
 interface QueryDetailFn {
   (asset: Asset): Promise<void> | void
 }
+
+const CountriesOptions = Countries.map((country) => {
+  return {
+    ...country,
+    value: country.text
+  };
+});
 
 function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
   const [assetsList, updateAssetsList] = useState<Asset[]>([]);
@@ -316,13 +323,20 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
               name='country'
             >
               <FieldDecorator>
-                <Input
+                <Dropdown
+                  defaultValue={''}
+                  label={<div>所在国家</div>}
+                  options={CountriesOptions}
+                  placeholder='请选择所在国家'
+                  withLabel
+                />
+                {/* <Input
                   isFull={false}
                   label={<div>所在国家</div>}
                   maxLength={500}
                   placeholder='请输入所在国家'
                   withLabel
-                />
+                /> */}
               </FieldDecorator>
             </Form.Item>
           </Row>

@@ -83,17 +83,18 @@ function EcoAssets ({ basePath }: Props): React.ReactElement<Props> {
     //   // text: t<string>('Democracy overview')
     //   text: '注册发行商'
     // },
-    {
-      isRoot: false,
-      name: 'register-assets',
-      // text: t<string>('Democracy overview')
-      text: '注册碳汇资产'
-    },
+
     {
       isRoot: false,
       name: 'register-project',
       // text: t<string>('Democracy overview')
       text: '注册碳汇项目'
+    },
+    {
+      isRoot: false,
+      name: 'register-assets',
+      // text: t<string>('Democracy overview')
+      text: '注册碳汇资产'
     }
     // {
     //   isRoot: false,
