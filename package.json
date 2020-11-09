@@ -1,10 +1,9 @@
 {
-  "name": "polkadot-apps",
-  "repository": "https://github.com/polkadot-js/apps",
+  "name": "apps",
   "main": "packages/apps-electron/build/electron.js",
-  "description": "An Apps portal into the Polkadot network",
+  "description": "An Apps portal into the ECO2 network",
   "author": "Jaco Greeff <jacogr@gmail.com>",
-  "version": "0.63.1",
+  "version": "0.1.0",
   "license": "Apache-2",
   "private": true,
   "homepage": ".",
@@ -12,16 +11,15 @@
     "packages/*"
   ],
   "build": {
-    "productName": "Polkadot-JS Apps",
-    "artifactName": "Polkadot-JS-Apps-${version}.${ext}",
+    "productName": "ECO2-JS Apps",
     "files": [
       "./packages/apps-electron/build",
       "./packages/apps-electron/assets",
       "./packages/apps-electron/appleEntitlements"
     ],
-    "appId": "com.polkadotjs.polkadotjs-apps",
+    "appId": "com.eco2.apps",
     "mac": {
-      "artifactName": "Polkadot-JS-Apps-mac-${version}.${ext}",
+      "artifactName": "EOC2-JS-Apps-mac-${version}.${ext}",
       "category": "public.app-category.finance",
       "entitlements": "./packages/apps-electron/appleEntitlements/entitlements.mac.plist",
       "hardenedRuntime": true
