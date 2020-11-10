@@ -27,11 +27,25 @@ import { notAllprotocalChecked,
   urlValidator,
   dateValidator,
   ProjectTypes,
-  numberValidator, yearValidator, ecoToUnit } from '@eco/eco-utils/utils';
+  numberValidator, yearValidator, ecoToUnit, Countries } from '@eco/eco-utils/utils';
 
 interface Props {
   className?: string,
 }
+
+interface Country {
+  text: string,
+  value: string,
+  cn: string,
+  en: string,
+}
+
+const CountriesOptions: Country[] = Countries.map((country) => {
+  return {
+    ...country,
+    value: country.text
+  };
+});
 
 // interface FormProps {
 //   [key: string]: string | null
@@ -122,6 +136,12 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
       });
     }
   };
+
+  const handleCountryChange = useCallback((value) => {
+    if (value) {
+      form.validateFields(['country']);
+    }
+  }, []);
 
   return (
     <Form
@@ -555,17 +575,33 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               rules={[{
                 validator: requiredValidator
               }]}
+              validateTrigger={['onSubmit']}
             >
               <FieldDecorator
+                onChange={handleCountryChange}
                 required
               >
-                <Input
+
+                <Dropdown
+                  // defaultValue={CountriesOptions[0].value}
+                  label={<div>所在国家</div>}
+                  onSearch={(options: Country[], query: string): Country[] => {
+                    return options.filter((v: Country): boolean => v.text.indexOf(query) > -1);
+                  } }
+                  options={CountriesOptions}
+                  placeholder='请选择所在国家'
+                  searchInput={{
+                    autoFocus: false
+                  }}
+                  withLabel
+                />
+                {/* <Input
                   isFull={false}
                   label={<div>国家</div>}
                   maxLength={500}
                   placeholder='请输入'
                   withLabel={true}
-                />
+                /> */}
               </FieldDecorator>
             </Form.Item>
           </Row>

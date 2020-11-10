@@ -46,7 +46,14 @@ interface QueryDetailFn {
   (asset: Asset): Promise<void> | void
 }
 
-const CountriesOptions = Countries.map((country) => {
+interface Country {
+  text: string,
+  value: string,
+  cn: string,
+  en: string,
+}
+
+const CountriesOptions: Country[] = Countries.map((country) => {
   return {
     ...country,
     value: country.text
@@ -326,8 +333,14 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
                 <Dropdown
                   defaultValue={''}
                   label={<div>所在国家</div>}
+                  onSearch={(options: Country[], query: string): Country[] => {
+                    return options.filter((v: Country): boolean => v.text.indexOf(query) > -1);
+                  } }
                   options={CountriesOptions}
                   placeholder='请选择所在国家'
+                  searchInput={{
+                    autoFocus: false
+                  }}
                   withLabel
                 />
                 {/* <Input
