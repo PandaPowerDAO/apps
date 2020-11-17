@@ -14,6 +14,7 @@ import styled from 'styled-components';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import FieldDecorator from '@eco/eco-components/FormComponents';
 import { AssetItemType } from '../types';
+import BN from 'bn.js';
 
 interface Props extends ModalProps {
   onClose: () => void,
@@ -41,6 +42,17 @@ const FormWrapper = styled.div`
 }
 `;
 
+const unitOptions = [{
+  text: '克',
+  value: 0
+}, {
+  text: '千克',
+  value: 3
+}, {
+  text: '吨',
+  value: 6
+}];
+
 function CreateModal (props: Props): React.ReactElement<Props> {
   const {
     onClose,
@@ -51,6 +63,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
   const [ecoAccount] = useECOAccount();
 
   const [assets, updateAssets] = useState<AssetItemType[]>([]);
+  const [unit, updateUnit] = useState<number>(unitOptions[0].value);
 
   // const [assetsList, updateAssetsList] = useState<Record<string, any>[]>([]);
 
@@ -79,7 +92,16 @@ function CreateModal (props: Props): React.ReactElement<Props> {
 
         const _price = ecoToUnit(formValues.price, 2).toString();
 
-        await makeOrder(api, ecoAccount, formValues.assetId, '', _price, formValues.amount, formValues.direction);
+        await makeOrder(
+          api,
+          ecoAccount,
+          formValues.assetId,
+          '',
+          // _price,
+          new BN(_price).mul(new BN(10).pow(new BN(unit || 0))).toString(),
+          formValues.amount,
+          formValues.direction
+        );
         onClose();
         // message.info('订单创建成功');
       } catch (e) {
@@ -90,7 +112,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
     }
 
     _commit();
-  }, []);
+  }, [unit]);
 
   const getAssets = useCallback((direction) => {
     async function _query () {
@@ -136,6 +158,10 @@ function CreateModal (props: Props): React.ReactElement<Props> {
 
     await Promise.resolve();
   };
+
+  const handleUnitChange = useCallback((_unit) => {
+    updateUnit(_unit);
+  }, []);
 
   return (
     <Modal
@@ -206,13 +232,21 @@ function CreateModal (props: Props): React.ReactElement<Props> {
                 <Input
                   isFull={false}
                   label={<div>价格</div>}
-                  labelExtra='吨'
+                  // labelExtra='吨'
                   maxLength={500}
                   // onChange={(name: string) => setFieldsValue({ name })}
                   placeholder='请输入价格'
                   // value={form.name}
                   withLabel
-                />
+                >
+                  <Dropdown
+                    defaultValue={unit}
+                    dropdownClassName='ui--SiDropdown'
+                    isButton
+                    onChange={handleUnitChange}
+                    options={unitOptions}
+                  />
+                </Input>
               </FieldDecorator>
             </Form.Item>
             <Form.Item

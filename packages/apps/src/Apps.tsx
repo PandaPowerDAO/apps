@@ -15,8 +15,17 @@ import ConnectingOverlay from './overlays/Connecting';
 import Content from './Content';
 import Menu from './Menu';
 import WarmUp from './WarmUp';
+import SideMenu from './Menu/indexNew';
 
 export const PORTAL_ID = 'portals';
+
+const ContentWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  height: calc(100vh - 63px);
+
+`;
 
 function Apps ({ className = '' }: Props): React.ReactElement<Props> {
   const { theme } = useContext<ThemeDef>(ThemeContext);
@@ -32,13 +41,16 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
       <GlobalStyle uiHighlight={uiHighlight} />
       <div className={`apps--Wrapper theme--${theme} ${className}`}>
         <Menu />
-        <AccountSidebar>
-          <Signer>
-            <Content />
-          </Signer>
-          <ConnectingOverlay />
-          <div id={PORTAL_ID} />
-        </AccountSidebar>
+        <ContentWrapper>
+          <SideMenu />
+          <AccountSidebar>
+            <Signer>
+              <Content />
+            </Signer>
+            <ConnectingOverlay />
+            <div id={PORTAL_ID} />
+          </AccountSidebar>
+        </ContentWrapper>
       </div>
       <WarmUp />
     </>
@@ -51,4 +63,6 @@ export default React.memo(styled(Apps)(({ theme }: ThemeProps) => `
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
 `));

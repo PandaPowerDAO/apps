@@ -10,7 +10,7 @@ import Panel from '@eco/eco-components/Panel';
 // import { Table } from '@polkadot/react-components';
 import { useLocation, useHistory } from 'react-router-dom';
 // import { NoPaddingTable } from '@eco/eco-components/Table';
-import { parseQuery, beautifulNumber, fromHex } from '@eco/eco-utils/utils';
+import { parseQuery, beautifulNumber, fromHex, reformatAssetName } from '@eco/eco-utils/utils';
 import { AnyObj } from '@eco/eco-utils/types';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 // import { Modal } from '@polkadot/react-components';
@@ -30,27 +30,10 @@ interface Props {
   className?: string,
 }
 
-// interface DataItem {
-//   [key: string]: any
-// }
-
 const Flex = styled.div`
   display: flex;
   align-item: center;
 `;
-// const Panel = styled.div`
-//   background: white;
-//   margin-bottom: 12px;
-//   padding: 19px 12px 7px;
-// `;
-
-// const BannerImg = styled.div`
-//   width: 100%;
-//   background-size: cover;
-//   background-position: 50% 50%;
-//   height: 320px;
-//   background-repeat: no-repeat;
-// `;
 
 const AssetsPanel = styled(Flex)`
   width: 100%;
@@ -148,13 +131,16 @@ function Home ({ className }: Props): React.ReactElement<Props> {
 
   useEffect(() => {
     async function init (): Promise<any> {
+      // eco2 只查余额;
+      if (assetId === 'eco2') {
+
+      }
+
       const assetDetail = await queryAsset(api, assetId);
 
       const {
         balance
       } = await queryCarbonBalance(api, assetId, ecoAccount);
-
-      console.log('assetDetail', assetDetail);
 
       updateAssetInfo({
         ...(assetDetail.asset || {}),
@@ -207,7 +193,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
   return <div className={className}>
     <AssetsPanel>
       <div>
-        <PanelTitle>{symbol || fromHex(assetInfo.symbol as string || '')}</PanelTitle>
+        <PanelTitle>{reformatAssetName(symbol || fromHex(assetInfo.symbol as string || ''))}</PanelTitle>
         <AddressWrapper>
           <span> 收款地址: </span>
           <span className='address'>{ecoAccount}</span>

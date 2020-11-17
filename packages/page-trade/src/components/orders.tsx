@@ -11,7 +11,7 @@ import { useApi } from '@polkadot/react-hooks';
 import { queryOrder, queryCarbonOrders } from '@eco/eco-utils/service';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
-import { beautifulNumber, unitToEco } from '@eco/eco-utils/utils';
+import { beautifulNumber, unitToEco, resolveAmountNumber, reformatAssetName } from '@eco/eco-utils/utils';
 
 interface HanleAction {
   (orderItem: OrderItem): Promise<void> | void
@@ -221,8 +221,8 @@ function OrderList (props: Props): React.ReactElement<Props> {
         >
           {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
             return <tr key={rowIndex}>
-              <td>{v.assetSymbol}</td>
-              <td>{beautifulNumber((v.amount)) || '-'}</td>
+              <td>{reformatAssetName(v.assetSymbol)}</td>
+              <td>{v.amount ? beautifulNumber((resolveAmountNumber(v.amount))) : '-'}</td>
               <td>{resolvePrice(v.price) as string || '-'}</td>
               <td>{Sides[v.direction as number] || '-'}</td>
               {

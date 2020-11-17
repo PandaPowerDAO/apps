@@ -19,7 +19,11 @@ import { useLocation } from 'react-router-dom';
 import { queryAsset, neutralize, queryPotentialBalance } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { requiredValidator,
-  numberValidator, fromHex, parseQuery, Countries } from '@eco/eco-utils/utils';
+  numberValidator,
+  fromHex,
+  parseQuery,
+  Countries,
+  reformatAssetName } from '@eco/eco-utils/utils';
 
 interface Props {
   className?: string,
@@ -40,6 +44,10 @@ interface FormProps {
 interface Asset {
   assetId: string,
   [key:string]: string | number
+}
+
+interface AssetOpt {
+  [key:string]: string | number,
 }
 
 interface QueryDetailFn {
@@ -72,7 +80,7 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
 
   const queryAssetInfo = useCallback((asset: Asset) => {
     async function _query () {
-      const result = await queryAsset(api, asset.assetId);
+      const result = await queryAsset(api, asset?.assetId);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const _item = {
@@ -97,8 +105,8 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
       }
 
       tempAssetListRef.current.push({
-        ..._item,
-        text: fromHex((_item as Asset).symbol as string),
+        // ..._item,
+        text: reformatAssetName(fromHex((_item as Asset).symbol as string)),
         value: asset.assetId,
         assetId: asset.assetId
       });
@@ -253,6 +261,7 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
                   label={<div>选择资产</div>}
                   // onChange={(assetsType) => setFieldsValue(assetsType)}
                   options={assetsList}
+                  // options={assetOptions}
                   placeholder='请选择'
                   withLabel
                 />

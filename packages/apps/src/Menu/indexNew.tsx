@@ -12,15 +12,12 @@ import React, { useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import createRoutes from '@polkadot/apps-routing';
-import { Icon } from '@polkadot/react-components';
 import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
 
 import { findMissingApis } from '../endpoint';
 import { useTranslation } from '../translate';
-import ChainInfo from './ChainInfo';
-import Grouping from './Grouping';
+import Grouping from './NewGrouping';
 import Item from './Item';
-import NodeInfo from './NodeInfo';
 import Setting from './Setting';
 
 interface Props {
@@ -129,22 +126,16 @@ function Menu ({ className = '' }: Props): React.ReactElement<Props> {
   return (
     <div className={`${className}${isLoading ? ' isLoading' : ''} highlight--bg`}>
       <div className='menuSection'>
-        <ChainInfo />
-        {/* {activeRoute && (
-          <div className='menuActive'>
-            <Icon icon={activeRoute.icon} />
-            <span>{activeRoute.text}</span>
-          </div>
-        )} */}
-        {/* <ul className='menuItems'>
+        <ul className='menuItems'>
           {visibleGroups.map(({ name, routes }): React.ReactNode => (
             <Grouping
+              active={activeRoute?.name}
               key={name}
               name={name}
               routes={routes}
             />
           ))}
-        </ul> */}
+        </ul>
       </div>
       <div className='menuSection media--1200'>
         <ul className='menuItems'>
@@ -157,18 +148,17 @@ function Menu ({ className = '' }: Props): React.ReactElement<Props> {
           ))}
         </ul>
       </div>
-      {/* <NodeInfo /> */}
-      <Setting />
     </div>
   );
 }
 
 export default React.memo(styled(Menu)(({ theme }: ThemeProps) => `
   align-items: center;
-  display: flex;
-  justify-content: space-between;
+  // display: flex;
+  // justify-content: space-between;
   padding: 0;
   z-index: 220;
+  height: calc(100vh - 63px);
 
   &.isLoading {
     background: #999 !important;
@@ -187,9 +177,9 @@ export default React.memo(styled(Menu)(({ theme }: ThemeProps) => `
   }
 
   .menuSection {
-    align-items: flex-end;
-    align-self: flex-end;
-    display: flex;
+    // align-items: flex-end;
+    // align-self: flex-end;
+    // display: flex;
   }
 
   .menuActive {
@@ -209,11 +199,18 @@ export default React.memo(styled(Menu)(({ theme }: ThemeProps) => `
   .menuItems {
     flex: 1 1;
     list-style: none;
-    margin: 0 1rem 0 0;
+    margin: 0;
     padding: 0;
 
     > li {
-      display: inline-block;
+      &:first-of-type {
+        border-top: 1px solid white !important;
+      }
+      border-bottom: 1px solid white !important;
+      &:hover a{
+        color: #333!important
+      }
+      // display: inline-block;
     }
   }
 `));

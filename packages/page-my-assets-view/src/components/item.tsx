@@ -3,7 +3,7 @@
 
 // import { AppProps as Props } from '@polkadot/react-components/types';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 // import { Route, Switch } from 'react-router';
 import { IconLink } from '@polkadot/react-components';
 
@@ -14,7 +14,8 @@ import styled from 'styled-components';
 // import { queryCarbonBalance } from '@eco/eco-utils/service';
 
 // import { useECOAccount } from '@eco/eco-components/Account/accountContext';
-import { fromHex, beautifulNumber } from '@eco/eco-utils/utils';
+import { fromHex, beautifulNumber, reformatAssetName } from '@eco/eco-utils/utils';
+import { useHistory } from 'react-router-dom';
 // import { api } from '@polkadot/react-api';
 
 const Content = styled.div`
@@ -22,6 +23,7 @@ const Content = styled.div`
   align-items: center;
   .title {
     font-size: 24px;
+    cursor: pointer;
   }
 `;
 
@@ -43,6 +45,7 @@ const Icon = styled.div`
   border-radius: 50%;
   background-image: url('https://polkadot.js.org/apps/favicon.ico');
   background-size: cover;
+  cursor: pointer;
 
 `;
 const ItemWrapper = styled.div`
@@ -76,6 +79,8 @@ a {
 function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
   const { type, asset, balance, handleTransfer } = props;
 
+  const history = useHistory();
+
   // const [balance, updateBalance] = useState<Record<string, string | number>>({});
 
   // const [ecoAccount] = useECOAccount();
@@ -93,12 +98,17 @@ function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
   //   }
   // }, [asset, ecoAccount]);
 
+  const goDetail = useCallback(() => {
+    history.push(`/ecassets/assets-detail?asset=${asset.assetId}&symbol=${asset.symbol as string}`);
+  }, [asset]);
+
   return (
     <ItemWrapper>
       <Content>
-        <div><Icon></Icon></div>
+        <div><Icon onClick={goDetail} /></div>
         <div>
-          <div className='title'>{fromHex(asset.symbol as string)}</div>
+          <div className='title'
+            onClick={goDetail}>{reformatAssetName(fromHex(asset.symbol as string))}</div>
           <div>
           持有量： {beautifulNumber(balance.balance) || 0}
           </div>

@@ -98,6 +98,27 @@ export default React.memo(styled(Content)`
   padding: 0 1.5rem 1rem;
   position: relative;
   width: 100%;
+  height: 100%;
+  overflow: auto;
+
+&::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
+}
+
+&::-webkit-scrollbar-track {
+    background: #ddd;
+    border: thin solid lightgray;
+    box-shadow: 0px 0px 2px #f6f6f6 inset;
+    -moz-box-shadow: 0px 0px 2px #f6f6f6 inset;
+    -webkit-box-shadow: 0px 0px 2px #f6f6f6 inset;
+    -o-box-shadow: 0px 0px 2px #f6f6f6 inset;
+}
+
+&::-webkit-scrollbar-thumb {
+    background: #373737;
+    border: thin solid #000;
+}
 
   .connecting {
     padding: 3.5rem 0;

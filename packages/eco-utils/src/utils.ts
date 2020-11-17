@@ -1383,3 +1383,38 @@ export const Countries = [{
   en: 'Mongolia',
   cn: '蒙古国 蒙古'
 }];
+
+// 交易页面交易列表数量显示处理
+export const resolveAmountNumber = (number: string | number): string => {
+  const _num = new BN(number || 0);
+  const isG = _num.lt(new BN(1000));
+  const isKg = _num.gte(new BN(1000)) && _num.lt(new BN(1000000));
+  const isTon = _num.gte(new BN(1000000));
+
+  const _unit = isG ? {
+    _u: '克',
+    value: 0
+  } : (isKg ? {
+    _u: '千克',
+    value: 3
+  } : (isTon ? {
+    _u: '吨',
+    value: 6
+  } : {
+    _u: '',
+    value: 0
+  }));
+
+  return `${_num.div(new BN(10).pow(new BN(_unit.value || 0))).toString()}${_unit._u}`;
+};
+
+/**
+ * 格式化资产名称
+ *
+ * @param   {string}  name  [name description]
+ *
+ * @return  {string}        [return description]
+ */
+export const reformatAssetName = (name: string): string => {
+  return name.replace(/^([A-Z]+)\.(\d+)$/, '$1($2)');
+};

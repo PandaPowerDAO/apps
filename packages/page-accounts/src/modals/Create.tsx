@@ -109,6 +109,8 @@ function newSeed (seed: string | undefined | null, seedType: SeedType): string {
 
 function generateSeed (_seed: string | undefined | null, derivePath: string, seedType: SeedType, pairType: KeypairType = DEFAULT_PAIR_TYPE): AddressState {
   const seed = newSeed(_seed, seedType);
+
+  console.log(seed, derivePath);
   const address = addressFromSeed(seed, derivePath, pairType);
 
   return {

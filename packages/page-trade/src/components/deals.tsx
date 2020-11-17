@@ -8,7 +8,11 @@ import Panel from '@eco/eco-components/Panel';
 // import { useApi } from '@polkadot/react-hooks';
 
 import { queryOrderDeals } from '@eco/eco-utils/service';
-import { formatDate, unitToEco, beautifulNumber } from '@eco/eco-utils/utils';
+import { formatDate,
+  unitToEco,
+  beautifulNumber,
+  resolveAmountNumber,
+  reformatAssetName } from '@eco/eco-utils/utils';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { debounce } from 'lodash';
@@ -214,9 +218,9 @@ function OrderList (props: Props): React.ReactElement<Props> {
             return <tr key={rowIndex}>
 
               <td>{formatDate(v.timestamp as number)}</td>
-              <td>{v.assetSymbol}</td>
+              <td>{reformatAssetName(v.assetSymbol)}</td>
               <td>{resolvePrice(v.price as string || 0) as string || '-'}吨/ECO2</td>
-              <td>{beautifulNumber(v.amount || '0')}</td>
+              <td>{beautifulNumber(resolveAmountNumber(v.amount || '0'))}</td>
               {/* {
               action ? <td>
                 <div onClick={() => handleAction(v as OrderItem)}>

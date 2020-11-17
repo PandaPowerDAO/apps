@@ -12,16 +12,17 @@ interface Props {
   className?: string;
   isToplevel?: boolean;
   route: ItemRoute;
+  active: null | string | undefined;
 }
 
 const DUMMY_COUNTER = () => 0;
 
-function Item ({ className = '', isToplevel, route: { Modal, href, icon, name, text, useCounter = DUMMY_COUNTER } }: Props): React.ReactElement<Props> {
+function Item ({ className = '', active = '', isToplevel, route: { Modal, href, icon, name, text, useCounter = DUMMY_COUNTER } }: Props): React.ReactElement<Props> {
   const [isModalVisible, toggleModal] = useToggle();
   const count = useCounter();
 
   return (
-    <li className={`${className}${count ? ' withCounter' : ''} ${isToplevel ? 'topLevel  highlight--color-contrast' : 'highlight--hover-color'}`}>
+    <li className={`${active === name ? 'activeRoute' : ''} ${className}${count ? ' withCounter' : ''} ${isToplevel ? 'topLevel  highlight--color-contrast' : 'highlight--hover-color'}`}>
       <a
         href={Modal ? undefined : (href || `#/${name}`)}
         onClick={Modal ? toggleModal : undefined}
@@ -48,6 +49,10 @@ export default React.memo(styled(Item)`
   cursor: pointer;
   position: relative;
   white-space: nowrap;
+
+  &.activeRoute{
+    color: #333!important;
+  }
 
   &.topLevel {
     padding: 0;
