@@ -60,7 +60,7 @@ const ActionWrapper = styled.div`
   cursor: pointer;
 `;
 
-const Sides = ['卖', '买'];
+const Sides = ['出售', '购买'];
 
 const noop = (e: OrderItem) => Promise.resolve(undefined);
 
@@ -77,10 +77,10 @@ function OrderList (props: Props): React.ReactElement<Props> {
 
   const header = useMemo(() => {
     const _header = [
+      ['类型', 'header'],
       ['资产', 'header'],
       ['数量', 'header'],
       ['价格(吨/ECO2)', 'header'],
-      ['方向', 'header'],
       ['操作', 'header']
 
     ];
@@ -191,7 +191,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
 
         return _pagination;
       });
-    }, 10000);
+    }, 20000);
 
     return () => {
       if (timer) {
@@ -221,10 +221,14 @@ function OrderList (props: Props): React.ReactElement<Props> {
         >
           {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
             return <tr key={rowIndex}>
+              <td>
+                <span style={{
+                  color: v.direction === 1 ? 'red' : 'green'
+                }}>{Sides[v.direction as number] || '-'}</span>
+              </td>
               <td>{reformatAssetName(v.assetSymbol)}</td>
               <td>{v.amount ? beautifulNumber((resolveAmountNumber(v.amount))) : '-'}</td>
               <td>{resolvePrice(v.price) as string || '-'}</td>
-              <td>{Sides[v.direction as number] || '-'}</td>
               {
                 action ? <td>
                   <ActionWrapper onClick={() => handleAction(v as OrderItem)}>

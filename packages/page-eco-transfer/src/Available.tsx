@@ -14,7 +14,7 @@ import { queryCarbonBalanceKey, queryStandardBalanceKey } from '@eco/eco-utils/s
 
 import { Asset } from './types';
 import BN from 'bn.js';
-import { beautifulNumber } from '@eco/eco-utils/utils';
+import { beautifulNumber, resolveAmountNumber } from '@eco/eco-utils/utils';
 
 interface Props {
   children?: React.ReactNode;
@@ -56,7 +56,7 @@ function AvailableDisplay ({ children, className = '', label, params, asset, add
 
   return (
     <div>
-      可转账的 {beautifulNumber(_balance.toString() || '0')} {asset?.symbol || ''}
+      可转账的 {resolveAmountNumber(_balance.toString() || '0')}
     </div>
   );
 

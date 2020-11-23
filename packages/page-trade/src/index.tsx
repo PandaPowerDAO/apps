@@ -17,7 +17,7 @@ import CmptMyDeals from './myDeals';
 
 import ECOAccountProvider, { AccountSelector, AccountUpdator } from '@eco/eco-components/Account';
 import styled from 'styled-components';
-
+import { AccountSelectorWrapper } from '@eco/eco-components/EcoStyledComponents';
 // import { typesSpec } from '@polkadot/apps-config/api';
 
 import { setGaApi } from '@eco/eco-utils/service';
@@ -32,12 +32,17 @@ const ECOAPPWrapper = styled.div`
     border-color: #e0b4b4!important;
   }
 }
+.eco--App-trade{
+  background: white;
+
+}
 header{
     display: flex;
     align-items: center;
     white-space: nowrap;
     background: white;
     justify-content: bettwen;
+    padding: 12px 8px;
     & > .ui--Tabs{
       flex: 1;
       padding-left: 0;
@@ -49,10 +54,10 @@ header{
   width: 335px;
 }
 `;
-const AccountSelectorWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
+// const AccountSelectorWrapper = styled.div`
+//   display: flex;
+//   align-items: center;
+// `;
 
 interface Props {
   basePath: string;
@@ -128,42 +133,40 @@ function EcoTradeApp ({ basePath }: Props): React.ReactElement<Props> {
   }, [api]);
 
   return (
-    <ECOAccountProvider>
-      <ECOAPPWrapper>
-        <main className='eco--App' >
-          <header>
-            <Tabs
-              basePath={basePath}
-              items={items}
-            />
-            <AccountSelectorWrapper>
+    <ECOAPPWrapper>
+      <main className='eco--App eco--App-trade' >
+        <header>
+          <Tabs
+            basePath={basePath}
+            items={items}
+          />
+          {/* <AccountSelectorWrapper>
               <span style={{ width: '8em' }}>当前帐号:</span>
               <AccountSelector/>
-            </AccountSelectorWrapper>
-          </header>
-          <AccountUpdator>
-            <Switch>
-              <Route
-                path={`${basePath}/myorders`}
-              >
-                <CmptMyOrderList/>
-              </Route>
-              <Route
-                path={`${basePath}/mydeals`}
-              >
-                <CmptMyDeals/>
-              </Route>
-              <Route
-                // path={`${basePath}/trade`}
-                exact
-              >
-                <CmptOrderList />
-              </Route>
-            </Switch>
-          </AccountUpdator>
-        </main>
-      </ECOAPPWrapper>
-    </ECOAccountProvider>
+            </AccountSelectorWrapper> */}
+        </header>
+        <AccountUpdator>
+          <Switch>
+            <Route
+              path={`${basePath}/myorders`}
+            >
+              <CmptMyOrderList/>
+            </Route>
+            <Route
+              path={`${basePath}/mydeals`}
+            >
+              <CmptMyDeals/>
+            </Route>
+            <Route
+              // path={`${basePath}/trade`}
+              exact
+            >
+              <CmptOrderList />
+            </Route>
+          </Switch>
+        </AccountUpdator>
+      </main>
+    </ECOAPPWrapper>
   );
 }
 

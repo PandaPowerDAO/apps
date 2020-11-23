@@ -1,13 +1,13 @@
 // Copyright 2017-2020 @polkadot/app-democracy authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Modal, Dropdown, Input, Button } from '@polkadot/react-components';
 import { Form } from 'antd';
 import { useApi } from '@polkadot/react-hooks';
 
 import { queryAssetsList, makeOrder, queryPotentialBalance } from '@eco/eco-utils/service';
-import { requiredValidator, ecoToUnit } from '@eco/eco-utils/utils';
+import { requiredValidator, ecoToUnit, reformatAssetName, unitToEco, beautifulNumber } from '@eco/eco-utils/utils';
 import { ModalProps } from '@polkadot/react-components/Modal/types';
 import styled from 'styled-components';
 
@@ -15,6 +15,7 @@ import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import FieldDecorator from '@eco/eco-components/FormComponents';
 import { AssetItemType } from '../types';
 import BN from 'bn.js';
+import { queryCarbonBalance } from '@polkadot/app-eco/service';
 
 interface Props extends ModalProps {
   onClose: () => void,
@@ -64,6 +65,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
 
   const [assets, updateAssets] = useState<AssetItemType[]>([]);
   const [unit, updateUnit] = useState<number>(unitOptions[0].value);
+  const [assetBalance, updateAssetBalance] = useState<number | string>(0);
 
   // const [assetsList, updateAssetsList] = useState<Record<string, any>[]>([]);
 
@@ -124,7 +126,6 @@ function CreateModal (props: Props): React.ReactElement<Props> {
         offset: 0,
         owner: direction === 'sell' ? ecoAccount : ''
       });
-
       const _result = direction === 'buy' ? result.docs : result;
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -133,7 +134,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
         (_result as AssetItemType[]).map((doc: AssetItemType): AssetItemType => {
           return {
             ...doc,
-            text: `${doc.symbol as string}${doc.vintage ? `.${doc.vintage as string}` : ''}`,
+            text: reformatAssetName(`${doc.symbol as string}${doc.vintage ? `.${doc.vintage as string}` : ''}`),
             value: doc.assetId
           };
         }).filter((v: AssetItemType) => (direction === 'buy' && v.approved === 1) || direction === 'sell'));
@@ -162,6 +163,43 @@ function CreateModal (props: Props): React.ReactElement<Props> {
   const handleUnitChange = useCallback((_unit) => {
     updateUnit(_unit);
   }, []);
+
+  const handleAssetsChange = useCallback((val) => {
+    _queryBalance();
+
+    async function _queryBalance () {
+      const { balance } = await queryCarbonBalance(api, val, ecoAccount);
+
+      updateAssetBalance((balance as string | '0').replace(/,/ig, ''));
+    }
+  }, [api, ecoAccount]);
+
+  const amountValidator = async (rule: any, value: string): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const formValues = form.getFieldsValue();
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (formValues.direction === '0' && formValues.assetId) {
+      if (!value || new BN(value).gt(new BN(assetBalance))) {
+        throw new Error(`余额不足，当前可用资产${beautifulNumber(assetBalance || 0)}`);
+      }
+    }
+
+    await Promise.resolve();
+  };
+
+  const amountExtraLabel = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    // const _formValues = form.getFieldsValue();
+    const __unit = unitOptions.filter((v) => v.value === unit)[0];
+
+    return <div>
+      当前持有:
+      {
+        unitToEco(assetBalance as string, __unit.value).toString()
+      }{__unit.text}
+    </div>;
+  }, [unit, assetBalance]);
 
   return (
     <Modal
@@ -205,6 +243,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               }]}
               validateTrigger={['onSubmit']}>
               <FieldDecorator
+                onChange={handleAssetsChange}
                 required
               >
                 <Dropdown
@@ -254,13 +293,18 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               name='amount'
               rules={[{
                 validator: requiredValidator
-              }]}>
+              }, {
+                validator: amountValidator
+              }]}
+              validateFirst
+            >
               <FieldDecorator
                 required
               >
                 <Input
                   isFull={false}
                   label={<div>数量</div>}
+                  labelExtra={amountExtraLabel}
                   maxLength={500}
                   // onChange={(name: string) => setFieldsValue({ name })}
                   placeholder='请输入数量'

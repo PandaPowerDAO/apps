@@ -15,7 +15,7 @@ import PageTransfer from './newTransfer';
 
 import ECOAccountProvider, { AccountSelector, AccountUpdator } from '@eco/eco-components/Account';
 import styled from 'styled-components';
-
+import { AccountSelectorWrapper } from '@eco/eco-components/EcoStyledComponents';
 import { setGaApi } from '@eco/eco-utils/service';
 
 const ECOAPPWrapper = styled.div`
@@ -44,10 +44,10 @@ header{
   width: 335px;
 }
 `;
-const AccountSelectorWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
+// const AccountSelectorWrapper = styled.div`
+//   display: flex;
+//   align-items: center;
+// `;
 
 interface Props {
   basePath: string;

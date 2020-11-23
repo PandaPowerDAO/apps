@@ -22,7 +22,7 @@ function Item ({ className = '', active = '', isToplevel, route: { Modal, href, 
   const count = useCounter();
 
   return (
-    <li className={`${active === name ? 'activeRoute' : ''} ${className}${count ? ' withCounter' : ''} ${isToplevel ? 'topLevel  highlight--color-contrast' : 'highlight--hover-color'}`}>
+    <li className={`${active === name ? 'activeRoute' : ''} ${className}${count ? ' withCounter' : ''} ${isToplevel ? 'topLevel' : 'highlight--hover-color'}`}>
       <a
         href={Modal ? undefined : (href || `#/${name}`)}
         onClick={Modal ? toggleModal : undefined}
@@ -49,9 +49,15 @@ export default React.memo(styled(Item)`
   cursor: pointer;
   position: relative;
   white-space: nowrap;
+  svg{
+    color: #8f9bb3;
+  }
 
   &.activeRoute{
-    color: #333!important;
+    color: #7db8a8!important;
+    svg{
+      color: #7db8a8!important;
+    }
   }
 
   &.topLevel {
@@ -85,5 +91,6 @@ export default React.memo(styled(Item)`
 
   .ui--Icon {
     margin-right: 0.5rem;
+    color: #8f9bb3;
   }
 `);

@@ -23,7 +23,8 @@ import { requiredValidator,
   fromHex,
   parseQuery,
   Countries,
-  reformatAssetName } from '@eco/eco-utils/utils';
+  reformatAssetName, unitToEco, beautifulNumber, resolveAmountNumber } from '@eco/eco-utils/utils';
+import { queryCarbonBalance } from '@polkadot/app-eco/service';
 
 interface Props {
   className?: string,
@@ -70,6 +71,7 @@ const CountriesOptions: Country[] = Countries.map((country) => {
 
 function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
   const [assetsList, updateAssetsList] = useState<Asset[]>([]);
+  const [curAsset, updateCurAsset] = useState<Asset | null>(null);
   const tempAssetListRef = useRef<Asset[]>([]);
 
   const location = useLocation();
@@ -229,11 +231,35 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
     }
   }, [ecoAccount]);
 
+  const queryBalance = useCallback((_asset: Asset) => {
+    init();
+
+    async function init () {
+      const { balance } = await queryCarbonBalance(api, _asset.assetId, ecoAccount);
+
+      console.log('===========', balance);
+
+      updateCurAsset(() => {
+        return {
+          ...(_asset || {}),
+          balance: (balance as string || '0').replace(/,/g, '')
+        };
+      });
+    }
+  }, [api, ecoAccount, curAsset]);
+
   const handleSelectAsset = useCallback((value) => {
     if (value) {
       form.validateFields(['assetId']);
+      const _cur = assetsList.filter((v: Asset): boolean => {
+        return v.assetId === value;
+      });
+
+      queryBalance(_cur[0]);
+
+      // updateCurAsset(_cur[0]);
     }
-  }, []);
+  }, [assetsList, queryBalance]);
 
   return (
     <div className={className}>
@@ -285,7 +311,7 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isFull={false}
                   label={<div>碳中和数量</div>}
-                  labelExtra={<div>可中和数量{}</div>}
+                  labelExtra={<div>可中和数量{resolveAmountNumber(curAsset?.balance || 0)}</div>}
                   maxLength={500}
                   placeholder='碳中和数量'
                   withLabel

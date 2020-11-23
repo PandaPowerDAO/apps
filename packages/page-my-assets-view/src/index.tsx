@@ -15,7 +15,7 @@ import PageMyAssets from './myAssets';
 
 import ECOAccountProvider, { AccountSelector, AccountUpdator } from '@eco/eco-components/Account';
 import styled from 'styled-components';
-
+import { AccountSelectorWrapper } from '@eco/eco-components/EcoStyledComponents';
 // import { typesSpec } from '@polkadot/apps-config/api';
 
 import { setGaApi } from '@eco/eco-utils/service';
@@ -46,10 +46,10 @@ header{
   width: 335px;
 }
 `;
-const AccountSelectorWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
+// const AccountSelectorWrapper = styled.div`
+//   display: flex;
+//   align-items: center;
+// `;
 
 interface Props {
   basePath: string;
@@ -65,23 +65,25 @@ function EcoMyAssets ({ basePath }: Props): React.ReactElement<Props> {
     setGaApi(api);
   }, [api]);
 
-  return (
-    <ECOAccountProvider>
-      <ECOAPPWrapper>
-        <main className='eco--App' >
-          <header>
-            <AccountSelectorWrapper>
-              <span style={{ width: '8em' }}>当前帐号:</span>
-              <AccountSelector/>
-            </AccountSelectorWrapper>
-          </header>
-          <AccountUpdator>
-            <PageMyAssets />
-          </AccountUpdator>
-        </main>
-      </ECOAPPWrapper>
-    </ECOAccountProvider>
-  );
+  return <PageMyAssets />;
+
+  // return (
+  //   <ECOAccountProvider>
+  //     <ECOAPPWrapper>
+  //       <main className='eco--App' >
+  //         <header>
+  //           <AccountSelectorWrapper>
+  //             <span style={{ width: '8em' }}>当前帐号:</span>
+  //             <AccountSelector/>
+  //           </AccountSelectorWrapper>
+  //         </header>
+  //         <AccountUpdator>
+  //           <PageMyAssets />
+  //         </AccountUpdator>
+  //       </main>
+  //     </ECOAPPWrapper>
+  //   </ECOAccountProvider>
+  // );
 }
 
 export default React.memo(EcoMyAssets);

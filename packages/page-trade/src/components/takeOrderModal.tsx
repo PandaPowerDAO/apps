@@ -7,7 +7,7 @@ import { Form } from 'antd';
 import { useApi } from '@polkadot/react-hooks';
 
 import { takeOrder } from '@eco/eco-utils/service';
-import { requiredValidator } from '@eco/eco-utils/utils';
+import { requiredValidator, reformatAssetName } from '@eco/eco-utils/utils';
 import { ModalProps } from '@polkadot/react-components/Modal/types';
 import styled from 'styled-components';
 import { OrderDetailType, OrderItem } from '../types';
@@ -112,7 +112,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               <FieldDecorator>
                 <Input
                   isDisabled
-                  value={String((orderDetail || {}).assetSymbol)}
+                  value={reformatAssetName(String((orderDetail || {}).assetSymbol))}
                 />
               </FieldDecorator>
             </Form.Item>

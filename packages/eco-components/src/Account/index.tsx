@@ -50,7 +50,7 @@ export function AccountSelector (props: BareProps): React.ReactElement {
 export function AccountUpdator (props: BareProps): React.ReactElement {
   const [ecoAccount] = useContext(AccountContext);
 
-  return <div key={ecoAccount}>
+  return <React.Fragment key={ecoAccount}>
     {props.children}
-  </div>;
+  </React.Fragment>;
 }

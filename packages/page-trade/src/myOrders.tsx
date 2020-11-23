@@ -36,14 +36,16 @@ function MyOrderList (props: Props): React.ReactElement<Props> {
   return (
     <div>
       <CmptOrders
-        action={<span>撤单</span>}
+        action={<span style={{
+          color: 'red'
+        }}>撤单</span>}
         closed={0}
         handleAction={handleAction}
         isMine
         reverse={1}
-        title='所有订单'
+        title=''
       />
-      <div>
+      {/* <div>
         <CmptOrders
           // action={<span>历史挂单</span>}
           closed={1}
@@ -52,7 +54,7 @@ function MyOrderList (props: Props): React.ReactElement<Props> {
           reverse={1}
           title='历史挂单'
         />
-      </div>
+      </div> */}
     </div>);
 }
 

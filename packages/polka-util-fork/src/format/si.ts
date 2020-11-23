@@ -14,9 +14,9 @@ export const SI: SiDef[] = [
   // { power: -9, text: 'nano', value: 'n' },
   // { power: -6, text: 'micro', value: 'µ' },
   // { power: -3, text: 'milli', value: 'm' },
-  { power: 0, text: 'ECO2', value: '-' } // position 8
-  // { power: 3, text: 'Kilo', value: 'k' },
-  // { power: 6, text: 'Mega', value: 'M' },
+  { power: 0, text: 'ECO2', value: '-' }, // position 8
+  { power: 3, text: 'K', value: '千克' },
+  { power: 6, text: 'M', value: '吨' }
   // { power: 9, text: 'Giga', value: 'G' },
   // { power: 12, text: 'Tera', value: 'T' },
   // { power: 15, text: 'Peta', value: 'P' },

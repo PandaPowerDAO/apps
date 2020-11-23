@@ -15,6 +15,7 @@ import { BN_ZERO, isFunction } from '@polkadot/util';
 
 import { genTranslation } from '@eco/eco-utils/translate';
 import { queryPotentialBalance } from '@eco/eco-utils/service';
+import { reformatAssetName } from '@eco/eco-utils/utils';
 // import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 // import ECOAccountProvider, { AccountSelector } from '@eco/eco-components/Account';
 import { Asset } from './types';
@@ -100,7 +101,7 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
         ...(result as unknown as Asset[]).map((_asset: Asset): Asset => {
           return {
             ..._asset,
-            text: _asset.symbol,
+            text: reformatAssetName(_asset.symbol as string),
             value: _asset.assetId
           };
         })

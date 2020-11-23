@@ -34,7 +34,7 @@ function Grouping ({ className = '', name, routes, active = '' }: Props): React.
       {routes.map((route): React.ReactNode => (
         <Item
           active={active}
-          className='groupHdr highlight--color-contrast'
+          className='groupHdr menu-item'
           key={route.name}
           route={route}
         />
@@ -63,6 +63,7 @@ function Grouping ({ className = '', name, routes, active = '' }: Props): React.
 export default React.memo(styled(Grouping)(({ theme }: ThemeProps) => `
   cursor: pointer;
   position: relative;
+  background: #fff;
 
   .groupHdr {
     border-radius: 0.25rem 0.25rem 0 0;
@@ -85,6 +86,10 @@ export default React.memo(styled(Grouping)(({ theme }: ThemeProps) => `
 
     > li {
       z-index: 1;
+      color: #222b45;
+      &:hover{
+        color: #36f;
+      }
 
       a {
         padding-right: 4rem;

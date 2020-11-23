@@ -59,7 +59,9 @@ function OrderList (props: Props): React.ReactElement<Props> {
           width: '50%'
         }}>
           <CmptOrders
-            action={<span>交易</span>}
+            action={<span style={{
+              color: '#7db8a8'
+            }}>交易</span>}
             closed={0}
             handleAction={handleAction}
             isMine={false}

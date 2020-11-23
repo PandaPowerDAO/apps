@@ -25,7 +25,7 @@ import ECOAccountProvider, { AccountSelector, AccountUpdator } from './Component
 import styled from 'styled-components';
 
 // import { typesSpec } from '@polkadot/apps-config/api';
-
+import { AccountSelectorWrapper } from '@eco/eco-components/EcoStyledComponents';
 import { setGaApi } from './service';
 
 const ECOAPPWrapper = styled.div`
@@ -54,10 +54,10 @@ header{
   width: 335px;
 }
 `;
-const AccountSelectorWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
+// const AccountSelectorWrapper = styled.div`
+//   display: flex;
+//   align-items: center;
+// `;
 
 interface Props {
   basePath: string;

@@ -1284,9 +1284,9 @@ export const Countries = [{
   cn: '圣文森特和格林纳丁斯'
 }, {
   id: 'TW',
-  text: '中华民国（台湾） Taiwan',
+  text: '中国（台湾） Taiwan',
   en: 'Taiwan',
-  cn: '中华民国（台湾）'
+  cn: '中国（台湾）'
 }, {
   id: 'NZ',
   text: '新西兰 New Zealand',
@@ -1405,7 +1405,7 @@ export const resolveAmountNumber = (number: string | number): string => {
     value: 0
   }));
 
-  return `${_num.div(new BN(10).pow(new BN(_unit.value || 0))).toString()}${_unit._u}`;
+  return `${beautifulNumber(_num.div(new BN(10).pow(new BN(_unit.value || 0))).toString())}${_unit._u}`;
 };
 
 /**

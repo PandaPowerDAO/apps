@@ -11,3 +11,5 @@ export { default as Row } from './Row';
 export { default as SubmitBtn } from './SubmitBtn';
 export { default as Table } from './Table';
 export { default as TextArea } from './TextArea';
+
+export { default as EcoStyledComponents } from './EcoStyledComponents';

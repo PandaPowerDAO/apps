@@ -3,7 +3,7 @@
 
 import { Route } from './types';
 
-import Component from '@eco/page-trade';
+import Component from '@eco/page-trade/newIndex';
 
 export default function create (t: <T = string> (key: string, text: string, options: { ns: string }) => T): Route {
   return {

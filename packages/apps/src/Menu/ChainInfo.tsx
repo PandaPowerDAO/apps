@@ -22,13 +22,14 @@ function ChainInfo ({ className }: Props): React.ReactElement<Props> {
   // const runtimeVersion = useCall<RuntimeVersion>(api.rpc.state.subscribeRuntimeVersion);
   const { ipnsChain } = useIpfs();
   const [isEndpointsVisible, toggleEndpoints] = useToggle();
-  const canToggle = !ipnsChain;
+  // const canToggle = !ipnsChain;
+  const canToggle = false;
 
   return (
     <div className={className}>
       <div
         className={`apps--SideBar-logo-inner${canToggle ? ' isClickable' : ''} highlight--color-contrast`}
-        onClick={toggleEndpoints}
+        // onClick={toggleEndpoints}
       >
         <ChainImg />
         <div className='info media--1000'>

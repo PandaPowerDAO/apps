@@ -43,7 +43,7 @@ const Icon = styled.div`
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
-  background-image: url('https://polkadot.js.org/apps/favicon.ico');
+  background-image: url('/static/eco2.3d213ebd.svg');
   background-size: cover;
   cursor: pointer;
 
@@ -51,13 +51,15 @@ const Icon = styled.div`
 const ItemWrapper = styled.div`
   // width: 30%;
   // max-width: 20rem;
-  border: 1px solid #acacac;
-  padding: 8px 12px;
-  border-radius: 5px;
+  border: .0625rem solid #e4e9f2;
+  padding: 10px 12px;
+  border-radius: .25rem;
   display: inline-block;
   min-width: 30%;
   margin-bottom: 30px;
   margin-right: 3%;
+  font-size: .9375rem;
+  font-weight: 400;
   & + & {
     // margin-left: 20px;
   }

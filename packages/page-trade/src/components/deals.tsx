@@ -186,7 +186,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
 
         return _pagination;
       });
-    }, 10000);
+    }, 20000);
 
     return () => {
       if (timer) {

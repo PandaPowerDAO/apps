@@ -11,6 +11,8 @@ import GlobalStyle from '@polkadot/react-components/styles';
 import { useApi } from '@polkadot/react-hooks';
 import Signer from '@polkadot/react-signer';
 
+import ECOAccountProvider, { AccountSelector, AccountUpdator } from '@eco/eco-components/Account';
+
 import ConnectingOverlay from './overlays/Connecting';
 import Content from './Content';
 import Menu from './Menu';
@@ -24,7 +26,34 @@ const ContentWrapper = styled.div`
   width: 100%;
   align-items: flex-start;
   height: calc(100vh - 63px);
+  background: #edf1f7;
 
+`;
+const ECOAPPWrapper = styled.div`
+.ant-form-item-label{
+  display:none;
+}
+.ant-form-item-has-error{
+  input,textarea{
+    background-color: #fff6f6!important;
+    border-color: #e0b4b4!important;
+  }
+}
+// header{
+//     display: flex;
+//     align-items: center;
+//     white-space: nowrap;
+//     background: white;
+//     justify-content: bettwen;
+//     & > .ui--Tabs{
+//       flex: 1;
+//       padding-top: 0;
+//     }
+// }
+.account-selector{
+  max-width: 335px;
+  width: 335px;
+}
 `;
 
 function Apps ({ className = '' }: Props): React.ReactElement<Props> {
@@ -39,21 +68,27 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
   return (
     <>
       <GlobalStyle uiHighlight={uiHighlight} />
-      <div className={`apps--Wrapper theme--${theme} ${className}`}>
-        <Menu />
-        <ContentWrapper>
-          <SideMenu />
-          <AccountSidebar>
-            <Signer>
-              <Content />
-            </Signer>
-            <ConnectingOverlay />
-            <div id={PORTAL_ID} />
-          </AccountSidebar>
-        </ContentWrapper>
-      </div>
+      <ECOAccountProvider>
+        <div className={`apps--Wrapper theme--${theme} ${className}`}>
+          <Menu />
+          <ContentWrapper>
+            <SideMenu />
+            <AccountSidebar>
+              <Signer>
+                <AccountUpdator>
+                  <Content />
+                </AccountUpdator>
+              </Signer>
+              <ConnectingOverlay />
+              <div id={PORTAL_ID} />
+            </AccountSidebar>
+          </ContentWrapper>
+        </div>
+      </ECOAccountProvider>
       <WarmUp />
+
     </>
+
   );
 }
 
@@ -65,4 +100,22 @@ export default React.memo(styled(Apps)(({ theme }: ThemeProps) => `
   min-height: 100vh;
   height: 100vh;
   max-height: 100vh;
+  .ant-form-item-label{
+    display:none;
+  }
+  .ant-form-item-has-error{
+    input,textarea{
+      background-color: #fff6f6!important;
+      border-color: #e0b4b4!important;
+    }
+  }
+
+  .eco--App {
+    header{
+      .ui--Tabs{
+        border-bottom: none;
+      }
+      overflow-x: hidden;
+    }
+  }
 `));

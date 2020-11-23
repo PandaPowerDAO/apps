@@ -13,6 +13,7 @@ import CmptDeals from './components/deals';
 
 interface Props extends BareProps {
   type?:string,
+  title?: string,
 }
 
 const OrderListWrapper = styled.div`
@@ -34,7 +35,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
         closed={1}
         isMine
         reverse={0}
-        title='成交记录'
+        title={props.title || '历史成交'}
       />
     </OrderListWrapper>);
 }

@@ -124,7 +124,7 @@ function Menu ({ className = '' }: Props): React.ReactElement<Props> {
   const isLoading = !apiProps.isApiReady || !apiProps.isApiConnected;
 
   return (
-    <div className={`${className}${isLoading ? ' isLoading' : ''} highlight--bg`}>
+    <div className={`${className}${isLoading ? ' isLoading' : ''}`}>
       <div className='menuSection'>
         <ul className='menuItems'>
           {visibleGroups.map(({ name, routes }): React.ReactNode => (
@@ -159,6 +159,7 @@ export default React.memo(styled(Menu)(({ theme }: ThemeProps) => `
   padding: 0;
   z-index: 220;
   height: calc(100vh - 63px);
+  background: white;
 
   &.isLoading {
     background: #999 !important;
@@ -204,12 +205,19 @@ export default React.memo(styled(Menu)(({ theme }: ThemeProps) => `
 
     > li {
       &:first-of-type {
-        border-top: 1px solid white !important;
+        border-top: 1px solid #edf1f7 !important;
       }
-      border-bottom: 1px solid white !important;
+      border-bottom: 1px solid #edf1f7 !important;
       &:hover a{
-        color: #333!important
+        color: #7db8a8!important
+        svg: {
+          color: #7db8a8!important
+        }
       }
+      &:hover{
+        color: #7db8a8!important
+      }
+      padding: 2px 17px;
       // display: inline-block;
     }
   }

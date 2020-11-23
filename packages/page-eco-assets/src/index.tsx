@@ -20,7 +20,7 @@ import PageAssetsDetail from './pages/assetDetail';
 
 import ECOAccountProvider, { AccountSelector, AccountUpdator } from '@eco/eco-components/Account';
 import styled from 'styled-components';
-
+import { AccountSelectorWrapper } from '@eco/eco-components/EcoStyledComponents';
 // import { typesSpec } from '@polkadot/apps-config/api';
 
 import { setGaApi } from '@eco/eco-utils/service';
@@ -52,10 +52,10 @@ header{
   width: 335px;
 }
 `;
-const AccountSelectorWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
+// const AccountSelectorWrapper = styled.div`
+//   display: flex;
+//   align-items: center;
+// `;
 
 interface Props {
   basePath: string;
@@ -131,55 +131,50 @@ function EcoAssets ({ basePath }: Props): React.ReactElement<Props> {
   }, [api]);
 
   return (
-    <ECOAccountProvider>
-      <ECOAPPWrapper>
-        <main className='eco--App' >
-          <header>
-            <Tabs
-              basePath={basePath}
-              items={items}
-            />
-            <AccountSelectorWrapper>
-              <span style={{ width: '8em' }}>当前帐号:</span>
-              <AccountSelector/>
-            </AccountSelectorWrapper>
-          </header>
-          <AccountUpdator>
-            <Switch>
-              <Route
-                path={`${basePath}/register-assets`}
-              >
-                <PageRegisterAssets />
-              </Route>
-              <Route
-                path={`${basePath}/assets-detail`}
-              >
-                <PageAssetsDetail />
-              </Route>
-              <Route
-                path={`${basePath}/register-project`}
-              >
-                <PageRegisterProject />
-              </Route>
-              <Route
-                path={`${basePath}/additional`}
-              >
-                <PageAdditional />
-              </Route>
-              <Route
-                path={`${basePath}/burning`}
-              >
-                <PageBurning />
-              </Route>
-              <Route exact>
-                <PageEcoAssets />
-              </Route>
-            </Switch>
-
-          </AccountUpdator>
-        </main>
-      </ECOAPPWrapper>
-    </ECOAccountProvider>
+    <ECOAPPWrapper>
+      <main className='eco--App' >
+        <header>
+          <Tabs
+            basePath={basePath}
+            items={items}
+          />
+          {/* <AccountSelectorWrapper>
+            <span style={{ width: '8em' }}>当前帐号:</span>
+            <AccountSelector/>
+          </AccountSelectorWrapper> */}
+        </header>
+        <Switch>
+          <Route
+            path={`${basePath}/register-assets`}
+          >
+            <PageRegisterAssets />
+          </Route>
+          <Route
+            path={`${basePath}/assets-detail`}
+          >
+            <PageAssetsDetail />
+          </Route>
+          <Route
+            path={`${basePath}/register-project`}
+          >
+            <PageRegisterProject />
+          </Route>
+          <Route
+            path={`${basePath}/additional`}
+          >
+            <PageAdditional />
+          </Route>
+          <Route
+            path={`${basePath}/burning`}
+          >
+            <PageBurning />
+          </Route>
+          <Route exact>
+            <PageEcoAssets />
+          </Route>
+        </Switch>
+      </main>
+    </ECOAPPWrapper>
   );
 }
 

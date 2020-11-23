@@ -100,6 +100,7 @@ export default React.memo(styled(Content)`
   width: 100%;
   height: 100%;
   overflow: auto;
+  // padding-top: 32px;
 
 &::-webkit-scrollbar {
     width: 2px;
@@ -116,8 +117,8 @@ export default React.memo(styled(Content)`
 }
 
 &::-webkit-scrollbar-thumb {
-    background: #373737;
-    border: thin solid #000;
+    background: #e4e9f2;
+    // border: thin solid #000;
 }
 
   .connecting {

@@ -12,15 +12,17 @@ import React, { useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import createRoutes from '@polkadot/apps-routing';
-import { Icon } from '@polkadot/react-components';
+// import { Icon } from '@polkadot/react-components';
 import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
+import { AccountSelectorWrapper } from '@eco/eco-components/EcoStyledComponents';
+import ECOAccountProvider, { AccountSelector, AccountUpdator } from '@eco/eco-components/Account';
 
 import { findMissingApis } from '../endpoint';
 import { useTranslation } from '../translate';
 import ChainInfo from './ChainInfo';
-import Grouping from './Grouping';
+// import Grouping from './Grouping';
 import Item from './Item';
-import NodeInfo from './NodeInfo';
+// import NodeInfo from './NodeInfo';
 import Setting from './Setting';
 
 interface Props {
@@ -127,7 +129,7 @@ function Menu ({ className = '' }: Props): React.ReactElement<Props> {
   const isLoading = !apiProps.isApiReady || !apiProps.isApiConnected;
 
   return (
-    <div className={`${className}${isLoading ? ' isLoading' : ''} highlight--bg`}>
+    <div className={`${className}${isLoading ? ' isLoading' : ''}`}>
       <div className='menuSection'>
         <ChainInfo />
         {/* {activeRoute && (
@@ -157,8 +159,18 @@ function Menu ({ className = '' }: Props): React.ReactElement<Props> {
           ))}
         </ul>
       </div>
+      <div className='header-right'>
+
+        {
+          isLoading ? null : <div className='account-selector-wrapper'>
+            <AccountSelector/>
+          </div>
+        }
+        <Setting />
+
+      </div>
+
       {/* <NodeInfo /> */}
-      <Setting />
     </div>
   );
 }
@@ -169,6 +181,18 @@ export default React.memo(styled(Menu)(({ theme }: ThemeProps) => `
   justify-content: space-between;
   padding: 0;
   z-index: 220;
+  background: white;
+  color: #222b45;
+  box-shadow: 0 0.5rem 1rem 0 rgba(44,51,73,.1);
+  z-index: 224;
+  .header-right{
+    display: inline-flex;
+    align-items: center;
+  }
+  .account-selector-wrapper{
+    max-width: 300px;
+    margin-right: 12px;
+  }
 
   &.isLoading {
     background: #999 !important;
