@@ -21,7 +21,7 @@ import TextArea from '@eco/eco-components/TextArea';
 import FieldDecorator from '@eco/eco-components/FormComponents';
 import Row from '@eco/eco-components/Row';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
-
+import Header from '../components/header';
 import { parseQuery,
   requiredValidator,
   urlValidator,
@@ -126,14 +126,13 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
       name='transfer-form'
       onFinish={onFinish}>
       <div className={className}>
+        <Header title='增发碳汇资产' />
         {/* <Panel title='您好，A女士'>
         <p>1、阿斯顿发送到发送到发的是发送到发送到发送到</p>
         <p>2、阿斯顿发送到发送到发的是发送到发送到发送到</p>
         <p>3、阿斯顿发送到发送到发的是发送到发送到发送到</p>
       </Panel> */}
-        <Panel
-          title='增发碳汇资产'
-        >
+        <Panel>
           <Row>
             <Hidden>
               <InputAddress
@@ -185,7 +184,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
                   isFull={false}
                   label={<div>资产上限</div>}
                   labelExtra={<div>吨</div>}
-                  value={unitToEco(assetsInfo.max_supply as string, 6).toString() }
+                  value={unitToEco(assetsInfo.max_supply as string || 0, 6).toString() }
                   withLabel
                 />
               </FieldDecorator>
@@ -201,7 +200,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
                   labelExtra={<div>吨</div>}
                   maxLength={500}
                   // value={assetsInfo.total_supply as string}
-                  value={unitToEco(assetsInfo.total_supply as string, 6).toString() }
+                  value={unitToEco(assetsInfo.total_supply as string || 0, 6).toString() }
                   withLabel
                 />
               </FieldDecorator>

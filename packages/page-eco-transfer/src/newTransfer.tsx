@@ -1,7 +1,7 @@
 // Copyright 2017-2020 @polkadot/app-accounts authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { DeriveBalancesAll } from '@polkadot/api-derive/types';
 
 import BN from 'bn.js';
@@ -19,7 +19,7 @@ import { reformatAssetName } from '@eco/eco-utils/utils';
 // import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 // import ECOAccountProvider, { AccountSelector } from '@eco/eco-components/Account';
 import { Asset } from './types';
-import { TokenUnit } from '@polkadot/react-components/InputNumber';
+import InputNumber, { TokenUnit } from '@polkadot/react-components/InputNumber';
 import store from 'store';
 const useAccountTranslation = genTranslation('app-accounts');
 
@@ -45,16 +45,18 @@ const DefaultECO2Asset = {
 };
 
 const calcAmount = (amount: BN, decimals: number): BN => {
-  return new BN(amount).mul(new BN(10).pow(new BN(15)));
+  return new BN(amount).mul(new BN(10).pow(new BN(8)));
 };
 
 const AmountAfterDecimals = (amount: BN, decimals?: number) => {
-  return new BN(amount).div(new BN(10).pow(new BN(decimals || 0)));
+  return new BN(amount).div(new BN(10).pow(new BN((decimals || 0))));
 };
 
 function Transfer ({ className = '', onClose, recipientId: propRecipientId, senderId: propSenderId }: Props): React.ReactElement<Props> {
   const ecoAccount = window.localStorage.getItem('__eco_account') || undefined;
+  const _defaultAssetId = store.get('__eco_asset_detail_id') || DefaultECO2Asset.assetId;
 
+  console.log('_defaultAssetId', _defaultAssetId);
   const { t } = useAccountTranslation();
   const { api } = useApi();
   const [amount, setAmount] = useState<BN | undefined>(BN_ZERO);
@@ -68,6 +70,8 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
   const [assetsList, updateAssetsList] = useState<Asset[]>([DefaultECO2Asset]);
 
   const [curAsset, updateCurAsset] = useState<Asset>(DefaultECO2Asset);
+
+  const [curSi, updateCurSi] = useState<number>(0);
 
   // const [ecoAccount] = useECOAccount();
 
@@ -110,13 +114,17 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
       if (assetFromStore) {
         const _filterd: Asset[] = (result as unknown as Asset[]).filter((v: Asset) => v.assetId === assetFromStore);
 
-        _filterd[0] && updateCurAsset(_filterd[0]);
+        setTimeout(() => {
+          _filterd[0] && updateCurAsset(_filterd[0]);
+        }, 100);
       }
     }
 
     if (senderId) {
       setSenderId(senderId);
       _query();
+
+      // setSelectAssets(_defaultAssetId);
     }
   }, [senderId]);
 
@@ -164,25 +172,54 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
         params: canToggleAll && isAll
           ? [recipientId, maxTransfer]
           // : [recipientId, calcAmount(amount as BN, 0)]
-          // : [recipientId, calcAmount(amount as BN, 1)]
-          : [recipientId, amount]
+          : [recipientId, calcAmount(amount as BN, 1)]
+          // : [recipientId, amount]
       };
     } else if (curAsset.type === 'carbon') {
       // carbonAssets.transfer(assetId, to, amount)
       return {
         apiStr: 'carbonAssets.transfer',
         // params: [curAsset.assetId, recipientId, calcAmount(amount as BN, curAsset.decimals as number)]
-        params: [curAsset.assetId, recipientId, AmountAfterDecimals(amount as BN, curAsset.decimals as number)]
+        params: [curAsset.assetId, recipientId, AmountAfterDecimals(amount as BN, curAsset.decimals as number).mul(new BN(10).pow(new BN(curSi)))]
       };
     } else {
       // standardAssets.transfer(moneyId, to, amount)
       return {
         apiStr: 'carbonAssets.transfer',
         // params: [curAsset.moneyId as string || '', recipientId, calcAmount(amount as BN, curAsset.decimals as number)]
-        params: [curAsset.moneyId as string || '', recipientId, AmountAfterDecimals(amount as BN, curAsset.decimals as number)]
+        params: [curAsset.moneyId as string || '', recipientId, AmountAfterDecimals(amount as BN, curAsset.decimals as number).mul(new BN(10).pow(new BN(curSi)))]
       };
     }
-  }, [curAsset, isProtected, api, canToggleAll, isAll, amount, recipientId, maxTransfer]);
+  }, [curAsset, isProtected, api, canToggleAll, isAll, amount, recipientId, maxTransfer, curSi]);
+
+  const SIOptions = useMemo(() => {
+    if (curAsset && curAsset.type !== 'carbon') {
+      return [{
+        text: curAsset.text,
+        value: 0
+      }];
+    }
+
+    return [{
+      text: '克',
+      value: 0
+    }, {
+      text: '千克',
+      value: 3
+    }, {
+      text: '吨',
+      value: 6
+    }];
+  }, [curAsset]);
+
+  const setSi = useCallback((nextSi) => {
+    // console.log(nextSi);
+    updateCurSi(nextSi);
+  }, []);
+
+  const isSi = useMemo(() => {
+    return curAsset && curAsset.assetId !== '0';
+  }, [curAsset]);
 
   return (
     <Modal
@@ -195,8 +232,8 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
           <Modal.Columns>
             <Modal.Column>
               <Dropdown
-                defaultValue={curAsset?.assetId || assetsList[0].assetId}
-                isDisabled={!!propSenderId}
+                defaultValue={curAsset?.assetId}
+                // isDisabled={!!propSenderId}
                 label={t<string>('资产选择')}
                 onChange={setSelectAssets}
                 options={assetsList}
@@ -211,7 +248,7 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
               <InputAddress
                 defaultValue={ecoAccount || propSenderId}
                 help={t<string>('The account you will send funds from.')}
-                isDisabled={!!propSenderId}
+                isDisabled
                 label={t<string>('send from account')}
                 labelExtra={
                   <Available
@@ -259,6 +296,7 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
                     defaultValue={maxTransfer}
                     help={t<string>('The full account balance to be transferred, minus the transaction fees')}
                     isDisabled
+                    isSi={isSi}
                     key={maxTransfer?.toString()}
                     label={t<string>('transferrable minus fees')}
                   />
@@ -295,12 +333,22 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
                       `}
                       help={t<string>('Type the amount you want to transfer. Note that you can select the unit on the right e.g sending 1 milli is equivalent to sending 0.001.')}
                       isError={!hasAvailable}
+                      isSi={false}
                       isZeroable
                       key={curAsset.assetId}
                       label={t<string>('amount')}
                       onChange={setAmount}
                       // onChange={(v, vv) => { console.log('=====', v, vv); }}
-                    />
+                    >
+                      <Dropdown
+                        defaultValue={0}
+                        dropdownClassName='ui--SiDropdown'
+                        isButton
+                        onChange={setSi}
+                        options={SIOptions}
+                      />
+
+                    </InputBalance>
                     {
                       curAsset?.type === 'native__' ? <InputBalance
                         defaultValue={api.consts.balances.existentialDeposit}

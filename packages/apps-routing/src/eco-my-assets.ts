@@ -11,6 +11,7 @@ export default function create (t: <T = string> (key: string, text: string, opti
     Component,
     display: {
       needsApi: []
+      // isHidden: true
     },
     group: 'eco',
     icon: 'users',

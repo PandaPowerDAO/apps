@@ -7,7 +7,7 @@ import { Form } from 'antd';
 import { useApi } from '@polkadot/react-hooks';
 
 import { takeOrder } from '@eco/eco-utils/service';
-import { requiredValidator, reformatAssetName } from '@eco/eco-utils/utils';
+import { requiredValidator, reformatAssetName, resolveAmountNumber } from '@eco/eco-utils/utils';
 import { ModalProps } from '@polkadot/react-components/Modal/types';
 import styled from 'styled-components';
 import { OrderDetailType, OrderItem } from '../types';
@@ -99,7 +99,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
       onClose={onClose}
       open={open}
     >
-      <Modal.Header>创建订单</Modal.Header>
+      <Modal.Header>下单</Modal.Header>
       <Modal.Content>
         <FormWrapper>
           <Form
@@ -135,7 +135,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
                 <Input
                   isFull={false}
                   label={<div>数量</div>}
-                  labelExtra={<div>剩余数量:{((orderDetail || { left_amount: 0 })).left_amount as number}</div>}
+                  labelExtra={<div>剩余数量:{resolveAmountNumber(((orderDetail || { left_amount: 0 })).left_amount as number || 0)}</div>}
                   maxLength={500}
                   // onChange={(name: string) => setFieldsValue({ name })}
                   placeholder='请输入数量'

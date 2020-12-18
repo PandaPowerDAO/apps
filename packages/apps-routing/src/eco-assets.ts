@@ -15,6 +15,6 @@ export default function create (t: <T = string> (key: string, text: string, opti
     group: 'eco',
     icon: 'users',
     name: 'ecassets',
-    text: t<string>('nav.eco.assets', 'nav.eco.assets', { ns: 'apps-routing' })
+    text: t<string>('资产发行', '资产发行', { ns: 'apps-routing' })
   };
 }

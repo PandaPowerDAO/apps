@@ -14,7 +14,8 @@ import { queryCarbonBalanceKey, queryStandardBalanceKey } from '@eco/eco-utils/s
 
 import { Asset } from './types';
 import BN from 'bn.js';
-import { beautifulNumber, resolveAmountNumber } from '@eco/eco-utils/utils';
+import { beautifulNumber, resolveAmountNumber, unitToEco } from '@eco/eco-utils/utils';
+import Decimal from 'decimal.js';
 
 interface Props {
   children?: React.ReactNode;
@@ -51,12 +52,15 @@ function AvailableDisplay ({ children, className = '', label, params, asset, add
   let _balance: BN|string = _bal || '0';
 
   if (type !== 'native' && _bal) {
-    _balance = new BN(_bal || '0').div(new BN(10).pow(new BN(decimals as string || 0)));
+    // _balance
+    _balance = new Decimal(_bal || '0').div(new Decimal(10).pow(type === 'native' ? 8 : decimals as string || 0)).toFixed();
+  } else if (type === 'native') {
+    _balance = unitToEco(_balance);
   }
 
   return (
     <div>
-      可转账的 {resolveAmountNumber(_balance.toString() || '0')}
+      可转账的 {type === 'native' ? beautifulNumber(_balance.toString()) : resolveAmountNumber(_balance.toString() || '0')}
     </div>
   );
 

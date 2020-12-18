@@ -32,7 +32,7 @@ export default React.memo(styled(ChainInfo)`
   box-sizing: border-box;
   padding: 0.75rem 1rem 0.75rem 1.5rem;
   margin: 0;
-  color: #4e4e4e;
+  color: white;
   .fa-cogs{
     margin-right: 4px;
   }

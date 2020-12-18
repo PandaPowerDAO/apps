@@ -8,7 +8,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 // import styled from 'styled-components';
 import { Form, message } from 'antd';
 
-import { Input, Checkbox, Dropdown, InputAddress } from '@polkadot/react-components';
+import { Input, Checkbox, Dropdown, InputAddress, Button } from '@polkadot/react-components';
 import Panel from '@eco/eco-components/Panel';
 // import Button from '@eco/eco-components/Button';
 import TextArea from '@eco/eco-components/TextArea';
@@ -19,7 +19,10 @@ import { submitProject } from '@eco/eco-utils/service';
 // import { Keyring } from '@polkadot/api';
 import FieldDecorator from '@eco/eco-components/FormComponents';
 import Row from '@eco/eco-components/Row';
+
 import SubmitBtn from '@eco/eco-components/SubmitBtn';
+import Header from '../components/header';
+
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 
 import { notAllprotocalChecked,
@@ -149,8 +152,9 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
       name='transfer-form'
       onFinish={onFinish}>
       <div className={className}>
-        <Panel title='您好'>
-          <p>注册碳汇项目说明</p>
+        <Header title='新增碳汇项目' />
+        <Panel>
+          <p>在将碳汇资产上链至ECO2 Ledger前，请先完善预备上链的碳汇项目之基础信息。依照碳汇项目之报告，如实完成下方信息填写，为提高碳汇项目的辨识度，请尽可能完成每个栏位的信息填写，以便资产审查委员会审核。此申请无法撤回与修改，故请谨慎填写。目前ECO2 Ledger仅支持VCS (Verified Carbon Standard) 和GS (Gold Standard) 的碳标准申请上链，其他碳标准之碳汇资产暂不支持。</p>
         </Panel>
         <Panel
           title='完善信息'

@@ -14,7 +14,7 @@ import TextArea from '@eco/eco-components/TextArea';
 import FieldDecorator from '@eco/eco-components/FormComponents';
 import Row from '@eco/eco-components/Row';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
-
+import Header from '../components/header';
 import { AnyObj } from '@eco/eco-utils/types';
 
 import { parseQuery,
@@ -113,8 +113,8 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
 
     async function submit () {
       // form.proponent
-      const { amount, ...additionals } = values;
-      const result = await submitBurn(api, ecoAccount, assetId, ecoToUnit(amount, 6).toString(), additionals);
+      const { amount, ...additional } = values;
+      const result = await submitBurn(api, ecoAccount, assetId, ecoToUnit(amount, 6).toString(), additional);
 
       // message.info('申请提交成功');
       form.resetFields();
@@ -137,9 +137,8 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
       name='burning-form'
       onFinish={onFinish}>
       <div className={className}>
-        <Panel
-          title='销毁碳汇资产'
-        >
+        <Header title='销毁碳汇资产' />
+        <Panel>
           <Row>
             <Form.Item
               label=' '
@@ -222,7 +221,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                   label={<div>当前账户余额</div>}
                   labelExtra={<div>吨</div>}
                   // onChange={(description: string) => setFieldsValue({ description })}
-                  value={beautifulNumber(unitToEco(assetsInfo.balance as string || '', 6).toString())}
+                  value={beautifulNumber(unitToEco(assetsInfo.balance as string || '0', 6).toString())}
                   // value={beautifulNumber(assetsInfo.balance as string || '')}
                   withLabel={true}
                 />
@@ -232,7 +231,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
           <Row>
             <Form.Item
               label=' '
-              name='type'
+              name='remark'
               rules={[{
                 // validator: requiredValidator
               }]}>

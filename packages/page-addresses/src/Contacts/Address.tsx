@@ -8,7 +8,8 @@ import { ThemeDef } from '@polkadot/react-components/types';
 
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import styled, { ThemeContext } from 'styled-components';
-import Transfer from '@polkadot/app-accounts/modals/Transfer';
+// import Transfer from '@polkadot/app-accounts/modals/Transfer';
+import Transfer from '@eco/page-eco-transfer/newTransfer';
 import { AddressSmall, AddressInfo, Button, ChainLock, Icon, LinkExternal, Forget, Menu, Popup, Tags } from '@polkadot/react-components';
 import { useApi, useCall } from '@polkadot/react-hooks';
 import keyring from '@polkadot/ui-keyring';

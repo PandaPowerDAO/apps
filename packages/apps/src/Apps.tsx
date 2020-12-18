@@ -3,15 +3,16 @@
 
 import { BareProps as Props, ThemeDef, ThemeProps } from '@polkadot/react-components/types';
 
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useEffect } from 'react';
 import styled, { ThemeContext } from 'styled-components';
 import AccountSidebar from '@polkadot/app-accounts/Sidebar';
 import { getSystemChainColor } from '@polkadot/apps-config/ui';
 import GlobalStyle from '@polkadot/react-components/styles';
 import { useApi } from '@polkadot/react-hooks';
 import Signer from '@polkadot/react-signer';
+import keyring from '@polkadot/ui-keyring';
 
-import ECOAccountProvider, { AccountSelector, AccountUpdator } from '@eco/eco-components/Account';
+import ECOAccountProvider from '@eco/eco-components/Account';
 
 import ConnectingOverlay from './overlays/Connecting';
 import Content from './Content';
@@ -65,6 +66,10 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
     [systemChain, systemName]
   );
 
+  useEffect(() => {
+    keyring.setSS58Format('135');
+  }, []);
+
   return (
     <>
       <GlobalStyle uiHighlight={uiHighlight} />
@@ -75,9 +80,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
             <SideMenu />
             <AccountSidebar>
               <Signer>
-                <AccountUpdator>
-                  <Content />
-                </AccountUpdator>
+                <Content />
               </Signer>
               <ConnectingOverlay />
               <div id={PORTAL_ID} />

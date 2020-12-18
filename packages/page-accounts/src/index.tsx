@@ -13,6 +13,7 @@ import { useTranslation } from './translate';
 import useCounter from './useCounter';
 import Accounts from './Accounts';
 import Vanity from './Vanity';
+import Contacts from '@polkadot/app-addresses/Contacts';
 
 export { useCounter };
 
@@ -28,11 +29,11 @@ function AccountsApp ({ basePath, onStatusChange }: Props): React.ReactElement<P
       isRoot: true,
       name: 'overview',
       text: t<string>('My accounts')
+    },
+    {
+      name: 'address',
+      text: 'Address Book'
     }
-    // {
-    //   name: 'vanity',
-    //   text: t<string>('Vanity generator')
-    // }
   ]);
 
   return (
@@ -46,8 +47,8 @@ function AccountsApp ({ basePath, onStatusChange }: Props): React.ReactElement<P
         />
       </header>
       <Switch>
-        <Route path={`${basePath}/vanity`}>
-          <Vanity
+        <Route path={`${basePath}/address`}>
+          <Contacts
             basePath={basePath}
             onStatusChange={onStatusChange}
           />

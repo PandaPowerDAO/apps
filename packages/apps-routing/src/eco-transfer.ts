@@ -20,6 +20,6 @@ export default function create (t: <T = string> (key: string, text: string, opti
     group: 'ecotransfer',
     icon: 'paper-plane',
     name: 'ectransfer',
-    text: t<string>('nav.eco.transfer', 'nav.eco.transfer', { ns: 'apps-routing' })
+    text: t<string>('nav.transfer', 'Transfer', { ns: 'apps-routing' })
   };
 }

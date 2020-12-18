@@ -14,6 +14,7 @@ import AssetViewItem from './components/item';
 import EcoTransfer from '@eco/page-eco-transfer/newTransfer';
 import store from 'store';
 import BN from 'bn.js';
+import { unitToEco, beautifulNumber } from '@eco/eco-utils/utils';
 
 interface Props {
   className?: string,
@@ -69,8 +70,9 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
 
       if (asset.assetId === 'eco2') {
         balance = await queryBalance(api, ecoAccount);
-        console.log('balance', balance);
-        balance.balance = new BN(balance.balance || 0).div(new BN(10).pow(new BN(8))).toString();
+        console.log('balance eco2', balance);
+        // balance.balance = new BN(balance.balance || 0).div(new BN(10).pow(new BN(8))).toString();
+        balance.balance = unitToEco(balance.balance || 0, 8);
       } else if (asset.type === 'carbon') {
         balance = await queryCarbonBalance(api, asset.assetId, ecoAccount);
       } else {

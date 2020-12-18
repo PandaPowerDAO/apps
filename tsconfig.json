@@ -91,6 +91,8 @@
       "@eco/page-trade/*": [ "packages/page-trade/src/*" ],
       "@eco/page-my-assets-view": [ "packages/page-my-assets-view/src" ],
       "@eco/page-my-assets-view/*": [ "packages/page-my-assets-view/src/*" ],
+      "@eco/page-eco-proposal": [ "packages/page-eco-proposal/src" ],
+      "@eco/page-eco-proposal/*": [ "packages/page-eco-proposal/src/*" ],
     },
     "skipLibCheck": true,
     "typeRoots": [

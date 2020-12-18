@@ -18,6 +18,7 @@ import TextArea from '@eco/eco-components/TextArea';
 import FieldDecorator from '@eco/eco-components/FormComponents';
 import Row from '@eco/eco-components/Row';
 import SubmitBtn from '@eco/eco-components/SubmitBtn';
+import Header from '../components/header';
 
 import { submitAsset, queryProjectsList } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
@@ -81,7 +82,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
 
   useEffect(() => {
     async function init () {
-      const projects = await queryProjectsList(ecoAccount);
+      const projects = await queryProjectsList(ecoAccount, 1);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (projects && (projects.docs as Project[])) {
@@ -95,6 +96,8 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
             text: pro.symbol,
             value: pro.projectId
           };
+        }).filter((v: Project): boolean => {
+          return v.approved === 1;
         }));
       }
       // console.log(projects);
@@ -186,8 +189,13 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       name='transfer-form'
       onFinish={onFinish}>
       <div className={className}>
-        <Panel title='您好'>
-          <p>注册碳汇资产说明</p>
+        <Header title='上链碳汇资产' />
+        <Panel>
+          <p>完成碳汇项目注册后，已签发后的碳汇可以申请上链至ECO2 Ledger，请将要上链的碳汇资产的信息完整填入下方栏位，请注意输入信息与数量必须与汇入ECO2 Ledger的托管账户之碳汇完全吻合，此操作完成后，资产审查委员会对碳汇资产的信息与托管账户中的碳汇资产进行审核，请注意碳汇资产的数量、年份与相关信息，必须完全吻合，才可完成碳汇资产上链的操作。资产审查委员会审核完成后，您将可以在您的ECO2 Ledger碳钱包中看到所申请的碳汇资产。</p>
+          <p>    1. 完成资料注册资料填写后，请于三日内将同一笔碳汇资产汇入ECO2 Ledger之托管账户，</p>
+          <p>        VCS (Verified Carbon Standard)：</p>
+          <p>                GS (Gold Standard)：</p>
+          <p>    2. 如有任何信息与汇入托管账户之碳汇资产不一致，申请上链将会失败，申请费用将不退回，已汇入托管账户之碳汇资产，将于七个工作日内退回至原账户。</p>
         </Panel>
         <Panel
           title='完善信息'

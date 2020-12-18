@@ -6,7 +6,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Compact } from '@polkadot/types';
 import { formatBalance } from '@eco/polka-util-fork';
-
 import { useTranslation } from './translate';
 
 interface Props {
@@ -27,20 +26,23 @@ const K_LENGTH = 3 + 1;
 
 function format (value: Compact<any> | BN | string, withCurrency = true, withSi?: boolean, _isShort?: boolean, labelPost?: string, si?: string): React.ReactNode {
   const [prefix, postfix] = formatBalance(value, { forceUnit: '-', withSi: false }).split('.');
+
+  console.log('prefix, postfix', prefix, postfix);
   const isShort = _isShort || (withSi && prefix.length >= K_LENGTH);
   const unitPost = si || (withCurrency ? formatBalance.getDefaults().unit : '');
 
   if (prefix.length > M_LENGTH) {
     const [major, rest] = formatBalance(value, { withUnit: false }).split('.');
-    const minor = rest.substr(0, 4);
+    const minor = rest.substr(0, 8);
     const unit = rest.substr(4);
 
     // const _unit = si || unit;
 
-    return <>{major}.<span className='ui--FormatBalance-postfix'>{minor}</span><span className='ui--FormatBalance-unit'>{unit} {unit ? unitPost : ` ${unitPost}`}</span>{labelPost || ''}</>;
+    // return <>{major}.<span className='ui--FormatBalance-postfix'>{minor}</span><span className='ui--FormatBalance-unit'>{unit} {unit ? unitPost : ` ${unitPost}`}</span>{labelPost || ''}</>;
+    return <>{major}.<span className='ui--FormatBalance-postfix'>{minor}</span><span className='ui--FormatBalance-unit'></span>&nbsp;&nbsp;{labelPost || ''}</>;
   }
 
-  return <>{`${prefix}${isShort ? '' : '.'}`}{!isShort && <span className='ui--FormatBalance-postfix'>{`0000${postfix || ''}`.slice(-4)}</span>}<span className='ui--FormatBalance-unit'> {unitPost}</span>{labelPost || ''}</>;
+  return <>{`${prefix}${isShort ? '' : '.'}`}{!isShort && <span className='ui--FormatBalance-postfix'>{`0000${postfix || ''}`.slice(-4)}</span>}<span className='ui--FormatBalance-unit'> {unitPost}</span>&nbsp;&nbsp;{labelPost || ''}</>;
 }
 
 function FormatBalance ({ children, className = '', isShort, label, labelPost, value, withCurrency, withSi, si = '' }: Props): React.ReactElement<Props> {

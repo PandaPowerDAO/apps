@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Keyring } from '@polkadot/api';
+import Decimal from 'decimal.js';
 import BN from 'bn.js';
 import EventEmitter from 'eventemitter3';
 
@@ -110,20 +111,44 @@ export function formatDate (datetime: number): string {
   return `${year}-${month}-${sdate} ${hour}:${minute}:${second}`;
 }
 
+function toThousands (_num: string): string {
+  let num = (_num || 0).toString();
+  let result = '';
+
+  while (num.length > 3) {
+    result = ',' + num.slice(-3) + result;
+    num = num.slice(0, num.length - 3);
+  }
+
+  if (num) { result = num + result; }
+
+  return result;
+}
+
 export function beautifulNumber (num: number | string): string {
   if (num === undefined || num === null) {
     return '';
   }
 
-  return (`${num}`).replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g, '$1,');
+  const [_int, _decimal] = num.toString().split('.');
+
+  console.log('======', _int, _decimal);
+
+  return `${_int.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')}${_decimal ? `.${_decimal}` : ''}`;
+
+  // return (`${num}`).replace(/(\d{1,3})(?=(\d{3})+)(?:$|\.)/g, '$1,');
 }
 
 export function unitToEco (num: number | string, power = 8) {
-  return new BN(num).div(new BN(10).pow(new BN(power)));
+  return dropZero(new Decimal(num || 0).div(new Decimal(10).pow(power || 0)).toString());
+  // return _num.toFixed(fixed);
+  // return new Decimal(num).div(new Decimal(10).pow(power)).toString();
+  // return new BN(num).div(new BN(10).pow(new BN(power)));
 }
 
 export function ecoToUnit (num: number | string, power = 8) {
-  return new BN(num).mul(new BN(10).pow(new BN(power)));
+  return dropZero(new Decimal(num || 0).mul(new Decimal(10).pow(power || 0)).toString());
+  // return new BN(num).mul(new BN(10).pow(new BN(power)));
 }
 
 export const EE = new EventEmitter();
@@ -569,9 +594,9 @@ export const Countries = [{
   cn: '圭亚那'
 }, {
   id: 'HK',
-  text: '香港 Hong Kong',
+  text: '中国(香港) Hong Kong',
   en: 'Hong Kong',
-  cn: '香港'
+  cn: '中国(香港)'
 }, {
   id: 'HM',
   text: '赫德岛和麦克唐纳群岛 Heard Island and McDonald Islands',
@@ -789,9 +814,9 @@ export const Countries = [{
   cn: '缅甸'
 }, {
   id: 'MO',
-  text: '澳门 Macao',
+  text: '中国(澳门) Macao',
   en: 'Macao',
-  cn: '澳门'
+  cn: '中国(澳门)'
 }, {
   id: 'MQ',
   text: '马提尼克 Martinique',
@@ -1384,12 +1409,24 @@ export const Countries = [{
   cn: '蒙古国 蒙古'
 }];
 
+export function dropZero (num: string): string {
+  if (/\.[^0]/.test(num)) {
+    return num.replace(/([0-9.]+[^0])0+$/g, '$1');
+  } else if (/\.0*$/.test(num)) {
+    return num.split('.')[0];
+  } else if (!/\./.test(num)) {
+    return num;
+  } else {
+    return num;
+  }
+}
+
 // 交易页面交易列表数量显示处理
 export const resolveAmountNumber = (number: string | number): string => {
-  const _num = new BN(number || 0);
-  const isG = _num.lt(new BN(1000));
-  const isKg = _num.gte(new BN(1000)) && _num.lt(new BN(1000000));
-  const isTon = _num.gte(new BN(1000000));
+  const _num = new Decimal(number || 0);
+  const isG = _num.lt(1000);
+  const isKg = _num.gte(1000) && _num.lt(1000000);
+  const isTon = _num.gte(1000000);
 
   const _unit = isG ? {
     _u: '克',
@@ -1405,7 +1442,8 @@ export const resolveAmountNumber = (number: string | number): string => {
     value: 0
   }));
 
-  return `${beautifulNumber(_num.div(new BN(10).pow(new BN(_unit.value || 0))).toString())}${_unit._u}`;
+  return `${dropZero(beautifulNumber(_num.div(new Decimal(10).pow(_unit.value || 0)).toString()))}${_unit._u}`;
+  // return `${beautifulNumber(_num.div(new Decimal(10).pow(_unit.value || 0)).toString())}${_unit._u}`;
 };
 
 /**
@@ -1417,4 +1455,22 @@ export const resolveAmountNumber = (number: string | number): string => {
  */
 export const reformatAssetName = (name: string): string => {
   return name.replace(/^([A-Z]+)\.(\d+)$/, '$1($2)');
+};
+
+export const resolvePrice = (price:number|string):string|null|unknown => {
+  if (price !== 0 && !price) {
+    return price;
+  }
+
+  return beautifulNumber(unitToEco(price, 2).toString());
+};
+
+export const Members = [
+  '5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy',
+  '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+  '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y'
+];
+
+export const isMember = (addr: string) => {
+  return Members.indexOf(addr) > -1;
 };

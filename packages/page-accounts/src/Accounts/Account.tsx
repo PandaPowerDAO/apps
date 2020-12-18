@@ -14,7 +14,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import styled, { ThemeContext } from 'styled-components';
 import { ApiPromise } from '@polkadot/api';
 import { getLedger } from '@polkadot/react-api';
-import { AddressInfo, AddressMini, AddressSmall, Badge, Button, ChainLock, CryptoType, Forget, Icon, IdentityIcon, LinkExternal, Menu, Popup, StatusContext, Tags } from '@polkadot/react-components';
+import { AddressInfoNew, AddressMini, AddressSmall, Badge, Button, ChainLock, CryptoType, Forget, Icon, IdentityIcon, LinkExternal, Menu, Popup, StatusContext, Tags } from '@polkadot/react-components';
 import { useAccountInfo, useApi, useCall, useToggle } from '@polkadot/react-hooks';
 import { Option } from '@polkadot/types';
 import keyring from '@polkadot/ui-keyring';
@@ -32,7 +32,8 @@ import ProxyOverview from '../modals/ProxyOverview';
 import MultisigApprove from '../modals/MultisigApprove';
 import RecoverAccount from '../modals/RecoverAccount';
 import RecoverSetup from '../modals/RecoverSetup';
-import Transfer from '../modals/Transfer';
+// import Transfer from '../modals/Transfer';
+import Transfer from '@eco/page-eco-transfer/newTransfer';
 import UndelegateModal from '../modals/Undelegate';
 import useMultisigApprovals from './useMultisigApprovals';
 import useProxies from './useProxies';
@@ -402,11 +403,14 @@ function Account ({ account: { address, meta }, className = '', delegation, filt
         {balancesAll?.accountNonce.gt(BN_ZERO) && formatNumber(balancesAll.accountNonce)}
       </td>
       <td className='number'>
-        <AddressInfo
+        <AddressInfoNew
           address={address}
           css={`
         & .column--expander{
           width: auto!important
+        }
+        .ui--Expander-summary-header{
+          max-width: unset!important;
         }
       `}
           withBalance

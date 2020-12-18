@@ -12,11 +12,11 @@ export const SI: SiDef[] = [
   // { power: -15, text: 'femto', value: 'f' },
   // { power: -12, text: 'pico', value: 'p' },
   // { power: -9, text: 'nano', value: 'n' },
-  // { power: -6, text: 'micro', value: 'µ' },
-  // { power: -3, text: 'milli', value: 'm' },
-  { power: 0, text: 'ECO2', value: '-' }, // position 8
-  { power: 3, text: 'K', value: '千克' },
-  { power: 6, text: 'M', value: '吨' }
+  // { power: -3, text: '吨', value: '吨' },
+  // { power: -6, text: '千克', value: '千克' },
+  { power: 8, text: '', value: '-' } // position 8 默认一个 10的8次方是一个BTC
+  // { power: 3, text: '千克', value: '千克' },
+  // { power: 6, text: '吨', value: '吨' }
   // { power: 9, text: 'Giga', value: 'G' },
   // { power: 12, text: 'Tera', value: 'T' },
   // { power: 15, text: 'Peta', value: 'P' },

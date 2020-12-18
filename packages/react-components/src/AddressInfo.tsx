@@ -241,7 +241,8 @@ function renderBalances (props: Props, allAccounts: string[], bestNumber: BlockN
           <Label label={t<string>('total')} />
           <FormatBalance
             className='result'
-            value={balancesAll.freeBalance.add(balancesAll.reservedBalance)}
+            // value={balancesAll.freeBalance.add(balancesAll.reservedBalance)}
+            value={1}
           />
         </>
       )}

@@ -40,7 +40,7 @@ const ECOAPPWrapper = styled.div`
     border-right: none!important;
   }
   .tab-item {
-    margin-right: 2rem;
+    // margin-right: 2rem;
   }
   .active-tab {
     color: #7db8a8;
@@ -62,6 +62,19 @@ header{
       padding-left: 0;
       margin-left: 1.5rem;
     }
+}
+header {
+  padding-bottom: 0!important;
+}
+.tab-item {
+  padding: 0.5rem 1.5rem 0.75rem;
+  cursor: pointer;
+  &:hover{
+    border-bottom: 2px solid #e6e6e6;
+  }
+}
+.active-tab{
+  border-bottom: 2px solid #f19135;
 }
 .account-selector{
   max-width: 335px;

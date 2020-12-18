@@ -16,7 +16,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 // import { SubmittableExtrinsic } from '@polkadot/api/types';
 import axios, { AxiosResponse } from 'axios';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { EE } from '@eco/eco-utils/utils';
+import { EE, fromHex } from '@eco/eco-utils/utils';
 
 const typeRegistry = new TypeRegistry();
 // let gApi: ApiPromise;
@@ -119,11 +119,11 @@ export async function queryCarbonCommitteeMembers (api: ApiPromise):Promise<void
   console.log('carbonCommittee members:', members.toJSON());
 }
 
-export async function queryProposalVoting (api: ApiPromise, id: string):Promise<void> {
-  const voting = await api.query.carbonCommittee.voting(id);
+// export async function queryProposalVoting (api: ApiPromise, id: string):Promise<void> {
+//   const voting = await api.query.carbonCommittee.voting(id);
 
-  console.log('queryProposalVoting:', voting.toJSON());
-}
+//   console.log('queryProposalVoting:', voting.toJSON());
+// }
 
 export async function proposeProject (api: ApiPromise, sender: KeyringPair | string, projectId: string):Promise<void> {
   const proposal = api.tx.carbonAssets.approveProject(projectId);
@@ -337,6 +337,28 @@ export async function neutralize (api: ApiPromise, sender: KeyringPair | string,
   await submitTx('neutralize', tx, sender);
 }
 
+export async function queryIssue (api: ApiPromise, issueId: string) {
+  const issue = await api.query.carbonAssets.issues(issueId);
+  const _issue = issue.toJSON();
+
+  // console.log('queryIssue:', issue.toJSON())
+  return {
+    ..._issue,
+    additional: JSON.parse(fromHex(_issue.additional) || '{}')
+  };
+}
+
+export async function queryBurn (api: ApiPromise, burnId: string) {
+  const burn = await api.query.carbonAssets.burns(burnId);
+  const _burn = burn.toJSON();
+
+  // console.log('queryBurn:', burn.toJSON());
+  return {
+    ..._burn,
+    additional: JSON.parse(fromHex(_burn.additional) || '{}')
+  };
+}
+
 const axiosInstance = axios.create({
   baseURL: 'http://49.233.3.48:3000/'
 });
@@ -351,14 +373,17 @@ axiosInstance.interceptors.response.use(function (response: AxiosResponse<any>) 
   return Promise.reject(error);
 });
 
-export async function queryProjectsList (owner = ''): Promise<CustomAxoisResponse> {
+export async function queryProjectsList (owner = '', approved?: number | string | undefined, limit = 100, offset = 0): Promise<CustomAxoisResponse> {
   // const result: AxiosResponse<any> = await axiosInstance.get('/carbon_projects');
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   // return result.data;
   return axiosInstance.get('/carbon_projects', {
     params: {
-      owner: owner || undefined
+      owner: owner || undefined,
+      approved,
+      limit,
+      offset
     }
   });
 }
@@ -408,7 +433,8 @@ interface CarbonOrdersParams{
   closed: string | number,
   reverse: string | number,
   offset: string | number,
-  limit: string | number
+  limit: string | number,
+  direction?: string | number,
 }
 
 export async function queryCarbonOrders (params: CarbonOrdersParams):Promise<CustomAxoisResponse> {
@@ -466,4 +492,37 @@ export async function queryPotentialBalance (params: PageType):Promise<CustomAxo
       account: params.account || params.owner
     }
   });
+}
+
+interface CarbonProposalsParams {
+  owner?: string,
+  // closed: string | number,
+  reverse: string | number,
+  offset: string | number,
+  limit: string | number,
+  state: string | undefined,
+}
+
+//  碳汇审查委员会提案列表
+export async function queryCarbonProposals (params: CarbonProposalsParams):Promise<CustomAxoisResponse & { total: number;
+  voting: number;
+  pending: number;
+  closed: number;}> {
+  return axiosInstance.get('/carbon_proposals', {
+    params: {
+      ...params
+    }
+  });
+}
+
+interface ProposalDetail {
+  [key:string]: string | number | any
+}
+
+export async function queryProposalVoting (api: ApiPromise, id: string):Promise<ProposalDetail> {
+  const voting = await api.query.carbonCommittee.voting(id);
+
+  console.log('voting', voting);
+
+  return voting.toJSON() as ProposalDetail;
 }

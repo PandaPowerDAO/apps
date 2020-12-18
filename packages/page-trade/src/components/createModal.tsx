@@ -7,7 +7,7 @@ import { Form } from 'antd';
 import { useApi } from '@polkadot/react-hooks';
 
 import { queryAssetsList, makeOrder, queryPotentialBalance } from '@eco/eco-utils/service';
-import { requiredValidator, ecoToUnit, reformatAssetName, unitToEco, beautifulNumber } from '@eco/eco-utils/utils';
+import { requiredValidator, ecoToUnit, reformatAssetName, unitToEco, beautifulNumber, resolveAmountNumber } from '@eco/eco-utils/utils';
 import { ModalProps } from '@polkadot/react-components/Modal/types';
 import styled from 'styled-components';
 
@@ -92,6 +92,8 @@ function CreateModal (props: Props): React.ReactElement<Props> {
       try {
         const formValues = await form.validateFields();
 
+        console.log('trigger');
+
         const _price = ecoToUnit(formValues.price, 2).toString();
 
         await makeOrder(
@@ -99,9 +101,9 @@ function CreateModal (props: Props): React.ReactElement<Props> {
           ecoAccount,
           formValues.assetId,
           '',
-          // _price,
-          new BN(_price).mul(new BN(10).pow(new BN(unit || 0))).toString(),
-          formValues.amount,
+          _price,
+          new BN(formValues.amount).mul(new BN(10).pow(new BN(unit || 0))).toString(),
+          // formValues.amount,
           formValues.direction
         );
         onClose();
@@ -181,25 +183,35 @@ function CreateModal (props: Props): React.ReactElement<Props> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (formValues.direction === '0' && formValues.assetId) {
       if (!value || new BN(value).gt(new BN(assetBalance))) {
-        throw new Error(`余额不足，当前可用资产${beautifulNumber(assetBalance || 0)}`);
+        throw new Error(`余额不足，当前可用资产${resolveAmountNumber(assetBalance || 0)}`);
       }
     }
 
     await Promise.resolve();
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const _formValues = form.getFieldsValue();
+
   const amountExtraLabel = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    // const _formValues = form.getFieldsValue();
     const __unit = unitOptions.filter((v) => v.value === unit)[0];
 
-    return <div>
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (_formValues.direction !== '0') {
+      return null;
+    }
+
+    return <div style={{
+      marginRight: '6rem'
+    }}>
       当前持有:
       {
-        unitToEco(assetBalance as string, __unit.value).toString()
-      }{__unit.text}
+        // unitToEco(assetBalance as string, __unit.value).toString()
+        resolveAmountNumber(assetBalance)
+      }
     </div>;
-  }, [unit, assetBalance]);
+  }, [unit, assetBalance, _formValues]);
 
   return (
     <Modal
@@ -272,19 +284,14 @@ function CreateModal (props: Props): React.ReactElement<Props> {
                   isFull={false}
                   label={<div>价格</div>}
                   // labelExtra='吨'
+                  labelExtra='ECO2/吨'
                   maxLength={500}
                   // onChange={(name: string) => setFieldsValue({ name })}
                   placeholder='请输入价格'
                   // value={form.name}
                   withLabel
                 >
-                  <Dropdown
-                    defaultValue={unit}
-                    dropdownClassName='ui--SiDropdown'
-                    isButton
-                    onChange={handleUnitChange}
-                    options={unitOptions}
-                  />
+
                 </Input>
               </FieldDecorator>
             </Form.Item>
@@ -310,7 +317,15 @@ function CreateModal (props: Props): React.ReactElement<Props> {
                   placeholder='请输入数量'
                   // value={form.name}
                   withLabel
-                />
+                >
+                  <Dropdown
+                    defaultValue={unit}
+                    dropdownClassName='ui--SiDropdown'
+                    isButton
+                    onChange={handleUnitChange}
+                    options={unitOptions}
+                  />
+                </Input>
               </FieldDecorator>
             </Form.Item>
           </Form>

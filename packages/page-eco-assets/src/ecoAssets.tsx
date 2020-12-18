@@ -14,8 +14,11 @@ import Panel from '@eco/eco-components/Panel';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 
 import { queryAsset, queryAssetsList, queryProject } from '@eco/eco-utils/service';
-import { formatDate, beautifulNumber } from '@eco/eco-utils/utils';
+import { formatDate, beautifulNumber, resolveAmountNumber } from '@eco/eco-utils/utils';
 import BannerImgSource from './banner.png';
+
+import AllProject from './components/allProjects';
+import AllAssets from './components/allAssets';
 
 // const OwnerTd = styled.td`
 //     overflow: hidden;
@@ -234,56 +237,11 @@ function Home ({ className }: Props): React.ReactElement<Props> {
           </div>
         </Banner>
       </Panel>
-      <TableWrapper>
-        <Table
-          css={
-            `
-            & th {
-              border: none!important;
-            }
-            `
-          }
-          empty={'暂无数据'}
-          footer={
-            <tr>
-              <td colSpan={100}>
-                <Pagination
-                  {...pagination}
-                  onChange={handlePageChange}
-                />
-              </td>
-            </tr>
+      <AllProject isMine={false}
+        title='全部碳汇项目列表' />
 
-          }
-          header={header}
-          remainHeader
-        >
-          {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
-            return <tr key={rowIndex}>
-              <td><IconLink href={`#/ecassets/assets-detail?asset=${v.assetId as string}&symbol=${`${v.symbol as string}(${v.vintage as string})`}`}
-                label={`${v.symbol as string}(${v.vintage as string})`}></IconLink></td>
-              <td>{v.type === 'standard' ? '标准资产' : '碳汇资产'}</td>
-              <td>{v.vintage}</td>
-              <td>{beautifulNumber((v as DataItem).projectDetail.project.max_supply)}</td>
-              <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td>
-              {/* <td>{beautifulNumber((v as DataItem).assetDetail.asset.total_supply)}</td> */}
-              {/* <td>{v.precision || '-'}</td> */}
-              {/* <OwnerTd>{v.owner}</OwnerTd> */}
-              <td>{formatDate(v.timestamp)}</td>
-              <td>{StatusMap[v.approved === 1 ? '1' : '0'] || StatusMap[0]}</td>
-              <td>
-                {/* {
-                  v.approved === 1 ? <div>
-                    <OperationSpan onClick={() => goAdditionalPage(v.assetId)}>增发</OperationSpan>
-                    <Divider type='vertical' />
-                    <OperationSpan onClick={() => goBurningPage(v.assetId)}>销毁</OperationSpan>
-                  </div> : '-'
-                } */}
-              </td>
-            </tr>;
-          })}
-        </Table>
-      </TableWrapper>
+      <AllAssets isMine={false}
+        title='全部碳汇资产列表' />
     </div>
   );
 }

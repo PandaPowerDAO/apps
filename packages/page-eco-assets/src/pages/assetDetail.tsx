@@ -10,12 +10,12 @@ import Panel from '@eco/eco-components/Panel';
 // import { Table } from '@polkadot/react-components';
 import { useLocation, useHistory } from 'react-router-dom';
 // import { NoPaddingTable } from '@eco/eco-components/Table';
-import { parseQuery, beautifulNumber, fromHex, reformatAssetName } from '@eco/eco-utils/utils';
+import { parseQuery, beautifulNumber, fromHex, reformatAssetName, resolveAmountNumber, ecoToUnit, unitToEco } from '@eco/eco-utils/utils';
 import { AnyObj } from '@eco/eco-utils/types';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 // import { Modal } from '@polkadot/react-components';
 
-import { queryAsset, queryCarbonBalance, queryCarbonDeals } from '@eco/eco-utils/service';
+import { queryAsset, queryCarbonBalance, queryCarbonDeals, queryBalance } from '@eco/eco-utils/service';
 import { Tooltip } from 'antd';
 import CmptDeals from '../components/deals';
 import { CopyButton, Button } from '@polkadot/react-components';
@@ -132,20 +132,37 @@ function Home ({ className }: Props): React.ReactElement<Props> {
   useEffect(() => {
     async function init (): Promise<any> {
       // eco2 只查余额;
+      let _balance;
+      let assetDetail;
+
       if (assetId === 'eco2') {
+        assetDetail = {
+          assetId: 'eco2',
+          remark: 'ECO2通证 (ECO2 Token) 是ECO2 Ledger的实用通证 (Utility Tokens)。 参与ECO2 Ledger气候行动的个人或组织将通过持有ECO2通证来参与减排社群的治理。 ECO2 Ledger的生态系统治理、开发、应用程序和支付流程方案都将使用ECO2通证作为媒介。ECO2通证还代表了气候行动的促进，特别是在缺乏有效气候行动的地区，是传播环境知识和形成区块链环保共同体的工具'
 
+        };
+        const ecoBalance = await queryBalance(api, ecoAccount);
+
+        // console.log('_balance _balance ', _balance);
+        _balance = unitToEco(ecoBalance.balance);
+
+        // _balance.balance =
+      } else {
+        assetDetail = await queryAsset(api, assetId);
+
+        const {
+          balance
+        } = await queryCarbonBalance(api, assetId, ecoAccount);
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        _balance = balance;
       }
-
-      const assetDetail = await queryAsset(api, assetId);
-
-      const {
-        balance
-      } = await queryCarbonBalance(api, assetId, ecoAccount);
 
       updateAssetInfo({
         ...(assetDetail.asset || {}),
         ...(assetDetail.additionals || {}),
-        balance: balance as string as unknown as number || 0
+        // balance: _balance
+        balance: _balance as string as unknown as number || 0
       });
     }
 
@@ -211,7 +228,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
           </Tooltip></span>
         </AddressWrapper>
         <div>
-          {beautifulNumber(assetInfo.balance || 0)}
+          {assetId === 'eco2' ? beautifulNumber(assetInfo.balance) : resolveAmountNumber(assetInfo.balance || 0)}
         </div>
       </div>
       <AssetsOperations>

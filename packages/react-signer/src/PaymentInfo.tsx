@@ -11,6 +11,7 @@ import { Expander } from '@polkadot/react-components';
 import { useApi, useIsMountedRef } from '@polkadot/react-hooks';
 import { isFunction } from '@polkadot/util';
 import { formatBalance } from '@eco/polka-util-fork';
+import { dropZero, unitToEco } from '@eco/eco-utils/utils';
 
 interface Props {
   accountId?: string | null;
@@ -45,12 +46,16 @@ function PaymentInfo ({ accountId, className = '', extrinsic }: Props): React.Re
     return null;
   }
 
+  // console.log('dispatchInfo.partialFee', unitToEco(dispatchInfo.partialFee.toString()));
+  // const fee = new BN(10).pow(new BN(8)).mul(dispatchInfo.partialFee);
+
   return (
     <Expander
       className={className}
       summary={
         <Trans i18nKey='feesForSubmission'>
-          Fees of <span className='highlight'>{formatBalance(dispatchInfo.partialFee, { withSiFull: true })}</span> will be applied to the submission
+          {/* Fees of <span className='highlight'>{formatBalance(dispatchInfo.partialFee, { withSiFull: false })}</span> ECO2 will be applied to the submission */}
+          Fees of <span className='highlight'>{unitToEco(dispatchInfo.partialFee.toString())}</span> ECO2 will be applied to the submission
         </Trans>
       }
     />

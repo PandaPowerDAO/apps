@@ -12,6 +12,7 @@ import { formatDate,
   unitToEco,
   beautifulNumber,
   resolveAmountNumber,
+  // resolvePrice,
   reformatAssetName } from '@eco/eco-utils/utils';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
@@ -54,6 +55,18 @@ const DealsWrapper = styled.div`
   tbody tr td {
     text-align: right!important;
   }
+  .row{
+    display: inline-flex;
+    width: 100%;
+  }
+`;
+
+const AddressSpan = styled.span`
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  margin: 0 5px;
 `;
 
 // const noop = (e: OrderItem) => Promise.resolve(undefined);
@@ -196,6 +209,10 @@ function OrderList (props: Props): React.ReactElement<Props> {
     };
   }, []);
 
+  if (isMine) {
+    // console.log(records);
+  }
+
   return (
     <DealsWrapper>
       <Panel title={title}>
@@ -211,16 +228,36 @@ function OrderList (props: Props): React.ReactElement<Props> {
               </td>
             </tr>
           }
-          header={header}
           remainHeader
         >
           {records.map((v: Record<string, any>, rowIndex: number):React.ReactNode => {
             return <tr key={rowIndex}>
 
-              <td>{formatDate(v.timestamp as number)}</td>
-              <td>{reformatAssetName(v.assetSymbol)}</td>
+              <td colSpan={100}>
+                <div className='row'>
+                  <span>{formatDate(v.timestamp as number)}(区块高度{v.height})</span>
+                  <span><AddressSpan>{isMine ? '您' : v.taker }</AddressSpan></span>
+                  <span>以 {resolvePrice(v.price)} ECO2/吨的价格{isMine ? '' : '向'}</span>
+                  <span style={{
+                    padding: '0 3px'
+                  }}>
+                    {
+                      !isMine && <AddressSpan>{v.maker || v.owner} </AddressSpan>
+                    }
+                  </span>
+
+                  <span style={{
+                    color: v.direction === 0 ? 'red' : 'green',
+                    padding: '0 3px'
+                  }}>
+                    { v.direction === 0 ? '出售' : '购买'}
+                  </span>
+                了{resolveAmountNumber(v.amount || '0')}{reformatAssetName(v.assetSymbol)}碳汇
+                </div>
+              </td>
+              {/* <td>{reformatAssetName(v.assetSymbol)}</td>
               <td>{resolvePrice(v.price as string || 0) as string || '-'}吨/ECO2</td>
-              <td>{beautifulNumber(resolveAmountNumber(v.amount || '0'))}</td>
+              <td>{beautifulNumber(resolveAmountNumber(v.amount || '0'))}</td> */}
               {/* {
               action ? <td>
                 <div onClick={() => handleAction(v as OrderItem)}>

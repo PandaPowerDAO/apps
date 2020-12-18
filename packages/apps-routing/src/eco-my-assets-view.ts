@@ -11,8 +11,9 @@ export default function create (t: <T = string> (key: string, text: string, opti
     Component,
     display: {
       needsApi: []
+      // isHidden: true
     },
-    group: 'ecobalance',
+    group: 'eco',
     icon: 'users',
     name: 'assetsview',
     text: t<string>('钱包', '钱包', { ns: 'apps-routing' })

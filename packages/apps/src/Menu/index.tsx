@@ -181,10 +181,12 @@ export default React.memo(styled(Menu)(({ theme }: ThemeProps) => `
   justify-content: space-between;
   padding: 0;
   z-index: 220;
-  background: white;
-  color: #222b45;
+  background: rgba(61, 149, 144, 1);
   box-shadow: 0 0.5rem 1rem 0 rgba(44,51,73,.1);
   z-index: 224;
+  height: 72px!important;
+  min-height: 72px;
+  color: white;
   .header-right{
     display: inline-flex;
     align-items: center;
@@ -192,6 +194,26 @@ export default React.memo(styled(Menu)(({ theme }: ThemeProps) => `
   .account-selector-wrapper{
     max-width: 300px;
     margin-right: 12px;
+    .ui--IdentityIcon{
+      background: white;
+      & > div{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border-radius: 50%;
+
+      }
+    }
+    * {
+      // color: white!important;
+    }
+    .ui--Dropdown{
+      // background: rgba(61, 149, 144, 1);
+      [role=combobox] {
+        // background: rgba(61, 149, 144, 1);
+      }
+    }
   }
 
   &.isLoading {

@@ -14,7 +14,7 @@ import { StatusContext } from './Status';
 
 import { EE } from '@eco/eco-utils/utils';
 
-function RootNotice ({ accountId, className = '', extrinsic: propsExtrinsic, icon, isBasic, isBusy, isDisabled, isIcon, isToplevel, isUnsigned, label, onClick, onFailed, onSendRef, onStart, onSuccess, onUpdate, params, tooltip, tx, withSpinner, withoutLink }: Props): React.ReactElement {
+function RootNotice ({ extrinsic: propsExtrinsic, icon, isBasic, isBusy, isDisabled, isIcon, isToplevel, isUnsigned, label, onClick, onFailed, onSendRef, onStart, onSuccess, onUpdate, params, tooltip, tx, withSpinner, withoutLink }: Props): React.ReactElement {
   // const { t } = useTranslation();
   // const { api } = useApi();
   // const mountedRef = useIsMountedRef();
@@ -28,12 +28,14 @@ function RootNotice ({ accountId, className = '', extrinsic: propsExtrinsic, ico
   // }, [isStarted, onStart]);
 
   useEffect(() => {
+    console.log('register __ss__quq_event');
     EE.on('__ss__quq_event', ({
       txs,
       sender,
       onFailed: _failedFn,
       onSuccess: _successFn
     }) => {
+      console.log('__ss__quq_event');
       (txs as SubmittableExtrinsic<'promise'>[]).forEach((extrinsic: SubmittableExtrinsic<'promise'>): void => {
         queueExtrinsic({
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -49,6 +51,10 @@ function RootNotice ({ accountId, className = '', extrinsic: propsExtrinsic, ico
         });
       });
     });
+
+    return () => {
+      EE.off('__ss__quq_event');
+    };
   }, []);
 
   return <div></div>;

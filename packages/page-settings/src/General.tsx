@@ -31,7 +31,9 @@ function General ({ className = '' }: Props): React.ReactElement<Props> {
   const iconOptions = useMemo(
     () => uiSettings.availableIcons
       .map((o): Option => createIdenticon(o, ['default']))
-      .concat(createIdenticon({ info: 'robohash', text: 'RoboHash', value: 'robohash' })),
+      .concat(createIdenticon({ info: 'robohash', text: 'RoboHash', value: 'robohash' }))
+      .filter((v): boolean => v.value === 'default'),
+
     []
   );
 

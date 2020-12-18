@@ -1582,6 +1582,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@eco/page-eco-proposal@workspace:packages/page-eco-proposal":
+  version: 0.0.0-use.local
+  resolution: "@eco/page-eco-proposal@workspace:packages/page-eco-proposal"
+  languageName: unknown
+  linkType: soft
+
 "@eco/page-eco-transfer@workspace:packages/page-eco-transfer":
   version: 0.0.0-use.local
   resolution: "@eco/page-eco-transfer@workspace:packages/page-eco-transfer"
@@ -5970,6 +5976,7 @@ __metadata:
     chalk: ^4.1.0
     concurrently: ^5.3.0
     copy-to-clipboard: ^3.3.1
+    decimal.js: ^10.2.1
     devtron: ^1.4.0
     dnslink-cloudflare: ^3.0.0
     electron: ^9.3.2
@@ -8742,7 +8749,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"decimal.js@npm:^10.2.0":
+"decimal.js@npm:^10.2.0, decimal.js@npm:^10.2.1":
   version: 10.2.1
   resolution: "decimal.js@npm:10.2.1"
   checksum: ba28b27bb8aca6bbb73fbdb51d759961d9ff82218c4aa737b4f4826dee4244618a61c410201bb152950c4915e3d82a86211d1c2a4e23f805ee577574ba115e59

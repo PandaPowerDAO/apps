@@ -14,7 +14,7 @@ import styled from 'styled-components';
 // import { queryCarbonBalance } from '@eco/eco-utils/service';
 
 // import { useECOAccount } from '@eco/eco-components/Account/accountContext';
-import { fromHex, beautifulNumber, reformatAssetName } from '@eco/eco-utils/utils';
+import { fromHex, beautifulNumber, reformatAssetName, resolveAmountNumber } from '@eco/eco-utils/utils';
 import { useHistory } from 'react-router-dom';
 // import { api } from '@polkadot/react-api';
 
@@ -112,7 +112,7 @@ function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
           <div className='title'
             onClick={goDetail}>{reformatAssetName(fromHex(asset.symbol as string))}</div>
           <div>
-          持有量： {beautifulNumber(balance.balance) || 0}
+          持有量： {asset.assetId === 'eco2' ? beautifulNumber(balance.balance) : resolveAmountNumber(balance.balance) || 0}
           </div>
         </div>
       </Content>

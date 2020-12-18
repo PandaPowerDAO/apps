@@ -23,7 +23,7 @@ import Proxy from '../modals/ProxiedAdd';
 import Qr from '../modals/Qr';
 import Account from './Account';
 import BannerClaims from './BannerClaims';
-import BannerExtension from './BannerExtension';
+// import BannerExtension from './BannerExtension';
 import { sortAccounts } from '../util';
 
 interface Balances {
@@ -229,7 +229,7 @@ function Overview ({ className = '', onStatusChange }: Props): React.ReactElemen
           onClick={toggleProxy}
         />
       </Button.Group>
-      <BannerExtension />
+      {/* <BannerExtension /> */}
       <BannerClaims />
       <Table
         empty={(!hasAccounts || (!isLoading && sortedAccountsWithDelegation)) && t<string>("You don't have any accounts. Some features are currently hidden and will only become available once you have accounts.")}

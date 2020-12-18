@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
-import { Table } from '@polkadot/react-components';
+import { Table, Button } from '@polkadot/react-components';
 import { Pagination } from 'antd';
 import styled from 'styled-components';
 import Panel from '@eco/eco-components/Panel';
@@ -26,6 +26,7 @@ interface Props {
   handleAction?: HanleAction,
   isMine: boolean,
   refreshFlag?: string | number,
+  side: string,
 }
 
 interface PageType {
@@ -58,9 +59,18 @@ tbody tr td {
 
 const ActionWrapper = styled.div`
   cursor: pointer;
+  &:hover span{
+    color:white!important;
+  }
+  .ui--Button{
+    padding: 0.7rem 1.1rem!important;
+  }
+  .ui--Spinner{
+    display: none;
+  }
 `;
 
-const Sides = ['出售', '购买'];
+const Sides = ['出售', '买入'];
 
 const noop = (e: OrderItem) => Promise.resolve(undefined);
 
@@ -72,22 +82,30 @@ const resolvePrice = (price:number|string):string|null|unknown => {
   return beautifulNumber(unitToEco(price, 2).toString());
 };
 
+const AddressSpan = styled.div`
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+`;
+
 function OrderList (props: Props): React.ReactElement<Props> {
-  const { closed, title, reverse, action, handleAction = noop, isMine } = props;
+  const { closed, title, reverse, action, handleAction = noop, isMine, side = 'buy' } = props;
 
   const header = useMemo(() => {
     const _header = [
       ['类型', 'header'],
-      ['资产', 'header'],
+      isMine ? [null] : [side === 'buy' ? '买家' : '卖家', 'header'],
+      ['资产名称', 'header'],
+      ['价格', 'header'],
       ['数量', 'header'],
-      ['价格(吨/ECO2)', 'header'],
+      [isMine ? '订单进度' : null, 'header'],
       ['操作', 'header']
-
-    ];
+    ].filter((v) => v[0]);
 
     return action ? _header : _header.slice(0, -1);
   }
-  , []);
+  , [isMine]);
 
   const [pagination, updatePagination] = useState<PageType>({
     total: 0,
@@ -103,6 +121,8 @@ function OrderList (props: Props): React.ReactElement<Props> {
   const queryAssetDetail = useCallback((orderItem: OrderItem): Promise<void> => {
     async function _queryDetail () {
       const result = await queryOrder(api, orderItem.orderId);
+
+      console.log('result', result);
 
       tempRecordsRef.current.push({
         ...orderItem,
@@ -148,6 +168,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
         owner: isMine ? (ecoAccount || '') : '',
         offset: (offset || 0) as number * pagination.pageSize,
         limit: pagination.pageSize,
+        direction: isMine ? undefined : (side === 'buy' ? 1 : 0),
         closed,
         reverse
       });
@@ -223,16 +244,33 @@ function OrderList (props: Props): React.ReactElement<Props> {
             return <tr key={rowIndex}>
               <td>
                 <span style={{
-                  color: v.direction === 1 ? 'red' : 'green'
+                  color: (v.direction === 1 ? 'green' : 'red')
                 }}>{Sides[v.direction as number] || '-'}</span>
               </td>
+              {
+                !isMine && <td>
+                  <AddressSpan>{v.owner}</AddressSpan>
+                </td>
+              }
               <td>{reformatAssetName(v.assetSymbol)}</td>
-              <td>{v.amount ? beautifulNumber((resolveAmountNumber(v.amount))) : '-'}</td>
-              <td>{resolvePrice(v.price) as string || '-'}</td>
+              <td>{resolvePrice(v.price) as string || '-'} ECO2/吨</td>
+              <td>{isMine ? (v.amount ? resolveAmountNumber(v.amount) : '-') : (v.left_amount ? resolveAmountNumber(v.left_amount) : '-')}</td>
+              {
+                isMine && <td>
+                  <span>
+                    {resolveAmountNumber(v.amount - v.left_amount)}/{resolveAmountNumber(v.amount)}
+                  </span>
+                </td>
+              }
+
               {
                 action ? <td>
-                  <ActionWrapper onClick={() => handleAction(v as OrderItem)}>
-                    {action}
+                  <ActionWrapper >
+                    <Button
+                      label={action}
+                      onClick={() => handleAction(v as OrderItem)}
+                    // onClick={toggleTransfer}
+                    />
                   </ActionWrapper>
                 </td> : null
               }

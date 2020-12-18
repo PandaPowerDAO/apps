@@ -10,6 +10,7 @@ import createRoutes from '@polkadot/apps-routing';
 import { ErrorBoundary, Spinner, StatusContext } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks';
 import RootNotice from '@polkadot/react-components/RootNotice';
+import { AccountUpdator } from '@eco/eco-components/Account';
 
 import { findMissingApis } from '../endpoint';
 import { useTranslation } from '../translate';
@@ -72,12 +73,15 @@ function Content ({ className }: Props): React.ReactElement<Props> {
                   )
                   : (
                     <React.Fragment>
-                      <RootNotice />
-                      <Component
-                        basePath={`/${name}`}
-                        location={location}
-                        onStatusChange={queueAction}
-                      />
+                      <RootNotice key={name} />
+                      <AccountUpdator>
+                        <Component
+                          basePath={`/${name}`}
+                          location={location}
+                          onStatusChange={queueAction}
+                        />
+                      </AccountUpdator>
+
                     </React.Fragment>
 
                   )
