@@ -69,8 +69,9 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
   // console.log('ecoAccount', ecoAccount);
 
   const [protocals, setProtocals] = useState<ProtocalProps>({
-    // costPro: false,
-    registerPro: false
+    costPro: false,
+    registerPro: false,
+    agreed2: false
   });
 
   const { api } = useApi();
@@ -84,7 +85,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
 
   useEffect(() => {
     async function init () {
-      const projects = await queryProjectsList(ecoAccount, 1);
+      const projects = await queryProjectsList('', 1);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (projects && (projects.docs as Project[])) {
@@ -99,7 +100,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
             value: pro.projectId
           };
         }).filter((v: Project): boolean => {
-          return v.approved === 1;
+          return v.approved === 1 || true;
         }));
       }
       // console.log(projects);
@@ -144,9 +145,14 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
 
   const handleProjectSelect = useCallback((value) => {
     if (value) {
+      const target = projects.filter((v) => v.projectId === value)[0];
+
       form.validateFields(['projectId']);
+      form.setFieldsValue({
+        symbol: target.symbol
+      });
     }
-  }, []);
+  }, [projects]);
 
   const onFinish = (values: FormProps): void => {
     // console.log('ecoAccount', ecoAccount);
@@ -179,8 +185,9 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       // message.info('申请提交成功');
       form.resetFields();
       setProtocals({
-        // costPro: false,
-        registerPro: false
+        costPro: false,
+        registerPro: false,
+        agreed2: false
       });
     }
   };
@@ -191,9 +198,9 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       name='transfer-form'
       onFinish={onFinish}>
       <div className={className}>
-        <Header title={t<string>('上链碳汇资产')} />
+        <Header title={t<string>('碳汇资产上链')} />
         <Panel title={t<string>('说明:')}>
-          <p>{t<string>('ECO2 Ledger的碳汇資產上链，不同年份的碳汇资产分开操作。为保证碳汇量的真实性和避免双重计算，上链的碳汇需要完成链下签发，并汇入ECO2 Ledger托管账户 。')}</p>
+          <p>{t<string>('ECO2 Ledger的碳汇资产上链，不同年份的碳汇资产分开操作。为保证碳汇量的真实性和避免双重计算，上链的碳汇需要完成链下签发，并汇入ECO2 Ledger托管账户 。')}</p>
           <br />
           <p>{t<string>('1. 将该年份的碳汇转入至ECO2 Ledger的托管碳汇账户里。')}</p>
           <p style={{ textIndent: '1em ' }}>{t<string>('您的碳汇资产如果是VCS标准，请汇至：Beijing Qianyuhui International Environmental Investment Co., Ltd')}</p>
@@ -209,7 +216,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
           <p>{t<string>('2. 若在碳汇项目中没看到您的碳汇项目，请至「新增碳汇项目」。')}</p>
           <p>{t<string>('3. 资产审查委员会一般会在7个工作日内完成审核。')}</p>
           <p>{t<string>('4. 若审核不通过，已汇到托管账户的碳汇，将在7个工作日内退回到原账户。')}</p>
-          <p>{t<string>('5. 上链后的碳汇资产，如要申请下链，可在「我链上的资产」中申请。')}</p>
+          <p>{t<string>('5. 上链后的碳汇资产，如要申请下链，可在「我上链的资产」中申请。')}</p>
         </Panel>
         <Panel
           title={t<string>('完善信息')}
@@ -274,7 +281,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   label={<div>{t<string>('资产年份')}</div>}
                   maxLength={500}
                   // onChange={(vintage: string) => setFieldsValue({ vintage })}
-                  placeholder={t<string>('请输入您需要发行的碳汇年限: 2020')}
+                  placeholder={t<string>('请输入您需要发行的碳汇资产年份，示例 2015')}
                   // value={form.vintage}
                   withLabel
                 />
@@ -301,7 +308,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   labelExtra={<div>{t<string>('吨')}</div>}
                   maxLength={500}
                   // onChange={(initialSupply: string) => setFieldsValue({ initialSupply })}
-                  placeholder={t<string>('请输入该年份内的碳汇总量')}
+                  placeholder={t<string>('请输入该年份内碳汇的总量')}
                   // value={form.initialSupply}
                   withLabel
                 />
@@ -326,7 +333,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   labelExtra={<div>{t<string>('吨')}</div>}
                   maxLength={500}
                   // onChange={(initialSupply: string) => setFieldsValue({ initialSupply })}
-                  placeholder={t<string>('请输入本次要上链的碳汇数量')}
+                  placeholder={t<string>('请输入您本次要上链的碳汇数量')}
                   // value={form.initialSupply}
                   withLabel
                 />
@@ -349,7 +356,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   label={<div>{t<string>('第三方核查机构')}</div>}
                   maxLength={500}
                   // onChange={(verifier: string) => setFieldsValue({ verifier })}
-                  placeholder={t<string>('请输入')}
+                  placeholder={t<string>('请输入第三方核查机构的名称')}
                   // value={form.verifier}
                   withLabel
                 />
@@ -401,7 +408,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   labelExtra={t<string>('资源链接')}
                   maxLength={500}
                   // onChange={(projectDoc: string) => setFieldsValue({ projectDoc })}
-                  placeholder={t<string>('请输入')}
+                  placeholder={t<string>('请输入http://开头的核查报告链接，并请确保链接可用')}
                   // value={form.projectDoc}
                   withLabel
                 />
@@ -423,7 +430,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   labelExtra={t<string>('资源链接')}
                   maxLength={500}
                   // onChange={(extraCertificate: string) => setFieldsValue({ extraCertificate })}
-                  placeholder={t<string>('请输入')}
+                  placeholder={t<string>('请输入http://开头的核查报告链接，并请确保链接可用')}
                   // value={form.extraCertificate}
                   withLabel
                 />
@@ -472,7 +479,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                   label={<div>{t<string>('碳汇签发日期')}</div>}
                   maxLength={500}
                   // onChange={(issuanceDate: string) => setFieldsValue({ issuanceDate })}
-                  placeholder={t<string>('日期格式如 2020-10-10')}
+                  placeholder={t<string>('示例 2015-01-01')}
                   // value={form.issuanceDate}
                   withLabel
                 />
@@ -598,10 +605,10 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isFull={false}
                   label={<div>{t<string>('碳汇转入证明')}</div>}
-                  labelExtra={t<string>('请输入该碳汇资料在APX/VCS 转入担保账户的证明材料链接')}
+                  // labelExtra={t<string>('')}
                   maxLength={500}
                   // onChange={(proof: string) => setFieldsValue({ proof })}
-                  placeholder={t<string>('请输入')}
+                  placeholder={t<string>('请输入该碳汇资料在APX/VCS 转入担保账户的证明材料链接')}
                   // value={form.proof}
                   withLabel
                 />
@@ -623,10 +630,10 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isFull={false}
                   label={<div>{t<string>('碳汇转出账户名称')}</div>}
-                  labelExtra={t<string>('请输入您在VCS/GS 的碳汇账户名称')}
+                  // labelExtra={t<string>('请输入您在VCS/GS 的碳汇账户名称')}
                   maxLength={500}
                   // onChange={(proof: string) => setFieldsValue({ proof })}
-                  placeholder={t<string>('请输入')}
+                  placeholder={t<string>('请输入您在VCS/GS 的碳汇账户名称')}
                   // value={form.proof}
                   withLabel
                 />
@@ -643,8 +650,8 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
                 <TextArea
                   isFull={false}
                   label={<div>{t<string>('描述')}</div>}
-                  labelExtra={<div>{t<string>('最多500字')}</div>}
-                  maxLength={500}
+                  labelExtra={<div>{t<string>('请输入资产描述，最大1000字符')}</div>}
+                  maxLength={1000}
                   // onChange={(remark: string) => setFieldsValue({ remark })}
                   rows={3}
                   // value={form.remark}
@@ -655,14 +662,22 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
           </Row>
         </Panel>
         <Panel>
-          {/* <div>
+          <div>
             <Checkbox
-              label='注册成为发行商，将消耗 100 ECO2 及 10,000 ECC'
+              label='碳汇资产上链需要等待 资产审查委员会审查通过后，您申请的碳汇资产才会生效；'
+              onChange={(agreed2: boolean) => setProtocalValue({ agreed2 })}
+              value={protocals.agreed2}
+            />
+
+          </div>
+          <div>
+            <Checkbox
+              label='碳汇资产上链，将支付 100 ECO2 用于 资产审查委员会的审核费用  及 额外的网络资源使用手续费'
               onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
               value={protocals.costPro}
             />
 
-          </div> */}
+          </div>
           <div>
             <Checkbox
               label={t<string>('我同意遵守TOS协议内容')}
@@ -674,7 +689,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
             textAlign: 'center',
             marginTop: '24px'
           }}>
-            <SubmitBtn htmlType='submit'>{t<string>('注册')}</SubmitBtn>
+            <SubmitBtn htmlType='submit'>{t<string>('提交')}</SubmitBtn>
           </div>
         </Panel>
       </div>

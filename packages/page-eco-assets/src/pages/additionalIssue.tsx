@@ -68,7 +68,8 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
 
   const [protocals, setProtocals] = useState<ProtocalProps>({
     costPro: false,
-    registerPro: false
+    registerPro: false,
+    agreed2: false
   });
 
   const SIOptions = useMemo(() => {
@@ -84,7 +85,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
     }];
   }, []);
 
-  const [unit, updateUnit] = useState<number>(SIOptions[0].value);
+  const [unit, updateUnit] = useState<number>(SIOptions[2].value);
 
   const handleUnitChange = useCallback((_unit) => {
     updateUnit(_unit);
@@ -139,7 +140,8 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
       form.resetFields();
       setProtocals({
         costPro: false,
-        registerPro: false
+        registerPro: false,
+        agreed2: false
       });
       history.push('/myassets');
     }
@@ -164,15 +166,14 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
           </Banner>
         </Panel>
         <Panel title='说明：'>
-          <p>{t<string>('ECO2 Ledger的碳汇資產上链，不同年份的碳汇资产分开操作')}</p>
+          <p>{t<string>('ECO2 Ledger的碳汇资产上链，不同年份的碳汇资产分开操作')}</p>
           <p>{t<string>('1、依照前一步骤填写的碳汇资产，选择您要上链的年份，将该年份的碳汇转入至ECO2 Ledger的托管碳汇账户里。')}</p>
           <p style={{ textIndent: '1em ' }}>{t<string>('您的碳汇资产如果是VCS标准，请汇至：Beijing Qianyuhui International Environmental Investment Co., Ltd')}</p>
           <p style={{ textIndent: '1em ' }}>{t<string>('如果是Gold Standard 标准，请汇至：Beijing Qianyuhui International Environmental Investment Co., Ltd（1069079）')}</p>
           <p style={{ textIndent: '1em ' }}>{t<string>('其他标准暂时无法上链，我们将陆续开通。')}</p>
-          <p>{t<string>('2、操作完成后请将碳汇转入凭据以电子档方式留存。')}</p>
-          <p>{t<string>('3、于下方填写相关信息。')}</p>
-          <p>{t<string>('4、提交资料后，ECO2 Ledger资产审查委员将会对您填写的资料进行审核。')}</p>
-          <p>{t<string>('5、审核成功后，您的钱包中将出现此笔碳汇资产。')}</p>
+          <p>{t<string>('2、于下方填写相关信息。')}</p>
+          <p>{t<string>('3、提交资料后，ECO2 Ledger资产审查委员将会对您填写的资料进行审核。')}</p>
+          <p>{t<string>('4、审核成功后，您的钱包中将出现此笔碳汇资产。')}</p>
           <br />
 
           <p>{t<string>('备注')}</p>
@@ -180,7 +181,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
           <p>{t<string>('2、若在碳汇项目中没看到您的碳汇项目，请先「新增碳汇项目」。')}</p>
           <p>{t<string>('3、资产审查委员会一般会在7个工作日内完成审核。')}</p>
           <p>{t<string>('4、若审核不通过，已汇到托管账户的碳汇，将在7个工作日内退回到原账户。')}</p>
-          <p>{t<string>('5、上链后的碳汇资产，如要申请下链，可在「我链上的资产」中申请。')}</p>
+          <p>{t<string>('5、上链后的碳汇资产，如要申请下链，可在「我上链的资产」中申请。')}</p>
 
         </Panel>
         <Panel>
@@ -235,7 +236,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
                   isFull={false}
                   label={<div>{t<string>('资产上限')}</div>}
                   labelExtra={<div>{t<string>('吨')}</div>}
-                  value={unitToEco(assetsInfo.max_supply as string || 0, 6).toString() }
+                  value={unitToEco(assetsInfo.initial_supply as string || 0, 6).toString() }
                   withLabel
                 />
               </FieldDecorator>
@@ -277,17 +278,17 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
                   labelExtra={<div>吨</div>}
                   maxLength={500}
                   // onChange={(amount: string) => setFieldsValue({ amount })}
-                  placeholder={t<string>('请填写')}
+                  placeholder={t<string>('请输入您需要发行的碳汇资产数量')}
                   // value={form.name}
                   withLabel
                 >
-                  <Dropdown
+                  {/* <Dropdown
                     defaultValue={unit}
                     dropdownClassName='ui--SiDropdown'
                     isButton
                     onChange={handleUnitChange}
                     options={SIOptions}
-                  />
+                  /> */}
                 </Input>
               </FieldDecorator>
             </Form.Item>
@@ -311,7 +312,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
                   label={<div>{t<string>('碳汇转入证明')}</div>}
                   maxLength={500}
                   // onChange={(proof: string) => setFieldsValue({ proof })}
-                  placeholder={t<string>('请输入')}
+                  placeholder={t<string>('请输入该碳汇资料在APX/VCS 转入担保账户的证明材料链接')}
                   // value={form.name}
                   withLabel
                 />
@@ -330,7 +331,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
                 <TextArea
                   isFull={false}
                   label={<div>{t<string>('描述')}</div>}
-                  labelExtra={<div>{t<string>('最多500字')}</div>}
+                  labelExtra={<div>{t<string>('请输入增发资产的原因，最大500字符')}</div>}
                   maxLength={500}
                   // onChange={(remark: string) => setFieldsValue({ remark })}
                   rows={3}
@@ -344,7 +345,7 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
         <Panel>
           <div>
             <Checkbox
-              label={t<string>('增发碳汇资产需要等待资产审查委员会审查通过后，您发行的碳汇资产会增加相应的可发行上限')}
+              label={t<string>('增发碳汇资产需要等待 资产审查委员会审查通过后，您发行的碳汇数字资产会增加;')}
               onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
               value={protocals.costPro}
             />
@@ -352,16 +353,23 @@ function AdditionalIssue ({ className }: Props): React.ReactElement<Props> {
           </div>
           <div>
             <Checkbox
-              label={t<string>('发布提案将消耗 100ECO及 10,000 ECC')}
+              label={t<string>('增发碳汇资产将支付 100 ECO2 用于 资产审查委员会的审核费用  及 额外的网络资源使用手续费;')}
               onChange={(registerPro: boolean) => setProtocalValue({ registerPro })}
               value={protocals.registerPro}
+            />
+          </div>
+          <div>
+            <Checkbox
+              label={t<string>('我同意 遵守TOS协议内容')}
+              onChange={(agreed2: boolean) => setProtocalValue({ agreed2 })}
+              value={protocals.agreed2}
             />
           </div>
           <div style={{
             textAlign: 'center',
             marginTop: '24px'
           }}>
-            <Button htmlType='submit'>{t<string>('增发')}</Button>
+            <Button htmlType='submit'>{t<string>('增发碳汇资产')}</Button>
           </div>
         </Panel>
       </div>

@@ -262,7 +262,7 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
                         <OperationSpan onClick={() => goAdditionalPage(v.assetId, assetName)}>{t<string>('增发')}</OperationSpan>
                         <Divider type='vertical' />
                         <OperationSpan onClick={() => goBurningPage(v.assetId, assetName)}>{t<string>('销毁')}</OperationSpan>
-                      </OperationSpanWrapper> : '-'
+                      </OperationSpanWrapper> : ''
 
                   }
                 </td>

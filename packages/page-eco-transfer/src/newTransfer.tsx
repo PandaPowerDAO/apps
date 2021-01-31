@@ -32,6 +32,7 @@ interface Props {
   onClose: () => void;
   recipientId?: string;
   senderId?: string;
+  disableRec?: boolean;
 }
 
 interface TxObject {
@@ -56,7 +57,7 @@ const AmountAfterDecimals = (amount: BN, decimals?: number) => {
   return new BN(amount).div(new BN(10).pow(new BN((decimals || 0))));
 };
 
-function Transfer ({ className = '', onClose, recipientId: propRecipientId, senderId: propSenderId }: Props): React.ReactElement<Props> {
+function Transfer ({ className = '', onClose, recipientId: propRecipientId, senderId: propSenderId, disableRec }: Props): React.ReactElement<Props> {
   const ecoAccount = window.localStorage.getItem('__eco_account') || undefined;
   const _defaultAssetId = store.get('__eco_asset_detail_id') || DefaultECO2Asset.assetId;
 
@@ -279,7 +280,7 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
               <InputAddress
                 defaultValue={propRecipientId}
                 help={t<string>('Select a contact or paste the address you want to send funds to.')}
-                isDisabled={!!propRecipientId}
+                isDisabled={disableRec === undefined ? !!propRecipientId : !!disableRec}
                 label={t<string>('send to address')}
                 onChange={setRecipientId}
                 // labelExtra={

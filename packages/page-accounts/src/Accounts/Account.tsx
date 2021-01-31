@@ -341,9 +341,11 @@ function Account ({ account: { address, meta }, className = '', delegation, filt
         )}
         {isTransferOpen && (
           <Transfer
+            disableRec={false}
             key='modal-transfer'
+            // senderId={address}
             onClose={toggleTransfer}
-            senderId={address}
+            recipientId={address}
           />
         )}
         {isProxyOverviewOpen && (
