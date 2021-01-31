@@ -14,6 +14,7 @@ import { queryProject, queryAsset } from '@eco/eco-utils/service';
 import { map as lodashMap } from 'lodash';
 import Voting from '../components/Voting';
 import { Icon } from '@polkadot/react-components';
+import { useTranslation } from '@eco/eco-utils/translate';
 
 const Summary = styled.div`
   text-align: center;
@@ -66,58 +67,147 @@ interface ProjectDetail {
 const DetailsMap = [
   [{
     // name: '资产名称',
-    name: (v) => {
+    projectName: (v, t) => {
       return <>
-        <span className='label'>资产名称:</span>
-        <span className='labelVal'>{fromHex(v)}</span>
-      </>;
-    }
-  }, {
-    vintage: (v) => {
-      return <>
-        <span className='label'>资产年限:</span>
+        <span className='label'>{t<string>('碳汇项目')}:</span>
         <span className='labelVal'>{fromHex(v)}</span>
       </>;
     }
   }],
   [{
-    initial_supply: (v) => {
+    // name: '资产名称',
+    name: (v, t) => {
       return <>
-        <span className='label'>碳汇发行数量:</span>
+        <span className='label'>{t<string>('资产代码')}:</span>
+        <span className='labelVal'>{fromHex(v)}</span>
+      </>;
+    }
+  }, {
+    vintage: (v, t) => {
+      return <>
+        <span className='label'>{t<string>('资产年份')}:</span>
+        <span className='labelVal'>{fromHex(v)}</span>
+      </>;
+    }
+  }],
+  [{
+    initial_supply: (v, t) => {
+      return <>
+        <span className='label'>{t<string>('资产上限')}:</span>
         <span className='labelVal'>{resolveAmountNumber(v)}</span>
       </>;
     }
   }, {
-    issuanceDate: '碳汇签发日期'
+    initial_supply: (v, t) => {
+      return <>
+        <span className='label'>{t<string>('碳汇资产上链数量')}:</span>
+        <span className='labelVal'>{resolveAmountNumber(v)}</span>
+      </>;
+    }
   }],
   [{
-    startDate: '碳汇起始日期'
-    // render (v) {
-    //   return ['碳汇总数', resolveAmountNumber(v)];
-    // }
+    // verifier: '第三方核查者'
+    verifier: (v, t) => {
+      return <>
+        <span className='label'>{t<string>('第三方核查机构')}:</span>
+        <span className='labelVal'>{v}</span>
+      </>;
+    }
+  }],
+  [{
+    // projectDoc: '签发报告'
+    projectDoc: (v, t) => {
+      return <>
+        <span className='label'>{t<string>('核查报告')}:</span>
+        <span className='labelVal'>{v}</span>
+      </>;
+    }
   }, {
-    // annualEmissionCuts: '预估年减排量',
-    endDate: '碳汇终止日期'
+    // extraCertificate: '额外签发证书'
+    extraCertificate: (v, t) => {
+      return <>
+        <span className='label'>{t<string>('其他报告')}:</span>
+        <span className='labelVal'>{v}</span>
+      </>;
+    }
+  }],
+
+  [{
+    issuanceDate: (v, t) => {
+      // 碳汇签发日期
+      return <>
+        <span className='label'>{t<string>('碳汇签发日期')}:</span>
+        <span className='labelVal'>{v}</span>
+      </>;
+    }
+  }],
+  // [{
+  //   startDate: (v, t) => {
+  //     return <>
+  //       <span className='label'>{t<string>('碳汇起始日期')}:</span>
+  //       <span className='labelVal'>{v}</span>
+  //     </>;
+  //   }
+  //   // 碳汇起始日期
+  //   // render (v) {
+  //   //   return ['碳汇总数', resolveAmountNumber(v)];
+  //   // }
+  // }, {
+  //   // annualEmissionCuts: '预估年减排量',
+  //   endDate: (v, t) => {
+  //     // 碳汇终止日期
+  //     return <>
+  //       <span className='label'>{t<string>('碳汇终止日期')}:</span>
+  //       <span className='labelVal'>{v}</span>
+  //     </>;
+  //   }
+  // }],
+  // [ {
+  //   // verifyDate: '第三方核时间'
+  //   verifyDate: (v, t) => {
+  //     return <>
+  //       <span className='label'>{t<string>('第三方核时间')}:</span>
+  //       <span className='labelVal'>{v}</span>
+  //     </>;
+  //   }
+  // }
+  // ],
+  // [{
+  //   // issuanceNumbers: '碳汇签发次数'
+  //   issuanceNumbers: (v, t) => {
+  //     return <>
+  //       <span className='label'>{t<string>('碳汇签发次数')}:</span>
+  //       <span className='labelVal'>{v}</span>
+  //     </>;
+  //   }
+  // }],
+
+  [{
+    // proof: '碳汇转入证明'
+    proof: (v, t) => {
+      return <>
+        <span className='label'>{t<string>('碳汇转入证明')}:</span>
+        <span className='labelVal'>{v}</span>
+      </>;
+    }
   }],
   [{
-    verifier: '第三方核查者'
-  }, {
-    verifyDate: '第三方核时间'
-  }
-  ],
-  [{
-    issuanceNumbers: '碳汇签发次数'
+    // proof: '碳汇转入证明'
+    proofAccountName: (v, t) => {
+      return <>
+        <span className='label'>{t<string>('碳汇转出账户名称')}:</span>
+        <span className='labelVal'>{v}</span>
+      </>;
+    }
   }],
   [{
-    projectDoc: '签发报告'
-  }, {
-    extraCertificate: '额外签发证书'
-  }],
-  [{
-    proof: '碳汇转入证明'
-  }],
-  [{
-    remark: '描述'
+    // remark: '描述'
+    remark: (v, t) => {
+      return <>
+        <span className='label'>{t<string>('描述')}:</span>
+        <span className='labelVal'>{v}</span>
+      </>;
+    }
   }]
 ];
 
@@ -126,21 +216,36 @@ const ProjectDetail = () => {
 
   const location = useLocation();
   const queryObj = parseQuery(location.search || '') || {};
-  const { id: projectId, proposalId, state } = queryObj;
+  const { id: projectId, proposalId, state, name } = queryObj;
 
   const { api } = useApi();
+  const { t } = useTranslation('page-eco-assets');
 
   useEffect(() => {
     _queryDetail();
 
     async function _queryDetail () {
       const result = await queryAsset(api, projectId);
+      let projectResult = {};
+
+      if (result && result.asset && result.asset.project_id) {
+        projectResult = await queryProject(api, result?.asset?.project_id);
+      }
+
+      console.log('result', projectResult);
+
+      // updateProjectInfo({
+      //   ...result.project,
+      //   ...result.additionals,
+      // });
 
       console.log('asset', result);
 
       updateProjectInfo({
         ...result.additionals,
-        ...result.asset
+        ...result.asset,
+        name,
+        projectName: projectResult?.additionals?.projectName || ''
       });
     }
   }, []);
@@ -149,14 +254,14 @@ const ProjectDetail = () => {
     <div>
       <Panel>
         <DetailHeader>
-          <div>碳汇项目详情页</div>
+          <div>{t<string>('碳汇资产详情页')}</div>
           <div>
             <Icon icon='reply'
               onClick={() => window.history.go(-1)}></Icon>
           </div>
         </DetailHeader>
       </Panel>
-      <Panel title='项目信息'>
+      <Panel title={t<string>('项目信息')}>
         {
           DetailsMap.map((item, idx) => {
             return <Row key={idx}>
@@ -171,7 +276,7 @@ const ProjectDetail = () => {
                         <span className='label'>{val[itemKey]}:</span>
                         <span className='labelVal'>{projectInfo[itemKey] || '-'}</span>
                       </>
-                    ) : val[itemKey](projectInfo[itemKey])
+                    ) : val[itemKey](projectInfo[itemKey], t)
                   }
 
                 </Col>;
@@ -180,7 +285,7 @@ const ProjectDetail = () => {
           })
         }
       </Panel>
-      <Panel title='投票情况'>
+      <Panel title={t<string>('投票情况')}>
         <Voting
           proposalId={proposalId}
           state={state}

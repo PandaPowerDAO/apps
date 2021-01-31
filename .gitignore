@@ -21,3 +21,4 @@ yarn-error.log*
 env-config.js
 NOTES.md
 packages/apps/build.zip
+packages/apps/build*.zip

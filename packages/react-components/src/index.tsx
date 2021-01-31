@@ -98,5 +98,6 @@ export { default as TxModalNew } from './TxModalNew';
 export { default as VoteAccount } from './VoteAccount';
 export { default as VoteValue } from './VoteValue';
 export { default as AddressInfoNew } from './AddressInfoNew';
+export { default as InputNumberPre } from './InputNumberPre';
 
 export { default as media } from './media';

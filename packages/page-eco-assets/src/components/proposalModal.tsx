@@ -17,10 +17,10 @@ import { Button, Extrinsic, InputAddress, InputNumber, Modal, TxButton, Dropdown
 import { useApi, useToggle } from '@polkadot/react-hooks';
 import { BN_ZERO } from '@polkadot/util';
 
-import { useTranslation } from '../translate';
+// import { useTranslation } from '../translate';
 import { queryCarbonProposals, proposeIssue, proposeAsset, proposeBurn, proposeProject } from '@eco/eco-utils/service';
 // import { getThreshold } from '../thresholds';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 interface Props {
   isMember: boolean;
   subjectId?: string;
@@ -109,12 +109,12 @@ function Propose ({ isMember, members, propSenderId }: Props): React.ReactElemen
       <Button
         icon='plus'
         isDisabled={!isMember}
-        label='发起提案'
+        label={t<string>('发起提案')}
         onClick={toggleOpen}
       />
       {isOpen && (
         <Modal
-          header='发起提案'
+          header={t<string>('发起提案')}
           size='large'
         >
           <Modal.Content>
@@ -138,7 +138,7 @@ function Propose ({ isMember, members, propSenderId }: Props): React.ReactElemen
               <Modal.Column>
                 <Dropdown
                   defaultValue={subjectId}
-                  label='请选择'
+                  label={t<string>('请选择')}
                   onChange={onSelectProposal}
                   options={proposals}
                 />
@@ -178,7 +178,7 @@ function Propose ({ isMember, members, propSenderId }: Props): React.ReactElemen
           </Modal.Content>
           <Modal.Actions onCancel={toggleOpen}>
             <Button icon='plus'
-              label='发起提案'
+              label={t<string>('发起提案')}
               onClick={submitProposal}>
 
             </Button>

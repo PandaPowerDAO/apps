@@ -5,7 +5,7 @@
 import './initSettings';
 import 'semantic-ui-css/semantic.min.css';
 import '@polkadot/react-components/i18n';
-
+import keyring from '@polkadot/ui-keyring';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

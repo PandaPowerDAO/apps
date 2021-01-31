@@ -40,6 +40,7 @@ interface Props {
   value?: string | Uint8Array | string[] | null;
   withEllipsis?: boolean;
   withLabel?: boolean;
+  renderEvenNoOpts?: boolean;
 }
 
 type ExportedType = React.ComponentType<Props> & {
@@ -133,11 +134,11 @@ class InputAddress extends React.PureComponent<Props, State> {
   }
 
   public render (): React.ReactNode {
-    const { className = '', defaultValue, help, hideAddress = false, isDisabled = false, isError, isMultiple, label, labelExtra, options, optionsAll, placeholder, type = DEFAULT_TYPE, withEllipsis, withLabel } = this.props;
+    const { renderEvenNoOpts = false, className = '', defaultValue, help, hideAddress = false, isDisabled = false, isError, isMultiple, label, labelExtra, options, optionsAll, placeholder, type = DEFAULT_TYPE, withEllipsis, withLabel } = this.props;
     const { lastValue, value } = this.state;
     const hasOptions = (options && options.length !== 0) || (optionsAll && Object.keys(optionsAll[type]).length !== 0);
 
-    if (!hasOptions && !isDisabled) {
+    if (!hasOptions && !isDisabled && !renderEvenNoOpts) {
       return null;
     }
 

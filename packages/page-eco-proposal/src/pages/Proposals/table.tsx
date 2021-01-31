@@ -13,8 +13,9 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 
 import { queryCarbonProposals } from '@eco/eco-utils/service';
-import { formatDate } from '@eco/eco-utils/utils';
+import { formatDate, reformatAssetName } from '@eco/eco-utils/utils';
 import ProposalModal from './proposalModal';
+import { useTranslation } from '@eco/eco-utils/translate';
 
 const SummaryRow = styled.div`
   display: flex;
@@ -27,23 +28,6 @@ const SumaryItemCol = styled.div`
 `;
 
 // state：0/待提交, 1/审批中 2/已审批
-const StateMap = ['待提交', '审批中', '已审批'];
-
-const resolveState = (rowData) => {
-  const { state, threshold, ayes, nays } = rowData;
-
-  if (state === 0) {
-    return StateMap[0];
-  } else if (state === 2) {
-    return StateMap[2];
-  } else {
-    if (ayes >= threshold || nays >= threshold) {
-      return StateMap[2];
-    }
-
-    return StateMap[1];
-  }
-};
 
 const SummaryItem = styled.div`
 padding: 8px 20px;
@@ -97,14 +81,6 @@ const TableWrapper = styled.div`
   }
 `;
 
-// project | asset | issue | burn
-const ProposalTypes: Record<string, string> = {
-  project: '注册碳汇项目',
-  asset: '注册碳汇资产',
-  issue: '增发碳汇资产',
-  burn: '销毁碳汇资产'
-};
-
 const StatusMap = {
 
 };
@@ -121,6 +97,38 @@ const ProposalTable = ({ isMember }) => {
     voting: 0,
     total: 0
   });
+  const { t } = useTranslation('page-eco-propposal');
+  const StateMap = [t<string>('待提交'), t<string>('审批中'), t<string>('已审批')];
+  // project | asset | issue | burn
+  const ProposalTypes: Record<string, string> = {
+    project: t<string>('注册碳汇项目'),
+    asset: t<string>('注册碳汇资产'),
+    issue: t<string>('增发碳汇资产'),
+    burn: t<string>('销毁碳汇资产')
+  };
+
+  const resolveState = (rowData, t) => {
+    const { state, threshold, ayes, nays } = rowData;
+
+    const isPassed = ayes >= threshold && threshold > 0;
+
+    if (state === 0) {
+      return StateMap[0];
+    } else if (state === 2) {
+      if (isPassed) {
+        return t<string>('已同意');
+      } else {
+        return t<string>('已拒绝');
+      }
+      // return StateMap[2];
+    } else {
+      if (ayes >= threshold || nays >= threshold) {
+        return StateMap[2];
+      }
+
+      return StateMap[1];
+    }
+  };
 
   const [ecoAccount] = useECOAccount();
 
@@ -129,14 +137,14 @@ const ProposalTable = ({ isMember }) => {
 
   const header = useMemo(() => {
     return [
-      ['全部提案', 'header'],
-      ['申请时间', 'header'],
-      ['费用', 'header'],
-      ['状态', 'header'],
+      [t<string>('全部提案'), 'header'],
+      [t<string>('申请时间'), 'header'],
+      [t<string>('费用'), 'header'],
+      [t<string>('状态'), 'header'],
       ['', 'header'],
-      // ['可发行总量', 'header'],
-      // ['资产精度', 'header'],
-      // ['发行商', 'header'],
+      // [{t<string>('可发行总量')}, 'header'],
+      // [{t<string>('资产精度')}, 'header'],
+      // [{t<string>('发行商')}, 'header'],
       ['', 'header']
     ];
   }, []);
@@ -172,9 +180,20 @@ const ProposalTable = ({ isMember }) => {
   }, []);
 
   const goDetail = (record: Proposal) => {
-    const url = `/ecassets/ec-${record.type}-detail?id=${record.key}&proposalId=${record.proposalId || ''}&state=${record.state as string}`;
+    const name = ((record.title || '').match(/\([^)]*\)/g) || '')[0].replace(/(\(|\))/g, '');
+    const url = `/ecassets/ec-${record.type}-detail?id=${record.key}&proposalId=${record.proposalId || ''}&state=${record.state as string}&name=${reformatAssetName(name)}`;
 
     history.push(url);
+  };
+
+  const renderTitle = (record: Proposal) => {
+    const { title } = record;
+    // const _name = (title || '').match(/(?<=\()[^)]*/g)[0];
+    const _name = ((title || '').match(/\([^)]*\)/g) || '')[0].replace(/(\(|\))/g, '');
+
+    return <div>
+      {ProposalTypes[record.type]}{reformatAssetName(_name)}
+    </div>;
   };
 
   return (
@@ -184,38 +203,38 @@ const ProposalTable = ({ isMember }) => {
           <SummaryRow>
             <SumaryItemCol>
               <SummaryItem>
-                <div className='title'>总共</div>
+                <div className='title'>{t<string>('总共')}</div>
                 <div className='content'>{nums.total}</div>
               </SummaryItem>
               <SummaryItem>
-                <div className='title'>审批中</div>
+                <div className='title'>{t<string>('审批中')}</div>
                 <div className='content'>{nums.voting}</div>
               </SummaryItem>
               <SummaryItem>
-                <div className='title'>已审批</div>
+                <div className='title'>{t<string>('已审批')}</div>
                 <div className='content'>{nums.closed}</div>
               </SummaryItem>
               <SummaryItem>
-                <div className='title'>待提交</div>
+                <div className='title'>{t<string>('待提交')}</div>
                 <div className='content'>{nums.pending}</div>
               </SummaryItem>
             </SumaryItemCol>
             <div>
-              <ProposalModal isMember={isMember}
-                propSenderId={ecoAccount} />
+              {/* <ProposalModal isMember={isMember}
+                propSenderId={ecoAccount} /> */}
               {/* <Button icon='plus'
-                label='发起提案'></Button> */}
+                label={t<string>('发起提案')}></Button> */}
             </div>
           </SummaryRow>
         </Panel>
       </Part>
       <Panel>
         <div>
-          <Input label='通过名字或者标签过滤' />
+          <Input label={t<string>('通过名字或者标签过滤')} />
         </div>
         <TableWrapper>
           <Table
-            empty={<div style={{ textAlign: 'center' }}>暂无数据</div>}
+            empty={<div style={{ textAlign: 'center' }}>{t<string>('暂无数据')}</div>}
             footer={null}
             header={header}
             remainHeader
@@ -223,21 +242,26 @@ const ProposalTable = ({ isMember }) => {
             {records.map((record: Proposal) => {
               return <tr key={record._id}>
                 <td>
-                  <div>
-                    {ProposalTypes[record.type]}
-                    <p>
-                      {record.title}
-                    </p>
-                  </div>
+                  {renderTitle(record)}
                 </td>
                 <td>{formatDate(record.timestamp as number)}</td>
                 <td>200 ECO2</td>
-                <td>{resolveState(record) || '-'}</td>
-                <td><div>
-                  <div>同意({record.ayes === undefined ? '-' : record.ayes})</div>
-                </div>拒绝({record.nays === undefined ? '-' : record.nays})</td>
+                <td>{resolveState(record, t) || '-'}</td>
                 <td>
-                  <Button onClick={() => goDetail(record)}>查看</Button>
+                  {
+                    record.state !== 0 && <div>
+                      <div>{t<string>('同意')}({record.ayes === undefined ? '-' : record.ayes})</div>
+                      <div>
+                        {t<string>('拒绝')}({record.nays === undefined ? '-' : record.nays})
+                      </div>
+                    </div>
+                  }
+                  {
+                    record.state === 0 && <div>-</div>
+                  }
+                </td>
+                <td>
+                  <Button onClick={() => goDetail(record)}>{t<string>('查看')}</Button>
                 </td>
               </tr>;
             })}

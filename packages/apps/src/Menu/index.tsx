@@ -25,6 +25,16 @@ import Item from './Item';
 // import NodeInfo from './NodeInfo';
 import Setting from './Setting';
 
+const Links = styled.div`
+   a {
+     color: white!important;
+     text-decoration: underline;
+   }
+   a + a {
+     margin-left: 10px;
+   }
+`;
+
 interface Props {
   className?: string;
 }
@@ -160,6 +170,14 @@ function Menu ({ className = '' }: Props): React.ReactElement<Props> {
         </ul>
       </div>
       <div className='header-right'>
+        <Links>
+          <a href='http://testnet.eco2dapp.com:6001/'
+            rel='noreferrer'
+            target='_blank'>领取测试币</a>
+          <a href='https://wj.qq.com/s2/7737726/c160/'
+            rel='noreferrer'
+            target='_blank'>抓虫行动 - 瓜分1万枚ECO2奖励</a>
+        </Links>
 
         {
           isLoading ? null : <div className='account-selector-wrapper'>

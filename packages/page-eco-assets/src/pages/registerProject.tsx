@@ -31,7 +31,7 @@ import { notAllprotocalChecked,
   dateValidator,
   ProjectTypes,
   numberValidator, yearValidator, ecoToUnit, Countries } from '@eco/eco-utils/utils';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 interface Props {
   className?: string,
 }
@@ -85,10 +85,11 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
       ...protocal
     });
   }, [protocals]);
+  const { t } = useTranslation('page-eco-assets');
 
   const AssetsOpts = useMemo(() => {
     return [{
-      text: '碳汇资产',
+      text: t<string>('碳汇资产'),
       value: 'carbon'
     }
     // , {
@@ -98,11 +99,21 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
     ];
   }, []);
 
+  const CarbonStandsTypes = useMemo(() => {
+    return [{
+      text: t<string>('VCS'),
+      value: 'vcs'
+    }, {
+      text: t<string>('GS'),
+      value: 'gs'
+    }];
+  }, []);
+
   const assetsNameValidator = async (rule: any, value: any): Promise<void> => {
     const _reg = /^[A-Z]{1,6}$/;
 
     if (!_reg.test(value)) {
-      throw new Error('仅支持1到6位大写字母');
+      throw new Error(t<string>('仅支持1到6位大写字母'));
     }
 
     return Promise.resolve();
@@ -112,7 +123,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
     const { symbol, maxSupply, annualEmissionCuts, ...rest } = values;
 
     if (notAllprotocalChecked(protocals)) {
-      message.error('请先确定协议');
+      message.error(t<string>('请先确定协议'));
 
       return;
     }
@@ -152,26 +163,70 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
       name='transfer-form'
       onFinish={onFinish}>
       <div className={className}>
-        <Header title='新增碳汇项目' />
+        <Header title={t<string>('新增碳汇项目')} />
         <Panel>
-          <p>在将碳汇资产上链至ECO2 Ledger前，请先完善预备上链的碳汇项目之基础信息。依照碳汇项目之报告，如实完成下方信息填写，为提高碳汇项目的辨识度，请尽可能完成每个栏位的信息填写，以便资产审查委员会审核。此申请无法撤回与修改，故请谨慎填写。目前ECO2 Ledger仅支持VCS (Verified Carbon Standard) 和GS (Gold Standard) 的碳标准申请上链，其他碳标准之碳汇资产暂不支持。</p>
+          <p>{t<string>('说明:')}</p>
+          <p>{t<string>('若要将您的碳汇资产上链至ECO2 Ledger, 请正确填写以下资料：')}</p>
+          <p>{t<string>('请注意:')}</p>
+          <p>{t<string>('1. 提交资料前，请确认提交内容正确无误，一旦提交成功，该数据即写入区块链，无法修改。')}</p>
+          <p>{t<string>('2. 提交成功后发现项目资料有误，需要重新提交「新增碳汇项目」。')}</p>
+          <p>{t<string>('3. 写入区块链的资料无论正确与否都无法删除。')}</p>
         </Panel>
         <Panel
-          title='完善信息'
+          title={t<string>('完善信息')}
         >
           <Row>
             <Form.Item>
               <Dropdown
                 defaultValue={'carbon'}
                 isDisabled
-                label={<div>资产类型</div>}
+                label={<div>{t<string>('资产类型')}</div>}
                 options={AssetsOpts}
-                placeholder='请选择'
+                placeholder={t<string>('请选择')}
                 withLabel
               />
             </Form.Item>
+            <Form.Item
+              label=''
+              name='proponent'
+              rules={[{
+                validator: requiredValidator
+              }]}
+            >
+              <FieldDecorator
+                required
+              >
+                <Input
+                  isError={!!errorMap.proponent}
+                  isFull={false}
+                  label={<div>{t<string>('项目发起人')}</div>}
+                  placeholder={t<string>('请输入项目发起人名称')}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item>
           </Row>
           <Row>
+            <Form.Item
+              label=''
+              name='projectName'
+              rules={[{
+                validator: requiredValidator
+              }]}
+            >
+              <FieldDecorator
+                required
+              >
+                <Input
+                  isError={!!errorMap.projectName}
+                  isFull={false}
+                  label={<div>{t<string>('项目名称')}</div>}
+                  maxLength={500}
+                  placeholder={t<string>('请输入项目名称')}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item>
             <Form.Item
               label=' '
               name='symbol'
@@ -188,13 +243,16 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isError={!!errorMap.symbol}
                   isFull={false}
-                  label={<div>资产名称</div>}
+                  label={<div>{t<string>('项目代码')}</div>}
                   maxLength={500}
-                  placeholder='仅支持输入最多6位大写字母'
+                  placeholder={t<string>('仅支持输入最多6位大写字母')}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
+
+          </Row>
+          {/* <Row>
             <Form.Item
               label=''
               name='lifetime'
@@ -211,57 +269,15 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isError={!!errorMap.lifetime}
                   isFull={false}
-                  label={<div>资产年限</div>}
+                  label={<div>{t<string>('资产年限')}</div>}
                   maxLength={500}
-                  placeholder='请输入您需要发行的碳汇年限'
+                  placeholder={t<string>('请输入您需要发行的碳汇年限')}
                   withLabel={true}
                 />
               </FieldDecorator>
             </Form.Item>
 
-          </Row>
-          <Row>
-            <Form.Item
-              label=''
-              name='projectName'
-              rules={[{
-                validator: requiredValidator
-              }]}
-            >
-              <FieldDecorator
-                required
-              >
-                <Input
-                  isError={!!errorMap.projectName}
-                  isFull={false}
-                  label={<div>项目名称</div>}
-                  maxLength={500}
-                  placeholder='请输入项目名称'
-                  withLabel
-                />
-              </FieldDecorator>
-            </Form.Item>
-
-            <Form.Item
-              label=''
-              name='proponent'
-              rules={[{
-                validator: requiredValidator
-              }]}
-            >
-              <FieldDecorator
-                required
-              >
-                <Input
-                  isError={!!errorMap.proponent}
-                  isFull={false}
-                  label={<div>项目发起人</div>}
-                  placeholder='请输入项目发起人名称'
-                  withLabel
-                />
-              </FieldDecorator>
-            </Form.Item>
-          </Row>
+          </Row> */}
           <Row>
             <Form.Item
               label=''
@@ -278,9 +294,9 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目碳汇总数</div>}
-                  labelExtra='吨'
-                  placeholder='请输入该笔碳汇总数，仅支持数字'
+                  label={<div>{t<string>('项目碳汇总数')}</div>}
+                  labelExtra={t<string>('吨')}
+                  placeholder={t<string>('请输入该笔碳汇总数，仅支持数字')}
                   withLabel={true}
                 />
               </FieldDecorator>
@@ -301,15 +317,35 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>预估年减排量</div>}
-                  labelExtra='吨'
-                  placeholder='吨请输入该笔碳汇总数，仅支持数字'
+                  label={<div>{t<string>('预估年减排量')}</div>}
+                  labelExtra={t<string>('吨')}
+                  placeholder={t<string>('吨请输入该笔碳汇总数，仅支持数字')}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
           </Row>
           <Row>
+            <Form.Item
+              label=''
+              name='registerNumber'
+              rules={[{
+                validator: requiredValidator
+              }]}
+              validateFirst
+            >
+              <FieldDecorator
+                required
+              >
+                <Input
+                  isFull={false}
+                  label={<div>{t<string>('项目注册编号')}</div>}
+                  maxLength={500}
+                  placeholder={t<string>('请输入')}
+                  withLabel={true}
+                />
+              </FieldDecorator>
+            </Form.Item>
             <Form.Item
               label=''
               name='registerDate'
@@ -325,9 +361,9 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目注册日期</div>}
+                  label={<div>{t<string>('项目注册日期')}</div>}
                   maxLength={500}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   withLabel={true}
                 />
               </FieldDecorator>
@@ -349,9 +385,9 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目起始日期</div>}
+                  label={<div>{t<string>('项目起始日期')}</div>}
                   maxLength={500}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   withLabel={true}
                 />
               </FieldDecorator>
@@ -371,9 +407,9 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目终止日期</div>}
+                  label={<div>{t<string>('项目终止日期')}</div>}
                   maxLength={500}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   withLabel
                 />
               </FieldDecorator>
@@ -390,11 +426,39 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               <FieldDecorator
                 required
               >
+                {/* <Input
+                  isFull={false}
+                  label={<div>{t<string>('碳汇标准')}</div>}
+                  maxLength={500}
+                  placeholder={t<string>('请输入')}
+                  withLabel
+                /> */}
+                <Dropdown
+                  defaultValue={CarbonStandsTypes[0].value}
+                  label={<div>{t<string>('碳汇标准')}</div>}
+                  options={CarbonStandsTypes}
+                  placeholder={t<string>('请选择')}
+                  withLabel
+                >
+
+                </Dropdown>
+              </FieldDecorator>
+            </Form.Item>
+            <Form.Item
+              label=''
+              name='methodology'
+              rules={[{
+                validator: requiredValidator
+              }]}
+            >
+              <FieldDecorator
+                required
+              >
                 <Input
                   isFull={false}
-                  label={<div>碳汇标准</div>}
+                  label={<div>{t<string>('采用方法学')}</div>}
                   maxLength={500}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   withLabel
                 />
               </FieldDecorator>
@@ -420,9 +484,9 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
                 /> */}
                 <Dropdown
                   defaultValue={ProjectTypeOptions[0].value}
-                  label={<div>项目类型</div>}
+                  label={<div>{t<string>('项目类型')}</div>}
                   options={ProjectTypeOptions}
-                  placeholder='请选择'
+                  placeholder={t<string>('请选择')}
                   withLabel
                 >
 
@@ -431,23 +495,25 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
             </Form.Item>
             <Form.Item
               label=''
-              name='methodology'
+              name='addtionalRemarks'
               rules={[{
-                validator: requiredValidator
+                validator: urlValidator
               }]}
+              validateFirst
             >
               <FieldDecorator
-                required
               >
                 <Input
                   isFull={false}
-                  label={<div>采用方法学</div>}
+                  label={<div>{t<string>('项目类型补充说明')}</div>}
+                  labelExtra={t<string>('选填')}
                   maxLength={500}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
+
           </Row>
           <Row>
             <Form.Item
@@ -462,10 +528,10 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目其他证书</div>}
-                  labelExtra='资源链接'
+                  label={<div>{t<string>('项目其他证书')}</div>}
+                  labelExtra={t<string>('资源链接')}
                   maxLength={500}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   withLabel
                 />
               </FieldDecorator>
@@ -485,15 +551,15 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>第三方验证</div>}
+                  label={<div>{t<string>('第三方核查机构')}</div>}
                   maxLength={500}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
           </Row>
-          <Row>
+          {/* <Row>
             <Form.Item
               label=''
               name='registry'
@@ -506,15 +572,15 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>注册处</div>}
+                  label={<div>{t<string>('注册处')}</div>}
                   maxLength={500}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
-          </Row>
-          <Row>
+          </Row> */}
+          {/* <Row>
             <Form.Item
               label=''
               name='registryId'
@@ -527,9 +593,9 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>注册处ID</div>}
+                  label={<div>{t<string>('注册处ID')}</div>}
                   maxLength={500}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   withLabel={true}
                 />
               </FieldDecorator>
@@ -543,14 +609,14 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>状态</div>}
+                  label={<div>{t<string>('状态')}</div>}
                   maxLength={500}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
-          </Row>
+          </Row> */}
           <Row>
             <Form.Item
               label=''
@@ -564,15 +630,13 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目GPS位置</div>}
+                  label={<div>{t<string>('项目GPS位置')}</div>}
                   maxLength={500}
-                  placeholder='请输入GPS坐标,如 132.2,123.1'
+                  placeholder={t<string>('请输入GPS坐标,如 132.2,123.1')}
                   withLabel={true}
                 />
               </FieldDecorator>
             </Form.Item>
-          </Row>
-          <Row>
             <Form.Item
               label=''
               name='country'
@@ -588,24 +652,17 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
 
                 <Dropdown
                   // defaultValue={CountriesOptions[0].value}
-                  label={<div>所在国家</div>}
+                  label={<div>{t<string>('所在国家')}</div>}
                   onSearch={(options: Country[], query: string): Country[] => {
                     return options.filter((v: Country): boolean => v.text.indexOf(query) > -1);
                   } }
                   options={CountriesOptions}
-                  placeholder='请选择所在国家'
+                  placeholder={t<string>('请选择所在国家')}
                   searchInput={{
                     autoFocus: false
                   }}
                   withLabel
                 />
-                {/* <Input
-                  isFull={false}
-                  label={<div>国家</div>}
-                  maxLength={500}
-                  placeholder='请输入'
-                  withLabel={true}
-                /> */}
               </FieldDecorator>
             </Form.Item>
           </Row>
@@ -622,7 +679,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>州/省</div>}
+                  label={<div>{t<string>('项目所在 州/省')}</div>}
                   maxLength={500}
                   placeholder='请输入'
                   withLabel={true}
@@ -641,9 +698,9 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>城市</div>}
+                  label={<div>{t<string>('项目所在城市(市/县)')}</div>}
                   maxLength={500}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   withLabel
                 />
               </FieldDecorator>
@@ -665,34 +722,13 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目网站</div>}
+                  label={<div>{t<string>('项目网站')}</div>}
                   maxLength={500}
-                  placeholder='请输入https:// 开头的链接'
+                  placeholder={t<string>('请输入https:// 开头的链接')}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
-            <Form.Item
-              label=''
-              name='projectInformationUrl'
-              rules={[{
-                validator: urlValidator
-              }]}
-              validateFirst
-            >
-              <FieldDecorator
-              >
-                <Input
-                  isFull={false}
-                  label={<div>项目资料链接</div>}
-                  maxLength={500}
-                  placeholder='请输入https:// 开头的链接'
-                  withLabel
-                />
-              </FieldDecorator>
-            </Form.Item>
-          </Row>
-          <Row>
             <Form.Item
               label=''
               name='projectDoc'
@@ -708,9 +744,31 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目报告</div>}
+                  label={<div>{t<string>('项目报告')}</div>}
                   maxLength={500}
-                  placeholder='请输入https:// 开头的链接'
+                  placeholder={t<string>('请输入https:// 开头的链接')}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item>
+
+          </Row>
+          <Row>
+            <Form.Item
+              label=''
+              name='projectInformationUrl'
+              rules={[{
+                validator: urlValidator
+              }]}
+              validateFirst
+            >
+              <FieldDecorator
+              >
+                <Input
+                  isFull={false}
+                  label={<div>{t<string>('项目资料链接')}</div>}
+                  maxLength={500}
+                  placeholder={t<string>('请输入https:// 开头的链接')}
                   withLabel
                 />
               </FieldDecorator>
@@ -728,9 +786,9 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>项目照片</div>}
+                  label={<div>{t<string>('项目照片')}</div>}
                   maxLength={500}
-                  placeholder='请输入https:// 开头的链接'
+                  placeholder={t<string>('请输入https:// 开头的链接')}
                   withLabel
                 />
               </FieldDecorator>
@@ -745,7 +803,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
               >
                 <TextArea
                   isFull={false}
-                  label={<div>描述</div>}
+                  label={<div>{t<string>('项目介绍')}</div>}
                   maxLength={500}
                   rows={3}
                   withLabel
@@ -765,7 +823,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
           </div> */}
           <div>
             <Checkbox
-              label='我同意遵守TOS协议内容'
+              label={t<string>('我同意遵守TOS协议内容')}
               onChange={(registerPro: boolean) => setProtocalValue({ registerPro })}
               value={protocals.registerPro}
             />
@@ -774,7 +832,7 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
             textAlign: 'center',
             marginTop: '24px'
           }}>
-            <SubmitBtn htmlType='submit'>注册</SubmitBtn>
+            <SubmitBtn htmlType='submit'>{t<string>('注册')}</SubmitBtn>
           </div>
         </Panel>
       </div>

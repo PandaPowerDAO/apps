@@ -22,6 +22,7 @@ import Header from '../components/header';
 
 import { submitAsset, queryProjectsList } from '@eco/eco-utils/service';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
+import { useTranslation } from '@eco/eco-utils/translate';
 
 import { notAllprotocalChecked,
   requiredValidator,
@@ -53,18 +54,19 @@ interface Project {
 
 function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
   const [form] = Form.useForm();
+  const { t } = useTranslation('page-eco-assets');
   const [projects, setProjects] = useState<Project[]>([
     {
-      text: '请选择碳汇项目',
+      text: t<string>('请选择碳汇项目'),
       value: '_empty_',
-      symbol: '请选择碳汇项目',
+      symbol: t<string>('请选择碳汇项目'),
       projectId: '_empty_'
     }
   ]);
 
   const [ecoAccount] = useECOAccount();
 
-  console.log('ecoAccount', ecoAccount);
+  // console.log('ecoAccount', ecoAccount);
 
   const [protocals, setProtocals] = useState<ProtocalProps>({
     // costPro: false,
@@ -147,10 +149,10 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
   }, []);
 
   const onFinish = (values: FormProps): void => {
-    console.log('ecoAccount', ecoAccount);
+    // console.log('ecoAccount', ecoAccount);
 
     if (notAllprotocalChecked(protocals)) {
-      message.error('请先同意协议内容');
+      message.error(t<string>('请先同意协议内容'));
 
       return;
     }
@@ -189,16 +191,28 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
       name='transfer-form'
       onFinish={onFinish}>
       <div className={className}>
-        <Header title='上链碳汇资产' />
-        <Panel>
-          <p>完成碳汇项目注册后，已签发后的碳汇可以申请上链至ECO2 Ledger，请将要上链的碳汇资产的信息完整填入下方栏位，请注意输入信息与数量必须与汇入ECO2 Ledger的托管账户之碳汇完全吻合，此操作完成后，资产审查委员会对碳汇资产的信息与托管账户中的碳汇资产进行审核，请注意碳汇资产的数量、年份与相关信息，必须完全吻合，才可完成碳汇资产上链的操作。资产审查委员会审核完成后，您将可以在您的ECO2 Ledger碳钱包中看到所申请的碳汇资产。</p>
-          <p>    1. 完成资料注册资料填写后，请于三日内将同一笔碳汇资产汇入ECO2 Ledger之托管账户，</p>
-          <p>        VCS (Verified Carbon Standard)：</p>
-          <p>                GS (Gold Standard)：</p>
-          <p>    2. 如有任何信息与汇入托管账户之碳汇资产不一致，申请上链将会失败，申请费用将不退回，已汇入托管账户之碳汇资产，将于七个工作日内退回至原账户。</p>
+        <Header title={t<string>('上链碳汇资产')} />
+        <Panel title={t<string>('说明:')}>
+          <p>{t<string>('ECO2 Ledger的碳汇資產上链，不同年份的碳汇资产分开操作。为保证碳汇量的真实性和避免双重计算，上链的碳汇需要完成链下签发，并汇入ECO2 Ledger托管账户 。')}</p>
+          <br />
+          <p>{t<string>('1. 将该年份的碳汇转入至ECO2 Ledger的托管碳汇账户里。')}</p>
+          <p style={{ textIndent: '1em ' }}>{t<string>('您的碳汇资产如果是VCS标准，请汇至：Beijing Qianyuhui International Environmental Investment Co., Ltd')}</p>
+          <p style={{ textIndent: '1em ' }}>{t<string>('如果是Gold Standard 标准，请汇至：Beijing Qianyuhui International Environmental Investment Co., Ltd（1069079）')}</p>
+          <p style={{ textIndent: '1em ' }}>{t<string>('其他标准暂时无法上链，我们将陆续开通。')}</p>
+          <p>{t<string>('2. 依照前一步骤填写的碳汇资产，填写上链碳汇的年份，操作完成后请将“碳汇转入凭据”以电子档方式留存。')}</p>
+          <p>{t<string>('3. 于下方填写相关信息。')}</p>
+          <p>{t<string>('4. 提交资料后，ECO2 Ledger资产审查委员将会对您填写的资料进行审核。')}</p>
+          <p>{t<string>('5. 审核成功后，您的钱包中将出现此笔碳汇资产。')}</p>
+          <br/>
+          <p>{t<string>('备注：')}</p>
+          <p>{t<string>('1. 提交碳汇资产上链，一次仅能提交一个年份的碳汇资产。')}</p>
+          <p>{t<string>('2. 若在碳汇项目中没看到您的碳汇项目，请至「新增碳汇项目」。')}</p>
+          <p>{t<string>('3. 资产审查委员会一般会在7个工作日内完成审核。')}</p>
+          <p>{t<string>('4. 若审核不通过，已汇到托管账户的碳汇，将在7个工作日内退回到原账户。')}</p>
+          <p>{t<string>('5. 上链后的碳汇资产，如要申请下链，可在「我链上的资产」中申请。')}</p>
         </Panel>
         <Panel
-          title='完善信息'
+          title={t<string>('完善信息')}
         >
           <Row>
             <Form.Item
@@ -214,35 +228,34 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Dropdown
                   // onChange={(assetsType) => setFieldsValue(assetsType)}
-                  label={<div>碳汇项目</div>}
+                  label={<div>{t<string>('碳汇项目')}</div>}
                   options={projects}
-                  placeholder='请选择'
+                  placeholder={t<string>('请选择')}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
           </Row>
           <Row>
-            {/* <Form.Item
+            <Form.Item
               label=' '
               name='symbol'
-              rules={[{
-                validator: requiredValidator
-              }]}>
+
+            >
               <FieldDecorator
                 required
               >
                 <Input
+                  isDisabled
                   isFull={false}
-                  label={<div>资产名称</div>}
-                  maxLength={500}
+                  label={<div>资产代码</div>}
                   // onChange={(name: string) => setFieldsValue({ name })}
-                  placeholder='仅支持输入最多6位大写字母'
+                  placeholder='请选择碳汇项目'
                   // value={form.name}
                   withLabel
                 />
               </FieldDecorator>
-            </Form.Item> */}
+            </Form.Item>
             <Form.Item
               label=' '
               name='vintage'
@@ -258,10 +271,10 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>资产年限</div>}
+                  label={<div>{t<string>('资产年份')}</div>}
                   maxLength={500}
                   // onChange={(vintage: string) => setFieldsValue({ vintage })}
-                  placeholder='请输入您需要发行的碳汇年限: 2020'
+                  placeholder={t<string>('请输入您需要发行的碳汇年限: 2020')}
                   // value={form.vintage}
                   withLabel
                 />
@@ -284,16 +297,163 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>碳汇发行数量</div>}
-                  labelExtra={<div>吨</div>}
+                  label={<div>{t<string>('资产上限')}</div>}
+                  labelExtra={<div>{t<string>('吨')}</div>}
                   maxLength={500}
                   // onChange={(initialSupply: string) => setFieldsValue({ initialSupply })}
-                  placeholder='请输入您签发的数量'
+                  placeholder={t<string>('请输入该年份内的碳汇总量')}
                   // value={form.initialSupply}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
+            <Form.Item
+              label=' '
+              name='upChainNum'
+              rules={[{
+                validator: requiredValidator
+              }, {
+                validator: numberValidator
+              }]}
+              validateFirst
+            >
+              <FieldDecorator
+                required
+              >
+                <Input
+                  isFull={false}
+                  label={<div>{t<string>('碳汇资产上链数量')}</div>}
+                  labelExtra={<div>{t<string>('吨')}</div>}
+                  maxLength={500}
+                  // onChange={(initialSupply: string) => setFieldsValue({ initialSupply })}
+                  placeholder={t<string>('请输入本次要上链的碳汇数量')}
+                  // value={form.initialSupply}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item>
+
+          </Row>
+          <Row>
+            <Form.Item
+              label=' '
+              name='verifier'
+              rules={[{
+                validator: requiredValidator
+              }]}>
+              <FieldDecorator
+                required
+              >
+                <Input
+                  isFull={false}
+                  label={<div>{t<string>('第三方核查机构')}</div>}
+                  maxLength={500}
+                  // onChange={(verifier: string) => setFieldsValue({ verifier })}
+                  placeholder={t<string>('请输入')}
+                  // value={form.verifier}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item>
+          </Row>
+          <Row>
+            {/* <Form.Item
+              label=' '
+              name='projectDoc'
+              rules={[{
+                validator: requiredValidator
+              }, {
+                validator: urlValidator
+              }]}
+              validateFirst
+            >
+              <FieldDecorator
+                required
+              >
+                <Input
+                  isFull={false}
+                  label={<div>{t<string>('签发报告')}</div>}
+                  labelExtra={t<string>('资源链接')}
+                  maxLength={500}
+                  // onChange={(projectDoc: string) => setFieldsValue({ projectDoc })}
+                  placeholder={t<string>('请输入')}
+                  // value={form.projectDoc}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item> */}
+            <Form.Item
+              label=' '
+              name='checkDoc'
+              rules={[{
+                validator: requiredValidator
+              }, {
+                validator: urlValidator
+              }]}
+              validateFirst
+            >
+              <FieldDecorator
+                required
+              >
+                <Input
+                  isFull={false}
+                  label={<div>{t<string>('核查报告')}</div>}
+                  labelExtra={t<string>('资源链接')}
+                  maxLength={500}
+                  // onChange={(projectDoc: string) => setFieldsValue({ projectDoc })}
+                  placeholder={t<string>('请输入')}
+                  // value={form.projectDoc}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item>
+            <Form.Item
+              label=' '
+              name='extraDoc'
+              rules={[{
+                validator: urlValidator
+              }]}
+              validateFirst
+            >
+              <FieldDecorator
+              >
+                <Input
+                  isFull={false}
+                  label={<div>{t<string>('其他报告')}</div>}
+                  labelExtra={t<string>('资源链接')}
+                  maxLength={500}
+                  // onChange={(extraCertificate: string) => setFieldsValue({ extraCertificate })}
+                  placeholder={t<string>('请输入')}
+                  // value={form.extraCertificate}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item>
+            {/* <Form.Item
+              label=' '
+              name='extraCertificate'
+              rules={[{
+                validator: urlValidator
+              }]}
+              validateFirst
+            >
+              <FieldDecorator
+              >
+                <Input
+                  isFull={false}
+                  label={<div>{t<string>('其他报告')}</div>}
+                  labelExtra={t<string>('资源链接')}
+                  maxLength={500}
+                  // onChange={(extraCertificate: string) => setFieldsValue({ extraCertificate })}
+                  placeholder={t<string>('请输入')}
+                  // value={form.extraCertificate}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item> */}
+          </Row>
+
+          <Row>
             <Form.Item
               label=' '
               name='issuanceDate'
@@ -309,17 +469,17 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>碳汇签发日期</div>}
+                  label={<div>{t<string>('碳汇签发日期')}</div>}
                   maxLength={500}
                   // onChange={(issuanceDate: string) => setFieldsValue({ issuanceDate })}
-                  placeholder='日期格式如 2020-10-10'
+                  placeholder={t<string>('日期格式如 2020-10-10')}
                   // value={form.issuanceDate}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
           </Row>
-          <Row>
+          {/* <Row>
             <Form.Item
               label=' '
               name='startDate'
@@ -335,10 +495,10 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>碳汇起始日期</div>}
+                  label={<div>{t<string>('碳汇起始日期')}</div>}
                   maxLength={500}
                   // onChange={(startDate: string) => setFieldsValue({ startDate })}
-                  placeholder='日期格式如 2020-10-10'
+                  placeholder={t<string>('日期格式如 2020-10-10')}
                   // value={form.startDate}
                   withLabel
                 />
@@ -359,10 +519,10 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>碳汇终止日期</div>}
+                  label={<div>{t<string>('碳汇终止日期')}</div>}
                   maxLength={500}
                   // onChange={(endDate: string) => setFieldsValue({ endDate })}
-                  placeholder='日期格式如 2020-10-10'
+                  placeholder={t<string>('日期格式如 2020-10-10')}
                   // value={form.endDate}
                   withLabel
                 />
@@ -370,26 +530,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
             </Form.Item>
           </Row>
           <Row>
-            <Form.Item
-              label=' '
-              name='verifier'
-              rules={[{
-                validator: requiredValidator
-              }]}>
-              <FieldDecorator
-                required
-              >
-                <Input
-                  isFull={false}
-                  label={<div>第三方核查者</div>}
-                  maxLength={500}
-                  // onChange={(verifier: string) => setFieldsValue({ verifier })}
-                  placeholder='请输入'
-                  // value={form.verifier}
-                  withLabel
-                />
-              </FieldDecorator>
-            </Form.Item>
+
             <Form.Item
               label=' '
               name='verifyDate'
@@ -405,7 +546,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>第三方核时间</div>}
+                  label={<div>{t<string>('第三方核时间')}</div>}
                   maxLength={500}
                   // onChange={(verifyDate: string) => setFieldsValue({ verifyDate })}
                   placeholder='请选择'
@@ -428,65 +569,18 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>碳汇签发次数</div>}
+                  label={<div>{t<string>('碳汇签发次数')}</div>}
                   maxLength={500}
                   // onChange={(issuanceNumbers: string) => setFieldsValue({ issuanceNumbers })}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
                   // value={form.issuanceNumbers}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
           </Row>
-          <Row>
-            <Form.Item
-              label=' '
-              name='projectDoc'
-              rules={[{
-                validator: requiredValidator
-              }, {
-                validator: urlValidator
-              }]}
-              validateFirst
-            >
-              <FieldDecorator
-                required
-              >
-                <Input
-                  isFull={false}
-                  label={<div>签发报告</div>}
-                  labelExtra='资源链接'
-                  maxLength={500}
-                  // onChange={(projectDoc: string) => setFieldsValue({ projectDoc })}
-                  placeholder='请输入'
-                  // value={form.projectDoc}
-                  withLabel
-                />
-              </FieldDecorator>
-            </Form.Item>
-            <Form.Item
-              label=' '
-              name='extraCertificate'
-              rules={[{
-                validator: urlValidator
-              }]}
-              validateFirst
-            >
-              <FieldDecorator
-              >
-                <Input
-                  isFull={false}
-                  label={<div>额外签发证书</div>}
-                  labelExtra='资源链接'
-                  maxLength={500}
-                  // onChange={(extraCertificate: string) => setFieldsValue({ extraCertificate })}
-                  placeholder='请输入'
-                  // value={form.extraCertificate}
-                  withLabel
-                />
-              </FieldDecorator>
-            </Form.Item>
-          </Row>
+           */}
+
           <Row>
             <Form.Item
               label=' '
@@ -503,11 +597,36 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>碳汇转入证明</div>}
-                  labelExtra='资源链接'
+                  label={<div>{t<string>('碳汇转入证明')}</div>}
+                  labelExtra={t<string>('请输入该碳汇资料在APX/VCS 转入担保账户的证明材料链接')}
                   maxLength={500}
                   // onChange={(proof: string) => setFieldsValue({ proof })}
-                  placeholder='请输入'
+                  placeholder={t<string>('请输入')}
+                  // value={form.proof}
+                  withLabel
+                />
+              </FieldDecorator>
+            </Form.Item>
+            <Form.Item
+              label=' '
+              name='proofAccountName'
+              rules={[{
+                validator: requiredValidator
+              }, {
+                validator: urlValidator
+              }]}
+              validateFirst
+            >
+              <FieldDecorator
+                required
+              >
+                <Input
+                  isFull={false}
+                  label={<div>{t<string>('碳汇转出账户名称')}</div>}
+                  labelExtra={t<string>('请输入您在VCS/GS 的碳汇账户名称')}
+                  maxLength={500}
+                  // onChange={(proof: string) => setFieldsValue({ proof })}
+                  placeholder={t<string>('请输入')}
                   // value={form.proof}
                   withLabel
                 />
@@ -523,8 +642,8 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
               >
                 <TextArea
                   isFull={false}
-                  label={<div>描述</div>}
-                  labelExtra={<div>最多500字</div>}
+                  label={<div>{t<string>('描述')}</div>}
+                  labelExtra={<div>{t<string>('最多500字')}</div>}
                   maxLength={500}
                   // onChange={(remark: string) => setFieldsValue({ remark })}
                   rows={3}
@@ -546,7 +665,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
           </div> */}
           <div>
             <Checkbox
-              label='我同意遵守TOS协议内容'
+              label={t<string>('我同意遵守TOS协议内容')}
               onChange={(registerPro: boolean) => setProtocalValue({ registerPro })}
               value={protocals.registerPro}
             />
@@ -555,7 +674,7 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
             textAlign: 'center',
             marginTop: '24px'
           }}>
-            <SubmitBtn htmlType='submit'>注册</SubmitBtn>
+            <SubmitBtn htmlType='submit'>{t<string>('注册')}</SubmitBtn>
           </div>
         </Panel>
       </div>

@@ -1,8 +1,8 @@
 // Copyright 2017-2020 @polkadot/app-democracy authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useCallback } from 'react';
-import { Modal, Input, Button } from '@polkadot/react-components';
+import React, { useCallback, useState } from 'react';
+import { Modal, Input, Button, Dropdown } from '@polkadot/react-components';
 import { Form } from 'antd';
 import { useApi } from '@polkadot/react-hooks';
 
@@ -14,6 +14,8 @@ import { OrderDetailType, OrderItem } from '../types';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import FieldDecorator from '@eco/eco-components/FormComponents';
+import Decimal from 'decimal.js';
+import { useTranslation } from '@eco/eco-utils/translate';
 
 interface Props extends ModalProps {
   onClose: () => void,
@@ -35,15 +37,31 @@ const FormWrapper = styled.div`
   label {
     padding-left: 1.45rem;
   }
+  .labelExtra{
+    right: 6.75rem!important;
+  }
 }
 `;
 
 function CreateModal (props: Props): React.ReactElement<Props> {
+  const { t } = useTranslation('page-eco-trade');
+
+  const unitOptions = [{
+    text: t('克'),
+    value: 0
+  }, {
+    text: t('千克'),
+    value: 3
+  }, {
+    text: t('吨'),
+    value: 6
+  }];
   const {
     onClose,
     open,
     orderDetail
   } = props;
+  const [unit, updateUnit] = useState<number>(unitOptions[0].value);
   const [form] = Form.useForm();
   const { api } = useApi();
   const [ecoAccount] = useECOAccount();
@@ -68,12 +86,18 @@ function CreateModal (props: Props): React.ReactElement<Props> {
   //   await Promise.resolve(undefined);
   // };
 
+  const handleClose = () => {
+    form.resetFields();
+    onClose();
+  };
+
   const confirmMakeOrder = useCallback((orderItem: OrderItem) => {
     async function _takeOrder () {
       try {
         const formValues = await form.validateFields();
+        const _amount = new Decimal(formValues.amount).mul(new Decimal(10).pow(unit)).toString();
 
-        await takeOrder(api, ecoAccount, orderItem.orderId, formValues.amount);
+        await takeOrder(api, ecoAccount, orderItem.orderId, _amount);
         onClose();
         // message.info('发送成功');
       } catch (e) {
@@ -84,11 +108,25 @@ function CreateModal (props: Props): React.ReactElement<Props> {
     }
 
     _takeOrder();
+  }, [unit]);
+
+  const handleUnitChange = useCallback((_unit) => {
+    updateUnit(_unit);
   }, []);
 
   const amountValidator = async (rule: any, value: string): Promise<void> => {
-    if (!orderDetail || !orderDetail.left_amount || +value > +orderDetail.left_amount) {
-      throw new Error('订单剩余数量不足，请刷新');
+    const _realValue = new Decimal(value || 0).mul(new Decimal(10).pow(unit || 0)).toString();
+
+    if (!(new RegExp(`^(0|[1-9]\\d*)(\\.\\d{0,${unit}})?$`).test(value))) {
+      throw new Error(unit > 0 ? t('最多{{unit}}小数', { replace: { unit } }) : t('请输入整数'));
+    }
+
+    if (!orderDetail || !orderDetail.left_amount || +_realValue > +orderDetail.left_amount) {
+      throw new Error(t('订单剩余数量不足，请刷新'));
+    }
+
+    if (!(+_realValue > 0)) {
+      throw new Error(t('必须大于0'));
     }
 
     return Promise.resolve(undefined);
@@ -96,10 +134,10 @@ function CreateModal (props: Props): React.ReactElement<Props> {
 
   return (
     <Modal
-      onClose={onClose}
+      onClose={handleClose}
       open={open}
     >
-      <Modal.Header>下单</Modal.Header>
+      <Modal.Header>{t('下单')}</Modal.Header>
       <Modal.Content>
         <FormWrapper>
           <Form
@@ -107,7 +145,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
             name='take-order-form'
           >
             <Form.Item
-              label='资产'
+              label={t('资产')}
             >
               <FieldDecorator>
                 <Input
@@ -122,35 +160,45 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               </span>
             </Form.Item> */}
             <Form.Item
-              label='数量'
+              label={t('数量')}
               name='amount'
               rules={[{
                 validator: requiredValidator
               }, {
                 validator: amountValidator
-              }]}>
+              }]}
+              validateFirst
+            >
               <FieldDecorator
                 required
               >
                 <Input
                   isFull={false}
-                  label={<div>数量</div>}
-                  labelExtra={<div>剩余数量:{resolveAmountNumber(((orderDetail || { left_amount: 0 })).left_amount as number || 0)}</div>}
+                  label={<div>{t('数量')}</div>}
+                  labelExtra={<div>{t('剩余数量')}:{resolveAmountNumber(((orderDetail || { left_amount: 0 })).left_amount as number || 0)}</div>}
                   maxLength={500}
                   // onChange={(name: string) => setFieldsValue({ name })}
-                  placeholder='请输入数量'
+                  placeholder={t('请输入数量')}
                   // value={form.name}
                   withLabel
-                />
+                >
+                  <Dropdown
+                    defaultValue={unit}
+                    dropdownClassName='ui--SiDropdown'
+                    isButton
+                    onChange={handleUnitChange}
+                    options={unitOptions}
+                  />
+                </Input>
               </FieldDecorator>
             </Form.Item>
           </Form>
         </FormWrapper>
       </Modal.Content>
-      <Modal.Actions onCancel={onClose}>
+      <Modal.Actions onCancel={handleClose}>
         <Button
           icon='trash'
-          label={'交易'}
+          label={t('交易')}
           onClick={() => confirmMakeOrder(orderDetail as unknown as OrderItem)}
         />
       </Modal.Actions>

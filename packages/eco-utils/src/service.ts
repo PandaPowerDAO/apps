@@ -16,7 +16,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 // import { SubmittableExtrinsic } from '@polkadot/api/types';
 import axios, { AxiosResponse } from 'axios';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { EE, fromHex } from '@eco/eco-utils/utils';
+import { EE, fromHex, getConnectOrigin } from '@eco/eco-utils/utils';
 
 const typeRegistry = new TypeRegistry();
 // let gApi: ApiPromise;
@@ -113,10 +113,12 @@ export async function closeProposal (api: ApiPromise, sender: KeyringPair | stri
   await submitTx('closeProposal', tx, sender);
 }
 
-export async function queryCarbonCommitteeMembers (api: ApiPromise):Promise<void> {
+export async function queryCarbonCommitteeMembers (api: ApiPromise):Promise<any> {
   const members = await api.query.carbonCommittee.members();
 
   console.log('carbonCommittee members:', members.toJSON());
+
+  return members.toJSON();
 }
 
 // export async function queryProposalVoting (api: ApiPromise, id: string):Promise<void> {
@@ -359,8 +361,10 @@ export async function queryBurn (api: ApiPromise, burnId: string) {
   };
 }
 
+// 用当前的域名
+const apiHost = getConnectOrigin();
 const axiosInstance = axios.create({
-  baseURL: 'http://49.233.3.48:3000/'
+  baseURL: `http://${apiHost}:3000/`
 });
 
 // 添加响应拦截器
@@ -392,6 +396,7 @@ interface AssetsListParams {
   limit: number,
   offset: number,
   owner?: string,
+  approved?: string | number,
 }
 
 interface CustomAxoisResponse {
@@ -402,13 +407,15 @@ interface CustomAxoisResponse {
 export async function queryAssetsList ({
   limit,
   offset,
-  owner
+  owner,
+  approved = ''
 }: AssetsListParams): Promise<CustomAxoisResponse> {
   return axiosInstance.get('/carbon_assets', {
     params: {
       limit,
       offset,
-      owner
+      owner,
+      approved
     }
   });
 }

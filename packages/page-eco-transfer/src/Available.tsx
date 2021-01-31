@@ -16,6 +16,8 @@ import { Asset } from './types';
 import BN from 'bn.js';
 import { beautifulNumber, resolveAmountNumber, unitToEco } from '@eco/eco-utils/utils';
 import Decimal from 'decimal.js';
+import { genTranslation } from '@eco/eco-utils/translate';
+const useAccountTranslation = genTranslation('app-accounts');
 
 interface Props {
   children?: React.ReactNode;
@@ -28,6 +30,7 @@ interface Props {
 
 function AvailableDisplay ({ children, className = '', label, params, asset, address }: Props): React.ReactElement<Props> {
   const { api } = useApi();
+  const { t } = useAccountTranslation();
 
   // const [balance, updateBalance] = useState<DeriveBalancesAll | string>('');
   // let allBalances;
@@ -60,7 +63,7 @@ function AvailableDisplay ({ children, className = '', label, params, asset, add
 
   return (
     <div>
-      可转账的 {type === 'native' ? beautifulNumber(_balance.toString()) : resolveAmountNumber(_balance.toString() || '0')}
+      {t<string>('可转账的')} {type === 'native' ? beautifulNumber(_balance.toString()) : resolveAmountNumber(_balance.toString() || '0')}
     </div>
   );
 

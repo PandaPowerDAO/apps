@@ -12,6 +12,7 @@ import { formatDate } from '@eco/eco-utils/utils';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { debounce } from 'lodash';
+import { useTranslation } from '@eco/eco-utils/translate';
 
 interface HanleAction {
   (orderItem: OrderItem): Promise<void> | void
@@ -48,12 +49,14 @@ interface QueryDetailFn {
 // const noop = (e: OrderItem) => Promise.resolve(undefined);
 
 function OrderList (props: Props): React.ReactElement<Props> {
+  const { t } = useTranslation('cmpt-eco-deals');
+
   const header = useMemo(() => [
-    ['地址', 'header'],
-    ['交易ID', 'header'],
-    ['备注', 'header'],
-    ['金额', 'header'],
-    ['时间', 'header']
+    [t<string>('地址'), 'header'],
+    [t<string>('交易ID'), 'header'],
+    [t<string>('备注'), 'header'],
+    [t<string>('金额'), 'header'],
+    [t<string>('时间'), 'header']
 
   ], []);
   const { title, reverse, isMine } = props;
@@ -112,7 +115,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
     async function query () {
       // console.log('ecoAccount -----', ecoAccount);
       const result = await queryOrderDeals({
-        owner: isMine ? (ecoAccount as string || '') : '',
+        owner: isMine ? (ecoAccount || '') : '',
         offset: (offset || 0) as number,
         limit: pagination.pageSize,
         // closed,
@@ -180,7 +183,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
   return (
     <Panel title={title}>
       <Table
-        empty={<div style={{ textAlign: 'center' }}>暂无数据</div>}
+        empty={<div style={{ textAlign: 'center' }}>{t<string>('暂无数据')}</div>}
         footer={
           <tr>
             <td colSpan={100}>

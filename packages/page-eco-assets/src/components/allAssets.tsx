@@ -16,6 +16,7 @@ import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { queryAsset, queryAssetsList, queryProject } from '@eco/eco-utils/service';
 import { formatDate, beautifulNumber, resolveAmountNumber } from '@eco/eco-utils/utils';
 
+import { useTranslation } from '@eco/eco-utils/translate';
 const TableWrapper = styled.div`
 .ui--Table{
   overflow-y: auto;
@@ -97,27 +98,28 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
     pageSize: 10
   });
   const [records, updateRecords] = useState<Record<string, any>[]>([]);
+  const { t } = useTranslation('page-eco-assets');
 
   const { api } = useApi();
   const header = useMemo(() => {
     return [
-      ['资产名称', 'header'],
-      ['资产类型', 'header'],
-      ['签发年限', 'header'],
-      ['资产上限', 'header'],
-      ['已发行总量', 'header'],
-      // ['资产精度', 'header'],
-      // ['发行商', 'header'],
-      ['注册时间', 'header'],
-      ['状态', 'header'],
-      isMine ? ['操作', 'header'] : null
-      // ['操作', 'header']
+      [t<string>('资产名称'), 'header'],
+      [t<string>('资产类型'), 'header'],
+      [t<string>('签发年限'), 'header'],
+      [t<string>('资产上限'), 'header'],
+      [t<string>('已发行总量'), 'header'],
+      // [t<string>('资产精度'), 'header'],
+      // [t<string>('发行商'), 'header'],
+      [t<string>('注册时间'), 'header'],
+      [t<string>('状态'), 'header'],
+      isMine ? [t<string>('操作'), 'header'] : null
+      // [t<string>('操作'), 'header']
 
     ].filter((v) => v);
   }
   , []);
 
-  console.log('ecoAccount', ecoAccount);
+  // console.log('ecoAccount', ecoAccount);
 
   const queryAssetDetail = useCallback((assetItem: AssetItemType): Promise<void> => {
     async function _queryDetail () {
@@ -165,7 +167,8 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
       const result = await queryAssetsList({
         owner: isMine ? ecoAccount : '',
         offset: (offset || 0) as number,
-        limit: pagination.pageSize
+        limit: pagination.pageSize,
+        approved: isMine ? '' : 1
       });
 
       updatePagination((_pagination) => {
@@ -211,10 +214,7 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
     window.location.hash = `#/ecassets/burning?asset=${asset}&assetName=${assetName}`;
   }, []);
 
-  const StatusMap = {
-    1: '流通中',
-    0: '审批中'
-  };
+  const StatusMap = [t<string>('已拒绝'), t<string>('流通中')];
 
   return (
     <div className={className}>
@@ -223,7 +223,7 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
           <div>{title}</div>
           <IconLink href='#/ecassets/register-assets'
             icon='plus'
-            label='碳汇资产上链'></IconLink>
+            label={t<string>('碳汇资产上链')}></IconLink>
         </TitleRow>
       }>
         <TableWrapper>
@@ -235,7 +235,7 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
             }
             `
             }
-            empty={'暂无数据'}
+            empty={t<string>('暂无数据')}
             footer={null}
             header={header}
             remainHeader
@@ -246,7 +246,7 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
               return <tr key={rowIndex}>
                 <td><IconLink href={`#/ecassets/assets-detail?asset=${v.assetId as string}&symbol=${`${v.symbol as string}(${v.vintage as string})`}`}
                   label={`${v.symbol as string}(${v.vintage as string})`}></IconLink></td>
-                <td>{v.type === 'standard' ? '标准资产' : '碳汇资产'}</td>
+                <td>{v.type === 'standard' ? t<string>('标准资产') : t<string>('碳汇资产')}</td>
                 <td>{v.vintage}</td>
                 <td>{resolveAmountNumber((v as DataItem).projectDetail.project.max_supply)}</td>
                 <td>{resolveAmountNumber((v as DataItem).assetDetail.asset.total_supply)}</td>
@@ -254,14 +254,14 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
                 {/* <td>{v.precision || '-'}</td> */}
                 {/* <OwnerTd>{v.owner}</OwnerTd> */}
                 <td>{formatDate(v.timestamp)}</td>
-                <td>{StatusMap[v.approved === 1 ? '1' : '0'] || StatusMap[0]}</td>
+                <td>{StatusMap[v.approved] || StatusMap[0]}</td>
                 <td>
                   {
                     isMine &&
                       v.approved === 1 ? <OperationSpanWrapper>
-                        <OperationSpan onClick={() => goAdditionalPage(v.assetId, assetName)}>增发</OperationSpan>
+                        <OperationSpan onClick={() => goAdditionalPage(v.assetId, assetName)}>{t<string>('增发')}</OperationSpan>
                         <Divider type='vertical' />
-                        <OperationSpan onClick={() => goBurningPage(v.assetId, assetName)}>销毁</OperationSpan>
+                        <OperationSpan onClick={() => goBurningPage(v.assetId, assetName)}>{t<string>('销毁')}</OperationSpan>
                       </OperationSpanWrapper> : '-'
 
                   }

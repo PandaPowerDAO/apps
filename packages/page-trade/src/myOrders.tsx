@@ -10,13 +10,14 @@ import { cancelOrder } from '@eco/eco-utils/service';
 import { useApi } from '@polkadot/react-hooks';
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 // import { message } from 'antd';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 interface Props extends BareProps {
   type?:string,
 }
 
 function MyOrderList (props: Props): React.ReactElement<Props> {
   const [ecoAccount] = useECOAccount();
+  const { t } = useTranslation('page-eco-trade');
   const { api } = useApi();
   const handleAction = useCallback((orderItem: OrderItem): void => {
     async function _cancel () {
@@ -38,7 +39,7 @@ function MyOrderList (props: Props): React.ReactElement<Props> {
       <CmptOrders
         action={<span style={{
           color: 'red'
-        }}>撤单</span>}
+        }}>{t('撤单')}</span>}
         closed={0}
         handleAction={handleAction}
         isMine

@@ -16,6 +16,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 // import { SubmittableExtrinsic } from '@polkadot/api/types';
 import axios, { AxiosResponse } from 'axios';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { getConnectOrigin } from '@eco/eco-utils/utils';
 
 const typeRegistry = new TypeRegistry();
 let gApi: ApiPromise;
@@ -282,8 +283,9 @@ export async function neutralize (api: ApiPromise, sender: KeyringPair | string,
   await submitTx('neutralize', tx, sender);
 }
 
+const host = getConnectOrigin();
 const axiosInstance = axios.create({
-  baseURL: 'http://49.233.3.48:3000/'
+  baseURL: `http://${host}:3000/`
 });
 
 // 添加响应拦截器

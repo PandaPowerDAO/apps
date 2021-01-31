@@ -28,7 +28,7 @@ import ECOAccountProvider, { AccountSelector, AccountUpdator } from '@eco/eco-co
 import styled from 'styled-components';
 import { AccountSelectorWrapper } from '@eco/eco-components/EcoStyledComponents';
 // import { typesSpec } from '@polkadot/apps-config/api';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 import { setGaApi } from '@eco/eco-utils/service';
 
 const ECOAPPWrapper = styled.div`
@@ -75,7 +75,7 @@ const HiddenHeaders = [
 ];
 
 function EcoAssets ({ basePath }: Props): React.ReactElement<Props> {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   const { api } = useApi();
   const { pathname } = useLocation();
 
@@ -103,7 +103,7 @@ function EcoAssets ({ basePath }: Props): React.ReactElement<Props> {
       isRoot: true,
       name: 'overview',
       // text: t<string>('Democracy overview')
-      text: '资产发行'
+      text: t<string>('资产发行')
     },
     // {
     //   isRoot: false,
@@ -122,7 +122,7 @@ function EcoAssets ({ basePath }: Props): React.ReactElement<Props> {
       isRoot: false,
       name: 'myassets',
       // text: t<string>('Democracy overview')
-      text: '我上链的资产'
+      text: t<string>('我上链的资产')
     }
     // {
     //   isRoot: false,

@@ -7,7 +7,7 @@ import { DeriveBalancesAll } from '@polkadot/api-derive/types';
 import BN from 'bn.js';
 
 import styled from 'styled-components';
-import { InputAddress, InputBalance, Modal, Toggle, TxButton, Dropdown } from '@polkadot/react-components';
+import { InputAddress, InputBalance, Modal, Toggle, Input, TxButton, Dropdown, InputNumberPre } from '@polkadot/react-components';
 import { useApi, useCall } from '@polkadot/react-hooks';
 // import { Available } from '@polkadot/react-query';
 import Available from './Available';
@@ -21,6 +21,10 @@ import { reformatAssetName } from '@eco/eco-utils/utils';
 import { Asset } from './types';
 import InputNumber, { TokenUnit } from '@polkadot/react-components/InputNumber';
 import store from 'store';
+
+// import NewInputNumber from './';
+
+window.BN = BN;
 const useAccountTranslation = genTranslation('app-accounts');
 
 interface Props {
@@ -45,7 +49,7 @@ const DefaultECO2Asset = {
 };
 
 const calcAmount = (amount: BN, decimals: number): BN => {
-  return new BN(amount).mul(new BN(10).pow(new BN(8)));
+  return new BN(amount).mul(new BN(10).pow(new BN(0)));
 };
 
 const AmountAfterDecimals = (amount: BN, decimals?: number) => {
@@ -177,17 +181,21 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
       };
     } else if (curAsset.type === 'carbon') {
       // carbonAssets.transfer(assetId, to, amount)
+      // const _deamount = AmountAfterDecimals(amount as BN, curAsset.decimals as number);
+
+      // const cc =
+
       return {
         apiStr: 'carbonAssets.transfer',
         // params: [curAsset.assetId, recipientId, calcAmount(amount as BN, curAsset.decimals as number)]
-        params: [curAsset.assetId, recipientId, AmountAfterDecimals(amount as BN, curAsset.decimals as number).mul(new BN(10).pow(new BN(curSi)))]
+        params: [curAsset.assetId, recipientId, AmountAfterDecimals(amount as BN, curAsset.decimals as number).div(new BN(10).pow(new BN(6 - curSi)))]
       };
     } else {
       // standardAssets.transfer(moneyId, to, amount)
       return {
         apiStr: 'carbonAssets.transfer',
         // params: [curAsset.moneyId as string || '', recipientId, calcAmount(amount as BN, curAsset.decimals as number)]
-        params: [curAsset.moneyId as string || '', recipientId, AmountAfterDecimals(amount as BN, curAsset.decimals as number).mul(new BN(10).pow(new BN(curSi)))]
+        params: [curAsset.moneyId as string || '', recipientId, AmountAfterDecimals(amount as BN, curAsset.decimals as number).mul(new BN(10).pow(new BN(curSi - 6)))]
       };
     }
   }, [curAsset, isProtected, api, canToggleAll, isAll, amount, recipientId, maxTransfer, curSi]);
@@ -201,19 +209,19 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
     }
 
     return [{
-      text: '克',
+      text: t<string>('克'),
       value: 0
     }, {
-      text: '千克',
+      text: t<string>('千克'),
       value: 3
     }, {
-      text: '吨',
+      text: t<string>('吨'),
       value: 6
     }];
   }, [curAsset]);
 
   const setSi = useCallback((nextSi) => {
-    // console.log(nextSi);
+    console.log(nextSi);
     updateCurSi(nextSi);
   }, []);
 
@@ -246,7 +254,7 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
           <Modal.Columns>
             <Modal.Column>
               <InputAddress
-                defaultValue={ecoAccount || propSenderId}
+                defaultValue={ecoAccount || propSenderId || undefined}
                 help={t<string>('The account you will send funds from.')}
                 isDisabled
                 label={t<string>('send from account')}
@@ -273,13 +281,14 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
                 help={t<string>('Select a contact or paste the address you want to send funds to.')}
                 isDisabled={!!propRecipientId}
                 label={t<string>('send to address')}
+                onChange={setRecipientId}
                 // labelExtra={
                 //   <Available
                 //     label={transferrable}
                 //     params={recipientId}
                 //   />
                 // }
-                onChange={setRecipientId}
+                renderEvenNoOpts
                 type='allPlus'
               />
             </Modal.Column>
@@ -303,8 +312,9 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
                 )
                 : (
                   <>
-                    <InputBalance
+                    <InputNumberPre
                       autoFocus
+                      bitLength={256}
                       css={`
                         & .ui--Input {
                           & > input {
@@ -332,12 +342,15 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
                         }
                       `}
                       help={t<string>('Type the amount you want to transfer. Note that you can select the unit on the right e.g sending 1 milli is equivalent to sending 0.001.')}
+                      isDecimal
                       isError={!hasAvailable}
                       isSi={false}
                       isZeroable
                       key={curAsset.assetId}
                       label={t<string>('amount')}
+                      npower={curAsset.assetId === '0' ? 8 : 6}
                       onChange={setAmount}
+                      precision={curAsset.assetId === '0' ? 8 : curSi}
                       // onChange={(v, vv) => { console.log('=====', v, vv); }}
                     >
                       <Dropdown
@@ -348,7 +361,7 @@ function Transfer ({ className = '', onClose, recipientId: propRecipientId, send
                         options={SIOptions}
                       />
 
-                    </InputBalance>
+                    </InputNumberPre>
                     {
                       curAsset?.type === 'native__' ? <InputBalance
                         defaultValue={api.consts.balances.existentialDeposit}

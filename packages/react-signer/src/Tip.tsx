@@ -3,15 +3,19 @@
 
 import BN from 'bn.js';
 import React, { useEffect, useState } from 'react';
-import { InputBalance, Modal, Toggle } from '@polkadot/react-components';
+import { InputBalance, Modal, Toggle, Dropdown } from '@polkadot/react-components';
 import { BN_ZERO } from '@polkadot/util';
-
+import styled from 'styled-components';
 import { useTranslation } from './translate';
 
 interface Props {
   className?: string;
   onChange: (tip: BN) => void;
 }
+
+const DropdownWrap = styled.div`
+
+`;
 
 function Tip ({ className, onChange }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
@@ -38,11 +42,30 @@ function Tip ({ className, onChange }: Props): React.ReactElement<Props> | null 
         {showTip && (
           <InputBalance
             help={t<string>('Add a tip to this extrinsic, paying the block author for greater priority')}
-            // isSi={false}
+            isSi={false}
             isZeroable
             label={t<string>('Tip (optional)')}
             onChange={setTip}
-          />
+          >
+            <DropdownWrap>
+              <Dropdown css={`
+
+                padding-left:0!important;
+                .dropdown.selection{
+                  margin: 0!important;
+                  display: flex;
+                  min-height: 3.71428571em!important;
+                  height: 3.71428571em!important;
+                  padding: .78571429em 2.1em .78571429em 1em!important;
+                  align-items: center;
+                  color: #4e4e4e !important;
+                  font-weight: 600;
+                }
+              `}
+              defaultValue='ECO2'
+              options={[{ text: 'ECO2', value: 'ECO2' }]}/>
+            </DropdownWrap>
+          </InputBalance>
         )}
       </Modal.Column>
       <Modal.Column>

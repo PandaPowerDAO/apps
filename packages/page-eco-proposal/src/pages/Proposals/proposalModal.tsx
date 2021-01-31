@@ -13,11 +13,12 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { Button, Extrinsic, InputAddress, InputNumber, Modal, TxButton, Dropdown } from '@polkadot/react-components';
 import { useApi, useToggle } from '@polkadot/react-hooks';
 import { BN_ZERO } from '@polkadot/util';
+import { useHistory } from 'react-router-dom';
 
-import { useTranslation } from '../translate';
+// import { useTranslation } from '../translate';
 import { queryCarbonProposals, proposeIssue, proposeAsset, proposeBurn, proposeProject } from '@eco/eco-utils/service';
 // import { getThreshold } from '../thresholds';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 interface Props {
   isMember: boolean;
   // members: string[];
@@ -28,6 +29,8 @@ function Propose ({ isMember, members, propSenderId }: Props): React.ReactElemen
   const { t } = useTranslation();
   const { api, apiDefaultTxSudo } = useApi();
   const [isOpen, toggleOpen] = useToggle();
+
+  const history = useHistory();
 
   const [proposals, updateProposals] = useState([]);
 
@@ -93,6 +96,7 @@ function Propose ({ isMember, members, propSenderId }: Props): React.ReactElemen
       await func(api, propSenderId, selectedProposal.key);
 
       toggleOpen();
+      history.replace('/ecproposals');
       // const func = selectedProposal.type === 'project' ? proposeProject : ()
     }
   }, [selectedProposal, propSenderId]);
@@ -102,12 +106,12 @@ function Propose ({ isMember, members, propSenderId }: Props): React.ReactElemen
       <Button
         icon='plus'
         isDisabled={!isMember}
-        label='发起提案'
+        label={t<string>('发起提案')}
         onClick={toggleOpen}
       />
       {isOpen && (
         <Modal
-          header='发起提案'
+          header={t<string>('发起提案')}
           size='large'
         >
           <Modal.Content>
@@ -130,13 +134,13 @@ function Propose ({ isMember, members, propSenderId }: Props): React.ReactElemen
             <Modal.Columns>
               <Modal.Column>
                 <Dropdown
-                  label='请选择'
+                  label={t<string>('请选择')}
                   onChange={onSelectProposal}
                   options={proposals}
                 />
               </Modal.Column>
               <Modal.Column>
-                <p>proposals to commit</p>
+                <p>{t<string>('proposals to commit')}</p>
               </Modal.Column>
             </Modal.Columns>
             {/* <Modal.Columns>
@@ -170,7 +174,7 @@ function Propose ({ isMember, members, propSenderId }: Props): React.ReactElemen
           </Modal.Content>
           <Modal.Actions onCancel={toggleOpen}>
             <Button icon='plus'
-              label='发起提案'
+              label={t<string>('发起提案')}
               onClick={submitProposal}>
 
             </Button>

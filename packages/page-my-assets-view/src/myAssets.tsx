@@ -15,7 +15,7 @@ import EcoTransfer from '@eco/page-eco-transfer/newTransfer';
 import store from 'store';
 import BN from 'bn.js';
 import { unitToEco, beautifulNumber } from '@eco/eco-utils/utils';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 interface Props {
   className?: string,
 }
@@ -45,6 +45,7 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
   // const [form] = Form.useForm();
 
   // const [curAsset, updateCurAsset] = useState<Asset | null>(null);
+  const { t } = useTranslation('page-my-assets-view');
 
   const [assetsList, updateAssetsList] = useState<Asset[]>([]);
   const tempAssetListRef = useRef<Asset[]>([]);
@@ -206,7 +207,7 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
             type='standard'
           />;
         })}
-        {!standards.length && <Empty>暂无数据</Empty>}
+        {!standards.length && <Empty>{t<string>('暂无数据')}</Empty>}
       </Panel>
       <Panel
         css={`
@@ -218,7 +219,7 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
           }
           `
         }
-        title='碳汇资产'
+        title={t<string>('碳汇资产')}
       >
         {carbons.map((carbonAsset: Asset) => {
           return <AssetViewItem
@@ -229,7 +230,7 @@ function AssetsView ({ className }: Props): React.ReactElement<Props> {
             type='carbon'
           />;
         })}
-        {!carbons.length && <Empty>暂无数据</Empty>}
+        {!carbons.length && <Empty>{t<string>('暂无数据')}</Empty>}
       </Panel>
       {
         isModalVisible && <EcoTransfer onClose={toggleModal} />

@@ -19,6 +19,7 @@ import BannerImgSource from './banner.png';
 
 import AllProject from '../components/allProjects';
 import AllAssets from '../components/allAssets';
+import { useTranslation } from '@eco/eco-utils/translate';
 
 // const OwnerTd = styled.td`
 //     overflow: hidden;
@@ -119,23 +120,24 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     pageSize: 10
   });
   const [records, updateRecords] = useState<Record<string, any>[]>([]);
+  const { t } = useTranslation('page-eco-assets');
 
   const { api } = useApi();
   const header = useMemo(() => [
-    ['资产名称', 'header'],
-    ['资产类型', 'header'],
-    ['签发年限', 'header'],
-    ['资产上限', 'header'],
-    ['已发行总量', 'header'],
-    // ['资产精度', 'header'],
-    // ['发行商', 'header'],
-    ['注册时间', 'header'],
-    ['状态', 'header']
-    // ['操作', 'header']
+    [t<string>('资产名称'), 'header'],
+    [t<string>('资产类型'), 'header'],
+    [t<string>('签发年限'), 'header'],
+    [t<string>('资产上限'), 'header'],
+    [t<string>('已发行总量'), 'header'],
+    // [t<string>('资产精度'), 'header'],
+    // [t<string>('发行商'), 'header'],
+    [t<string>('注册时间'), 'header'],
+    [t<string>('状态'), 'header']
+    // [t<string>('操作'), 'header']
 
   ], []);
 
-  console.log('ecoAccount', ecoAccount);
+  // console.log('ecoAccount', ecoAccount);
 
   const queryAssetDetail = useCallback((assetItem: AssetItemType): Promise<void> => {
     async function _queryDetail () {
@@ -218,17 +220,17 @@ function Home ({ className }: Props): React.ReactElement<Props> {
   }, []);
 
   const StatusMap = {
-    1: '进行中',
-    0: '待审批'
+    1: t<string>('进行中'),
+    0: t<string>('待审批')
   };
 
   return (
     <div className={className}>
       <AllProject isMine={true}
-        title='我上链的碳汇项目列表' />
+        title={t<string>('我上链的碳汇项目列表')} />
 
       <AllAssets isMine={true}
-        title='我上链的碳汇资产列表' />
+        title={t<string>('我上链的碳汇资产列表')} />
     </div>
   );
 }

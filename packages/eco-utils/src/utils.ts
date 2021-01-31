@@ -5,6 +5,7 @@ import { Keyring } from '@polkadot/api';
 import Decimal from 'decimal.js';
 import BN from 'bn.js';
 import EventEmitter from 'eventemitter3';
+import Member from '@polkadot/app-society/Overview/Member';
 
 // eslint-disable-next-line header/header
 export function parseQuery (_query: string): Record<string, string> {
@@ -131,8 +132,6 @@ export function beautifulNumber (num: number | string): string {
   }
 
   const [_int, _decimal] = num.toString().split('.');
-
-  console.log('======', _int, _decimal);
 
   return `${_int.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')}${_decimal ? `.${_decimal}` : ''}`;
 
@@ -1465,12 +1464,24 @@ export const resolvePrice = (price:number|string):string|null|unknown => {
   return beautifulNumber(unitToEco(price, 2).toString());
 };
 
-export const Members = [
-  '5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy',
-  '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
-  '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y'
-];
+export const Members: string[] = [];
+
+export const updateMembers = (members: string[]) => {
+  Members.length = 0;
+  Members.push(...members);
+};
+
+export const getMembers = () => {
+  return Members;
+};
 
 export const isMember = (addr: string) => {
   return Members.indexOf(addr) > -1;
 };
+
+export const getConnectOrigin = (): string => {
+  const host = window.location.host;
+
+  return host.indexOf('localhost') > -1 ? '49.233.3.48' : host;
+}
+;

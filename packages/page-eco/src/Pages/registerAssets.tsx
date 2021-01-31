@@ -183,11 +183,11 @@ function RegisterCoins ({ className }: Props): React.ReactElement<Props> {
           <p>完成碳汇项⽬注册后，已签发后的碳汇可以申请上链⾄ECO2 Ledger，请将要上链的碳汇资 产的信息完整填⼊下⽅栏位，请注意输⼊信息与数量必须与汇⼊ECO2 Ledger的托管账户之 碳汇完全吻合，此操作完成后，资产审查委员会对碳汇资产的信息与托管账户中的碳汇资产 进⾏审核，请注意碳汇资产的数量、年份与相关信息，必须完全吻合，才可完成碳汇资产上 链的操作。资产审查委员会审核完成后，您将可以在您的ECO2 Ledger碳钱包中看到所申请 的碳汇资产。</p>
           <p>
           1. 完成资料注册资料填写后，请于三⽇内将同⼀笔碳汇资产汇⼊ECO2 Ledger之托管账户，
-          <li>
-          <ul/> VCS (Verified Carbon Standard)： 
-          <ul/> GS (Gold Standard)：
-          </li>
-          <br/>
+            <li>
+              <ul/> VCS (Verified Carbon Standard)：
+              <ul/> GS (Gold Standard)：
+            </li>
+            <br/>
           2. 如有任何信息与汇⼊托管账户之碳汇资产不⼀致，申请上链将会失败，申请费⽤将不 退回，已汇⼊托管账户之碳汇资产，将于七个⼯作⽇内退回⾄原账户。
           </p>
         </Panel>

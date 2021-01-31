@@ -53,6 +53,7 @@ interface ChainData {
 
 export const DEFAULT_DECIMALS = registry.createType('u32', 15);
 export const DEFAULT_SS58 = registry.createType('u32', addressDefaults.prefix);
+// export const DEFAULT_SS58 = registry.createType('u32', 135);
 
 const injectedPromise = web3Enable('polkadot-js/apps');
 let api: ApiPromise;
@@ -119,9 +120,13 @@ async function loadOnReady (api: ApiPromise, store: KeyringStore | undefined, ty
   const ss58Format = uiSettings.prefix === -1
     ? properties.ss58Format.unwrapOr(DEFAULT_SS58).toNumber()
     : uiSettings.prefix;
+
+  // 配置地址
+  // const ss58Format = 135;
   const tokenSymbol = properties.tokenSymbol.unwrapOr(undefined)?.toString();
   const tokenDecimals = properties.tokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
-  const isDevelopment = systemChainType.isDevelopment || systemChainType.isLocal || isTestChain(systemChain);
+  // const isDevelopment = systemChainType.isDevelopment || systemChainType.isLocal || isTestChain(systemChain);
+  const isDevelopment = true;
 
   console.log(`chain: ${systemChain} (${systemChainType.toString()}), ${JSON.stringify(properties)}`);
 
@@ -130,7 +135,6 @@ async function loadOnReady (api: ApiPromise, store: KeyringStore | undefined, ty
 
   // FIXME This should be removed (however we have some hanging bits, e.g. vanity)
   setSS58Format(ss58Format);
-
   // first setup the UI helpers
   formatBalance.setDefaults({
     decimals: tokenDecimals,

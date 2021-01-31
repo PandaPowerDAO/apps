@@ -15,7 +15,7 @@ import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 
 import { queryAsset, queryAssetsList, queryProject, queryProjectsList } from '@eco/eco-utils/service';
 import { formatDate, beautifulNumber, resolveAmountNumber } from '@eco/eco-utils/utils';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 const TableWrapper = styled.div`
 .ui--Table{
   overflow-y: auto;
@@ -87,21 +87,22 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
   });
   const [records, updateRecords] = useState<Record<string, any>[]>([]);
 
+  const { t } = useTranslation('page-eco-assets');
   const { api } = useApi();
   const header = useMemo(() => [
-    ['项目代码', 'header'],
-    ['项目类型', 'header'],
-    ['项目年限', 'header'],
-    ['项目标准', 'header'],
-    // ['资产精度', 'header'],
-    // ['发行商', 'header'],
-    ['项目上链时间', 'header'],
-    ['状态', 'header']
-    // ['操作', 'header']
+    [t<string>('项目代码'), 'header'],
+    [t<string>('项目类型'), 'header'],
+    [t<string>('项目年限'), 'header'],
+    [t<string>('项目标准'), 'header'],
+    // [t<string>('资产精度'), 'header'],
+    // [t<string>('发行商'), 'header'],
+    [t<string>('项目上链时间'), 'header'],
+    [t<string>('状态'), 'header']
+    // [t<string>('操作'), 'header']
 
   ], []);
 
-  console.log('ecoAccount', ecoAccount);
+  // console.log('ecoAccount', ecoAccount);
 
   const queryAssetDetail = useCallback((assetItem: AssetItemType): Promise<void> => {
     async function _queryDetail () {
@@ -149,7 +150,8 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
     async function query () {
       const result = await queryProjectsList(
         isMine ? ecoAccount : '',
-        undefined,
+        // isMine ? '' : 1,
+        1,
         pagination.pageSize,
         (offset || 0) as number
       );
@@ -192,7 +194,7 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
     queryAssets((page - 1) * pagination.pageSize);
   }, []);
 
-  const StatusMap = ['审批中', '流通中'];
+  const StatusMap = [t<string>('审批中'), t<string>('流通中')];
 
   return (
     <div className={className}>
@@ -201,7 +203,7 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
           <div>{title}</div>
           <IconLink href='#/ecassets/register-project'
             icon='plus'
-            label='新增碳汇项目'></IconLink>
+            label={t<string>('新增碳汇项目')}></IconLink>
         </TitleRow>
       }>
         <TableWrapper>
@@ -213,7 +215,7 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
             }
             `
             }
-            empty={'暂无数据'}
+            empty={t<string>('暂无数据')}
             footer={null}
             header={header}
             remainHeader
@@ -230,7 +232,7 @@ function Home ({ className, title, isMine }: Props): React.ReactElement<Props> {
                 {/* <td>{v.precision || '-'}</td> */}
                 {/* <OwnerTd>{v.owner}</OwnerTd> */}
                 <td>{v.projectDetail?.additionals?.registerDate}</td>
-                <td>{StatusMap[v.projectDetail?.asset?.status === 1 ? '1' : '0'] || StatusMap[0]}</td>
+                <td>{StatusMap[v.approved] || StatusMap[0]}</td>
                 <td>
                   {/* {
                   v.approved === 1 ? <div>

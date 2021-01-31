@@ -18,7 +18,7 @@ import { formatDate,
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { debounce } from 'lodash';
 import styled from 'styled-components';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 interface HanleAction {
   (orderItem: OrderItem): Promise<void> | void
 }
@@ -80,11 +80,12 @@ const resolvePrice = (price:number|string):string|null|unknown => {
 };
 
 function OrderList (props: Props): React.ReactElement<Props> {
+  const { t } = useTranslation('page-eco-trade');
   const header = useMemo(() => [
-    ['时间', 'header'],
-    ['资产', 'header'],
-    ['价格', 'header'],
-    ['数量', 'header']
+    [t('时间'), 'header'],
+    [t('资产'), 'header'],
+    [t('价格'), 'header'],
+    [t('数量'), 'header']
 
   ], []);
   const { title, reverse, isMine } = props;
@@ -217,7 +218,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
     <DealsWrapper>
       <Panel title={title}>
         <Table
-          empty={<div style={{ textAlign: 'center' }}>暂无数据</div>}
+          empty={<div style={{ textAlign: 'center' }}>{t<string>('暂无数据')}</div>}
           footer={
             <tr>
               <td colSpan={100}>
@@ -235,14 +236,16 @@ function OrderList (props: Props): React.ReactElement<Props> {
 
               <td colSpan={100}>
                 <div className='row'>
-                  <span>{formatDate(v.timestamp as number)}(区块高度{v.height})</span>
-                  <span><AddressSpan>{isMine ? '您' : v.taker }</AddressSpan></span>
-                  <span>以 {resolvePrice(v.price)} ECO2/吨的价格{isMine ? '' : '向'}</span>
+                  <span>{formatDate(v.timestamp as number)}({t('区块高度')}{v.height})</span>
+                  <span><AddressSpan>{isMine ? t('您') : v.taker }</AddressSpan></span>
+                  <span>以 {resolvePrice(v.price)} {t('ECO2/吨的价格向')}</span>
                   <span style={{
                     padding: '0 3px'
                   }}>
                     {
                       !isMine && <AddressSpan>{v.maker || v.owner} </AddressSpan>
+                    }{
+                      isMine && <AddressSpan>{v.counterparty} </AddressSpan>
                     }
                   </span>
 
@@ -250,9 +253,9 @@ function OrderList (props: Props): React.ReactElement<Props> {
                     color: v.direction === 0 ? 'red' : 'green',
                     padding: '0 3px'
                   }}>
-                    { v.direction === 0 ? '出售' : '购买'}
+                    { v.direction === 0 ? t('出售了') : t('购买了')}
                   </span>
-                了{resolveAmountNumber(v.amount || '0')}{reformatAssetName(v.assetSymbol)}碳汇
+                  {resolveAmountNumber(v.amount || '0')}{reformatAssetName(v.assetSymbol)}{t('碳汇')}
                 </div>
               </td>
               {/* <td>{reformatAssetName(v.assetSymbol)}</td>

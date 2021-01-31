@@ -25,7 +25,7 @@ import NeutralizationSvg from '../assets/neutralization.svg';
 import EcoTransfer from '@eco/page-eco-transfer/newTransfer';
 import store from 'store';
 // import CollectionSvg from '../assets/collection.svg';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 interface Props {
   className?: string,
 }
@@ -128,6 +128,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
   const queryObj = parseQuery(location.search || '') || {};
   const { asset: assetId, symbol = '' } = queryObj;
   const [ecoAccount] = useECOAccount();
+  const { t } = useTranslation('page-eco-assets');
 
   useEffect(() => {
     async function init (): Promise<any> {
@@ -138,7 +139,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
       if (assetId === 'eco2') {
         assetDetail = {
           assetId: 'eco2',
-          remark: 'ECO2通证 (ECO2 Token) 是ECO2 Ledger的实用通证 (Utility Tokens)。 参与ECO2 Ledger气候行动的个人或组织将通过持有ECO2通证来参与减排社群的治理。 ECO2 Ledger的生态系统治理、开发、应用程序和支付流程方案都将使用ECO2通证作为媒介。ECO2通证还代表了气候行动的促进，特别是在缺乏有效气候行动的地区，是传播环境知识和形成区块链环保共同体的工具'
+          remark: t<string>('ECO2通证 (ECO2 Token) 是ECO2 Ledger的实用通证 (Utility Tokens)。 参与ECO2 Ledger气候行动的个人或组织将通过持有ECO2通证来参与减排社群的治理。 ECO2 Ledger的生态系统治理、开发、应用程序和支付流程方案都将使用ECO2通证作为媒介。ECO2通证还代表了气候行动的促进，特别是在缺乏有效气候行动的地区，是传播环境知识和形成区块链环保共同体的工具')
 
         };
         const ecoBalance = await queryBalance(api, ecoAccount);
@@ -212,7 +213,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
       <div>
         <PanelTitle>{reformatAssetName(symbol || fromHex(assetInfo.symbol as string || ''))}</PanelTitle>
         <AddressWrapper>
-          <span> 收款地址: </span>
+          <span> {t<string>('收款地址')}: </span>
           <span className='address'>{ecoAccount}</span>
           {/* <span><CopyToClipBoard text={assetInfo.owner as string as unknown || ''} >copy</CopyToClipBoard></span> */}
           <CopyButton isAddress
@@ -236,12 +237,12 @@ function Home ({ className }: Props): React.ReactElement<Props> {
           onClick={goTransfer}>
           <Icon style={{ backgroundImage: `url('${TranserSvg as string}')`, width: 50, height: 50 }} />
           <div className='operation-name'
-          >转账</div>
+          >{t<string>('转账')}</div>
         </div>
         <div className='operation'
           onClick={goNeutralization}>
           <Icon style={{ backgroundImage: `url('${NeutralizationSvg as string}')`, width: 50, height: 50 }} />
-          <div className='operation-name'>碳中和</div>
+          <div className='operation-name'>{t<string>('碳中和')}</div>
         </div>
         {/* <div className='operation'>
           <Icon style={{ backgroundImage: `url('${CollectionSvg as string}')`, width: 50, height: 50 }} />
@@ -249,7 +250,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
         </div> */}
       </AssetsOperations>
     </AssetsPanel>
-    <Panel title='资产介绍'>
+    <Panel title={t<string>('资产介绍')}>
       <div>
         {assetInfo.remark || '-'}
       </div>
@@ -257,7 +258,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
     <CmptDeals closed={1}
       isMine={false}
       reverse={0}
-      title='最近交易' />
+      title={t<string>('最近交易')} />
     {isModalVisible && (
       <EcoTransfer onClose={toggleModal} />
     )}

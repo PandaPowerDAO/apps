@@ -25,6 +25,9 @@ import { requiredValidator,
   Countries,
   reformatAssetName, unitToEco, beautifulNumber, resolveAmountNumber } from '@eco/eco-utils/utils';
 import { queryCarbonBalance } from '@polkadot/app-eco/service';
+import { useTranslation } from '@eco/eco-utils/translate';
+import Decimal from 'decimal.js';
+import BN from 'bn.js';
 
 interface Props {
   className?: string,
@@ -79,6 +82,26 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
   const [form] = Form.useForm();
   const { api } = useApi();
   const [ecoAccount] = useECOAccount();
+  const { t } = useTranslation('page-eco-neu');
+
+  const SIOptions = useMemo(() => {
+    return [{
+      text: t<string>('克'),
+      value: 0
+    }, {
+      text: t<string>('千克'),
+      value: 3
+    }, {
+      text: t<string>('吨'),
+      value: 6
+    }];
+  }, [curAsset]);
+
+  const [unit, updateUnit] = useState<number>(SIOptions[0].value);
+
+  const handleUnitChange = useCallback((_unit) => {
+    updateUnit(_unit);
+  }, []);
 
   const queryAssetInfo = useCallback((asset: Asset) => {
     async function _query () {
@@ -199,22 +222,22 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
   // 6. 其他
   const NeoTypes = useMemo(() => {
     return [{
-      text: '商业活动',
+      text: t<string>('商业活动'),
       value: '1'
     }, {
-      text: '日常生活',
+      text: t<string>('日常生活'),
       value: '2'
     }, {
-      text: '交通出行',
+      text: t<string>('交通出行'),
       value: '3'
     }, {
-      text: '生产制造',
+      text: t<string>('生产制造'),
       value: '4'
     }, {
-      text: '企业组织',
+      text: t<string>('企业组织'),
       value: '5'
     }, {
-      text: '其他',
+      text: t<string>('其他'),
       value: '6'
     }];
   }, []);
@@ -222,14 +245,19 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
   const onFinish = useCallback((values: FormProps) => {
     const { assetId, amount, ...additionals } = values;
 
+    // const _amount = new Decimal(amount).mul(new Decimal(10).pow(unit));
+    // new BN(10).pow(new BN(6 - curSi))
+    // const _amount = new Decimal(amount).div(new BN(10).pow(new BN(6 - unit))).toString();
+    const _amount = new Decimal(amount).div(new Decimal(10).pow(6 - unit)).toString();
+
     _neutralize();
 
     async function _neutralize () {
-      await neutralize(api, ecoAccount, assetId, amount, additionals);
+      await neutralize(api, ecoAccount, assetId, _amount, additionals);
       // message.info('提交成功');
       form.resetFields();
     }
-  }, [ecoAccount]);
+  }, [ecoAccount, unit]);
 
   const queryBalance = useCallback((_asset: Asset) => {
     init();
@@ -261,6 +289,27 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
     }
   }, [assetsList, queryBalance]);
 
+  const amountValidator = async (rule: any, value: string): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const formValues = form.getFieldsValue();
+
+    const _value = new Decimal(value || 0);
+    const _baseValue = _value.mul(new Decimal(10).pow(unit)).toString();
+
+    if (!(new RegExp(`^(0|[1-9]\\d*)(\\.\\d{0,${unit}})?$`).test(value))) {
+      throw new Error(unit > 0 ? t<string>('最多{{unit}}小数', { replace: { unit } }) : t<string>('请输入整数'));
+    }
+
+    const _availableBalance = curAsset?.balance || 0;
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (!value || new BN(_baseValue).gt(new BN(_availableBalance))) {
+      throw new Error(t<string>('余额不足，当前可用资产{{amount}}', { replace: { amount: resolveAmountNumber(_availableBalance) } }));
+    }
+
+    await Promise.resolve();
+  };
+
   return (
     <div className={className}>
       <Form
@@ -268,7 +317,7 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
         name='transfer-form'
         onFinish={onFinish}>
         <Panel
-          title='碳中和'
+          title={t<string>('碳中和')}
         >
           <Row>
             <Form.Item
@@ -284,11 +333,11 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
                 required
               >
                 <Dropdown
-                  label={<div>选择资产</div>}
+                  label={<div>{t<string>('选择资产')}</div>}
                   // onChange={(assetsType) => setFieldsValue(assetsType)}
                   options={assetsList}
                   // options={assetOptions}
-                  placeholder='请选择'
+                  placeholder={t<string>('请选择')}
                   withLabel
                 />
               </FieldDecorator>
@@ -301,7 +350,7 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
               rules={[{
                 validator: requiredValidator
               }, {
-                validator: numberValidator
+                validator: amountValidator
               }]}
               validateFirst
             >
@@ -310,12 +359,22 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>碳中和数量</div>}
-                  labelExtra={<div>可中和数量{resolveAmountNumber(curAsset?.balance || 0)}</div>}
+                  label={<div>{t<string>('碳中和数量')}</div>}
+                  labelExtra={<div style={{
+                    paddingRight: '5em'
+                  }}>{t<string>('当前资产余额')}{resolveAmountNumber(curAsset?.balance || 0)}</div>}
                   maxLength={500}
-                  placeholder='碳中和数量'
+                  placeholder={t<string>('碳中和数量')}
                   withLabel
-                />
+                >
+                  <Dropdown
+                    defaultValue={unit}
+                    dropdownClassName='ui--SiDropdown'
+                    isButton
+                    onChange={handleUnitChange}
+                    options={SIOptions}
+                  />
+                </Input>
               </FieldDecorator>
             </Form.Item>
           </Row>
@@ -331,9 +390,9 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>抵消受益人名称</div>}
+                  label={<div>{t<string>('抵消受益人名称')}</div>}
                   maxLength={500}
-                  placeholder='请输入抵消受益人名称'
+                  placeholder={t<string>('请输入抵消受益人名称')}
                   withLabel
                 />
               </FieldDecorator>
@@ -351,9 +410,9 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
               >
                 <Dropdown
                   defaultValue={'1'}
-                  label={<div>碳中和类型</div>}
+                  label={<div>{t<string>('碳中和类型')}</div>}
                   options={NeoTypes}
-                  placeholder='请选择'
+                  placeholder={t<string>('请选择')}
                   withLabel
                 />
               </FieldDecorator>
@@ -367,12 +426,12 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
               <FieldDecorator>
                 <Dropdown
                   defaultValue={''}
-                  label={<div>所在国家</div>}
+                  label={<div>{t<string>('所在国家')}</div>}
                   onSearch={(options: Country[], query: string): Country[] => {
                     return options.filter((v: Country): boolean => v.text.indexOf(query) > -1);
                   } }
                   options={CountriesOptions}
-                  placeholder='请选择所在国家'
+                  placeholder={t<string>('请选择所在国家')}
                   searchInput={{
                     autoFocus: false
                   }}
@@ -400,8 +459,8 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
               >
                 <TextArea
                   isFull={false}
-                  label={<div>抵消原因</div>}
-                  labelExtra={<div>最多500字</div>}
+                  label={<div>{t<string>('抵消原因')}</div>}
+                  labelExtra={<div>{t<string>('最多500字')}</div>}
                   maxLength={500}
                   rows={3}
                   withLabel
@@ -431,7 +490,7 @@ function PageNeutralization ({ className }: Props): React.ReactElement<Props> {
             textAlign: 'center',
             marginTop: '24px'
           }}>
-            <SubmitBtn htmlType='submit'>碳中和</SubmitBtn>
+            <SubmitBtn htmlType='submit'>{t<string>('碳中和')}</SubmitBtn>
           </div>
         </Panel>
       </Form>

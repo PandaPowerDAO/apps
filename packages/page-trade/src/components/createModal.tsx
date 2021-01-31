@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { Modal, Dropdown, Input, Button } from '@polkadot/react-components';
+import { Modal, Dropdown, Input, Button, InputNumberPre } from '@polkadot/react-components';
 import { Form } from 'antd';
 import { useApi } from '@polkadot/react-hooks';
 
@@ -16,7 +16,8 @@ import FieldDecorator from '@eco/eco-components/FormComponents';
 import { AssetItemType } from '../types';
 import BN from 'bn.js';
 import { queryCarbonBalance } from '@polkadot/app-eco/service';
-
+import Decimal from 'decimal.js';
+import { useTranslation } from '@eco/eco-utils/translate';
 interface Props extends ModalProps {
   onClose: () => void,
 
@@ -62,19 +63,24 @@ function CreateModal (props: Props): React.ReactElement<Props> {
   const [form] = Form.useForm();
   const { api } = useApi();
   const [ecoAccount] = useECOAccount();
+  const { t } = useTranslation('page-eco-trade');
 
   const [assets, updateAssets] = useState<AssetItemType[]>([]);
   const [unit, updateUnit] = useState<number>(unitOptions[0].value);
   const [assetBalance, updateAssetBalance] = useState<number | string>(0);
 
+  const handleClose = () => {
+    form.resetFields();
+    onClose();
+  };
   // const [assetsList, updateAssetsList] = useState<Record<string, any>[]>([]);
 
   const Sides = [{
     value: '0',
-    text: '卖'
+    text: t<string>('卖')
   }, {
     value: '1',
-    text: '买'
+    text: t<string>('买')
   }];
 
   const projectValidator = async (rule: any, value: any): Promise<void> => {
@@ -96,17 +102,21 @@ function CreateModal (props: Props): React.ReactElement<Props> {
 
         const _price = ecoToUnit(formValues.price, 2).toString();
 
+        const _amount = new Decimal(formValues.amount).mul(new Decimal(10).pow(unit));
+
         await makeOrder(
           api,
           ecoAccount,
           formValues.assetId,
           '',
           _price,
-          new BN(formValues.amount).mul(new BN(10).pow(new BN(unit || 0))).toString(),
+          new BN(_amount.toFixed(0)).toString(),
+          // new BN(formValues.amount).mul(new BN(10).pow(new BN(unit || 0))).toString(),
           // formValues.amount,
           formValues.direction
         );
         onClose();
+        form.resetFields();
         // message.info('订单创建成功');
       } catch (e) {
         console.log(e);
@@ -149,14 +159,14 @@ function CreateModal (props: Props): React.ReactElement<Props> {
 
   useEffect(() => {
     if (ecoAccount) {
-      console.log('ecoAccount', ecoAccount);
+      // console.log('ecoAccount', ecoAccount);
       getAssets('buy');
     }
   }, [ecoAccount, getAssets]);
 
   const priceValidator = async (rule: any, value: string): Promise<void> => {
     if (!/^(([1-9][0-9]*)|0)(\.?\d{0,2})$/.test(value)) {
-      throw new Error('请输入正确的数字，最大支持2位精度');
+      throw new Error(t<string>('请输入正确的数字，最大支持2位精度'));
     }
 
     await Promise.resolve();
@@ -180,11 +190,21 @@ function CreateModal (props: Props): React.ReactElement<Props> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const formValues = form.getFieldsValue();
 
+    const _value = new Decimal(value || 0);
+    const _baseValue = _value.mul(new Decimal(10).pow(unit)).toString();
+
+    if (!(new RegExp(`^(0|[1-9]\\d*)(\\.\\d{0,${unit}})?$`).test(value))) {
+      throw new Error(unit > 0 ? t<string>('最多{{unit}}小数', { replace: { unit } }) : t<string>('请输入整数'));
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (formValues.direction === '0' && formValues.assetId) {
-      if (!value || new BN(value).gt(new BN(assetBalance))) {
-        throw new Error(`余额不足，当前可用资产${resolveAmountNumber(assetBalance || 0)}`);
+      if (!value || new BN(_baseValue).gt(new BN(assetBalance))) {
+        throw new Error(t<string>('余额不足，当前可用资产{{amount}}', { replace: { amount: resolveAmountNumber(assetBalance || 0) } }));
       }
+      // if (!value || new BN(value).gt(new BN(assetBalance))) {
+      //   throw new Error(`余额不足，当前可用资产${resolveAmountNumber(assetBalance || 0)}`);
+      // }
     }
 
     await Promise.resolve();
@@ -205,7 +225,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
     return <div style={{
       marginRight: '6rem'
     }}>
-      当前持有:
+      {t<string>('当前持有')}:
       {
         // unitToEco(assetBalance as string, __unit.value).toString()
         resolveAmountNumber(assetBalance)
@@ -213,12 +233,16 @@ function CreateModal (props: Props): React.ReactElement<Props> {
     </div>;
   }, [unit, assetBalance, _formValues]);
 
+  const handleAmountChange = (v) => {
+    console.log('amountchange', v);
+  };
+
   return (
     <Modal
-      onClose={onClose}
+      onClose={handleClose}
       open={open}
     >
-      <Modal.Header>创建订单</Modal.Header>
+      <Modal.Header>{t<string>('创建订单')}</Modal.Header>
       <Modal.Content>
         <FormWrapper>
           <Form
@@ -227,7 +251,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
           >
             <Form.Item
               initialValue='1'
-              label='方向'
+              label={t<string>('方向')}
               name='direction'
             >
               <FieldDecorator
@@ -240,15 +264,15 @@ function CreateModal (props: Props): React.ReactElement<Props> {
                 <Dropdown
                   defaultValue={'1'}
                   // onChange={(assetsType) => setFieldsValue(assetsType)}
-                  label={<div>方向</div>}
+                  label={<div>{t<string>('方向')}</div>}
                   options={Sides}
-                  placeholder='请选择'
+                  placeholder={t<string>('请选择')}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
             <Form.Item
-              label='资产'
+              label={t<string>('资产')}
               name='assetId'
               rules={[{
                 validator: projectValidator
@@ -260,15 +284,15 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               >
                 <Dropdown
                   // onChange={(assetsType) => setFieldsValue(assetsType)}
-                  label={<div>资产</div>}
+                  label={<div>{t<string>('资产')}</div>}
                   options={assets}
-                  placeholder='请选择'
+                  placeholder={t<string>('请选择')}
                   withLabel
                 />
               </FieldDecorator>
             </Form.Item>
             <Form.Item
-              label='价格'
+              label={t<string>('价格')}
               name='price'
               rules={[{
                 validator: requiredValidator
@@ -282,12 +306,12 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               >
                 <Input
                   isFull={false}
-                  label={<div>价格</div>}
+                  label={<div>{t<string>('价格')}</div>}
                   // labelExtra='吨'
-                  labelExtra='ECO2/吨'
+                  labelExtra={t<string>('ECO2/吨')}
                   maxLength={500}
                   // onChange={(name: string) => setFieldsValue({ name })}
-                  placeholder='请输入价格'
+                  placeholder={t<string>('请输入价格')}
                   // value={form.name}
                   withLabel
                 >
@@ -296,7 +320,7 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               </FieldDecorator>
             </Form.Item>
             <Form.Item
-              label='数量'
+              label={t<string>('数量')}
               name='amount'
               rules={[{
                 validator: requiredValidator
@@ -306,15 +330,16 @@ function CreateModal (props: Props): React.ReactElement<Props> {
               validateFirst
             >
               <FieldDecorator
+                onChange={handleAmountChange}
                 required
               >
                 <Input
                   isFull={false}
-                  label={<div>数量</div>}
+                  label={<div>{t<string>('数量')}</div>}
                   labelExtra={amountExtraLabel}
                   maxLength={500}
                   // onChange={(name: string) => setFieldsValue({ name })}
-                  placeholder='请输入数量'
+                  placeholder={t<string>('请输入数量')}
                   // value={form.name}
                   withLabel
                 >
@@ -331,10 +356,10 @@ function CreateModal (props: Props): React.ReactElement<Props> {
           </Form>
         </FormWrapper>
       </Modal.Content>
-      <Modal.Actions onCancel={onClose}>
+      <Modal.Actions onCancel={handleClose}>
         <Button
           icon='trash'
-          label={'交易'}
+          label={t<string>('交易')}
           onClick={confirmMakeOrder}
         />
       </Modal.Actions>

@@ -13,6 +13,10 @@ import { isMember } from '@eco/eco-utils/utils';
 import { queryProject, queryProposalVoting, voteProposal, closeProposal } from '@eco/eco-utils/service';
 import { ProposalModal } from '@eco/eco-components';
 import { useApi } from '@polkadot/react-hooks';
+import { useMembers } from '@eco/eco-utils/useMembers';
+import { useHistory } from 'react-router-dom';
+
+import { useTranslation } from '@eco/eco-utils/translate';
 
 const Summary = styled.div`
   text-align: center;
@@ -88,6 +92,13 @@ function VotingPanel ({ proposalId, state, subjectId }: Props): React.ReactEleme
   });
 
   const { api } = useApi();
+  const history = useHistory();
+  const members = useMembers();
+  const { t } = useTranslation('component-voting');
+
+  const ismem = useMemo(() => {
+    return members.indexOf(ecoAccount) > -1;
+  }, [members, ecoAccount]);
 
   useEffect(() => {
     _init();
@@ -116,6 +127,7 @@ function VotingPanel ({ proposalId, state, subjectId }: Props): React.ReactEleme
 
     async function _init () {
       await voteProposal(api, ecoAccount, proposalId as string, proposal.index, approve);
+      history.replace('/ecproposals');
     }
   }, [proposal, proposalId, ecoAccount, api]);
 
@@ -124,12 +136,13 @@ function VotingPanel ({ proposalId, state, subjectId }: Props): React.ReactEleme
 
     async function _init () {
       await closeProposal(api, ecoAccount, proposalId, proposal.index);
+      history.replace('/ecproposals');
     }
   }, [proposal, proposalId, ecoAccount, api]);
 
-  const ismem = useMemo(() => {
-    return isMember(ecoAccount);
-  }, [ecoAccount]);
+  // const ismem = useMemo(() => {
+  //   return isMember(ecoAccount);
+  // }, [ecoAccount]);
   let content = null;
 
   let buttons: React.ReactElement[] = [];
@@ -170,17 +183,17 @@ function VotingPanel ({ proposalId, state, subjectId }: Props): React.ReactEleme
           onClick={() => vote(true)}
           style={{
             background: '#169bd5'
-          }}>通过</Button>,
+          }}>{t<string>('通过')}</Button>,
         <Button key='refus'
           onClick={() => vote(false)}
           style={{
             background: '#d9001b'
-          }}>拒绝</Button>
+          }}>{t<string>('拒绝')}</Button>
       ];
     }
   } else if (+state === 2) {
     content = <div>
-      投票已结束
+      {t<string>('投票已结束')}
     </div>;
   } else {
     content = '';

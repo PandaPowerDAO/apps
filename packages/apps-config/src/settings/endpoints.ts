@@ -5,6 +5,7 @@ import { TFunction } from 'i18next';
 import { Option } from './types';
 
 import { CUSTOM_ENDPOINT_KEY } from './constants';
+import { getConnectOrigin } from '@eco/eco-utils/utils';
 
 export interface LinkOption extends Option {
   dnslink?: string;
@@ -48,18 +49,22 @@ function createOwn (t: TFunction): LinkOption[] {
 }
 
 function createDev (t: TFunction): LinkOption[] {
+  const host = getConnectOrigin();
+
   return [
     {
       dnslink: 'local',
       info: 'local',
-      text: t<string>('rpc.local', 'Local Node (Own, 49.233.3.48:9944)', { ns: 'apps-config' }),
-      value: 'ws://49.233.3.48:9944',
-      textBy: t<string>('rpc.local', 'Local Node (Own, 49.233.3.48:9944)', { ns: 'apps-config' })
+      text: t<string>('rpc.local', `Local Node (Own, ${host}:9944)`, { ns: 'apps-config' }),
+      value: `ws://${host}:9944`,
+      textBy: t<string>('rpc.local', `Local Node (Own, ${host}8:9944)`, { ns: 'apps-config' })
     }
   ];
 }
 
 function createLiveNetworks (t: TFunction): LinkOption[] {
+  const host = getConnectOrigin();
+
   return [
     // fixed, polkadot
     // {
@@ -138,13 +143,15 @@ function createLiveNetworks (t: TFunction): LinkOption[] {
       dnslink: 'eco2-live',
       info: 'eco2-live',
       text: t<string>('rpc.ECO2', 'ECO2 (hosted by ECO2)', { ns: 'apps-config' }),
-      value: 'ws://49.233.3.48:9944',
+      value: `ws://${host}:9944`,
       textBy: t<string>('rpc.ECO2', 'ECO2 (hosted by ECO2)', { ns: 'apps-config' })
     }
   ];
 }
 
 function createTestNetworks (t: TFunction): LinkOption[] {
+  const host = getConnectOrigin();
+
   return [
     // polkadot test relays
     // {
@@ -262,7 +269,7 @@ function createTestNetworks (t: TFunction): LinkOption[] {
       dnslink: 'eco2-test',
       info: 'eco2-test',
       text: t<string>('rpc.ECO2', 'ECO2 (hosted by ECO2)', { ns: 'apps-config' }),
-      value: 'ws://49.233.3.48:9944',
+      value: `ws://${host}:9944`,
       textBy: t<string>('rpc.ECO2', 'ECO2 (hosted by ECO2)', { ns: 'apps-config' })
     }
   ];

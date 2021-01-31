@@ -144,6 +144,7 @@ function createWebpack (ENV, context) {
     optimization: {
       runtimeChunk: 'single',
       splitChunks: {
+        maxSize: 1024 * 1024 * 10,
         cacheGroups: {
           ...mapChunks('polkadot', [
             /* 00 */ /node_modules\/@polkadot\/(wasm)/,

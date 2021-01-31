@@ -7,8 +7,11 @@ import { createEndpoints } from '@polkadot/apps-config/settings';
 import { extractIpfsDetails } from '@polkadot/react-hooks/useIpfs';
 import settings from '@polkadot/ui-settings';
 import { assert } from '@polkadot/util';
+import { getConnectOrigin } from '@eco/eco-utils/utils';
 
 function getApiUrl (): string {
+  const connectOrigin = getConnectOrigin();
+
   // we split here so that both these forms are allowed
   //  - http://localhost:3000/?rpc=wss://substrate-rpc.parity.io/#/explorer
   //  - http://localhost:3000/#/explorer?rpc=wss://substrate-rpc.parity.io
@@ -46,7 +49,7 @@ function getApiUrl (): string {
     ? settings.apiUrl // keep as-is
     : fallbackUrl
       ? fallbackUrl.value as string // grab the fallback
-      : 'ws://49.233.3.48:9944'; // nothing found, go local
+      : `ws://${connectOrigin}:9944`; // nothing found, go local
 }
 
 const apiUrl = getApiUrl();

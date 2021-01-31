@@ -120,7 +120,7 @@ function Home ({ className }: Props): React.ReactElement<Props> {
 
   ], []);
 
-  console.log('ecoAccount', ecoAccount);
+  // console.log('ecoAccount', ecoAccount);
 
   const queryAssetDetail = useCallback((assetItem: AssetItemType): Promise<void> => {
     async function _queryDetail () {

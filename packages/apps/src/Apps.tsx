@@ -10,7 +10,6 @@ import { getSystemChainColor } from '@polkadot/apps-config/ui';
 import GlobalStyle from '@polkadot/react-components/styles';
 import { useApi } from '@polkadot/react-hooks';
 import Signer from '@polkadot/react-signer';
-import keyring from '@polkadot/ui-keyring';
 
 import ECOAccountProvider from '@eco/eco-components/Account';
 
@@ -65,10 +64,6 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
     () => getSystemChainColor(systemChain, systemName),
     [systemChain, systemName]
   );
-
-  useEffect(() => {
-    keyring.setSS58Format('135');
-  }, []);
 
   return (
     <>

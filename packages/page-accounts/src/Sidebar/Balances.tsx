@@ -3,7 +3,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { AddressInfo, Icon } from '@polkadot/react-components';
+import { AddressInfo, AddressInfoNew, Icon } from '@polkadot/react-components';
 
 import { useTranslation } from '../translate';
 
@@ -26,7 +26,7 @@ function Balances ({ address, className }: Props): React.ReactElement<Props> | n
           {t<string>('balance')}
         </div>
       </div>
-      <AddressInfo
+      <AddressInfoNew
         address={address}
         className='balanceExpander'
         withBalance={WITH_BALANCE}

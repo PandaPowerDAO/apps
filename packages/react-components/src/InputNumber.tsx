@@ -95,9 +95,9 @@ function getSiPowers (si: SiDef | null): [BN, number, number] {
 function isValidNumber (bn: BN, bitLength: BitLength, isZeroable: boolean, maxValue?: BN): boolean {
   const _max = getGlobalMaxValue(bitLength);
 
-  console.log(bn.lt(BN_ZERO), _max, bn.lt(_max), bn.isZero(), bn.bitLength() > (bitLength || DEFAULT_BITLENGTH));
+  // console.log(bn.lt(BN_ZERO), _max, bn.lt(_max), bn.isZero(), bn.bitLength() > (bitLength || DEFAULT_BITLENGTH));
 
-  console.log((maxValue && maxValue.gtn(0) && bn.gt(maxValue)));
+  // console.log((maxValue && maxValue.gtn(0) && bn.gt(maxValue)));
 
   if (
     // cannot be negative

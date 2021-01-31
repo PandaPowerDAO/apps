@@ -29,7 +29,7 @@ function Item ({ className = '', active = '', isToplevel, route: { Modal, href, 
         rel='noopener noreferrer'
         target={href ? '_blank' : undefined}
       >
-        <Icon icon={icon} />
+        {/* <Icon icon={icon} /> */}
         {text}
         {!!count && (
           <Badge

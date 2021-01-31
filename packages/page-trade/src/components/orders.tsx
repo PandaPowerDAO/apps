@@ -12,7 +12,7 @@ import { queryOrder, queryCarbonOrders } from '@eco/eco-utils/service';
 
 import { useECOAccount } from '@eco/eco-components/Account/accountContext';
 import { beautifulNumber, unitToEco, resolveAmountNumber, reformatAssetName } from '@eco/eco-utils/utils';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 interface HanleAction {
   (orderItem: OrderItem): Promise<void> | void
 }
@@ -92,15 +92,16 @@ const AddressSpan = styled.div`
 function OrderList (props: Props): React.ReactElement<Props> {
   const { closed, title, reverse, action, handleAction = noop, isMine, side = 'buy' } = props;
 
+  const { t } = useTranslation('page-eco-trade');
   const header = useMemo(() => {
     const _header = [
-      ['类型', 'header'],
-      isMine ? [null] : [side === 'buy' ? '买家' : '卖家', 'header'],
-      ['资产名称', 'header'],
-      ['价格', 'header'],
-      ['数量', 'header'],
-      [isMine ? '订单进度' : null, 'header'],
-      ['操作', 'header']
+      [t('类型'), 'header'],
+      isMine ? [null] : [side === 'buy' ? t('买家') : t('卖家'), 'header'],
+      [t('资产名称'), 'header'],
+      [t('价格'), 'header'],
+      [t('数量'), 'header'],
+      [isMine ? t('订单进度') : null, 'header'],
+      [t('操作'), 'header']
     ].filter((v) => v[0]);
 
     return action ? _header : _header.slice(0, -1);
@@ -226,7 +227,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
     <OrdersWrapper>
       <Panel title={title}>
         <Table
-          empty={<div style={{ textAlign: 'center' }}>暂无数据</div>}
+          empty={<div style={{ textAlign: 'center' }}>{t('暂无数据')}</div>}
           footer={
             <tr>
               <td colSpan={100}>
@@ -253,7 +254,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
                 </td>
               }
               <td>{reformatAssetName(v.assetSymbol)}</td>
-              <td>{resolvePrice(v.price) as string || '-'} ECO2/吨</td>
+              <td>{resolvePrice(v.price) as string || '-'} {t('ECO2/吨')}</td>
               <td>{isMine ? (v.amount ? resolveAmountNumber(v.amount) : '-') : (v.left_amount ? resolveAmountNumber(v.left_amount) : '-')}</td>
               {
                 isMine && <td>

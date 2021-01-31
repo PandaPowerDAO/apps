@@ -8,7 +8,8 @@ import BN from 'bn.js';
 import React from 'react';
 import { TFunction } from 'i18next';
 import styled from 'styled-components';
-import { BN_ZERO, formatBalance, formatNumber, hexToString, isObject } from '@polkadot/util';
+import { BN_ZERO, formatNumber, hexToString, isObject } from '@polkadot/util';
+import { formatBalance } from '@eco/polka-util-fork';
 import { Expander, Icon, Tooltip } from '@polkadot/react-components';
 import { withCalls, withMulti } from '@polkadot/react-api/hoc';
 import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
@@ -224,6 +225,8 @@ function renderBalances (props: Props, allAccounts: string[], bestNumber: BlockN
   if (!bestNumber || !balanceDisplay) {
     return null;
   }
+
+  console.log('asdfasdfaf');
 
   const [ownBonded, otherBonded] = calcBonded(stakingInfo, balanceDisplay.bonded);
   const isAllLocked = !!balancesAll && balancesAll.lockedBreakdown.some(({ amount }): boolean => amount.isMax());

@@ -10,7 +10,7 @@ import styled from 'styled-components';
 // import CmptOrders from './components/orders';
 import CmptDeals from './components/deals';
 // import { OrderItem } from './types';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 interface Props extends BareProps {
   type?:string,
   title?: string,
@@ -28,6 +28,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
   //   console.log(orderItem);
   //   // return Promise.resolve()
   // }, []);
+  const { t } = useTranslation('page-eco-trade');
 
   return (
     <OrderListWrapper>
@@ -35,7 +36,7 @@ function OrderList (props: Props): React.ReactElement<Props> {
         closed={1}
         isMine
         reverse={0}
-        title={props.title || '历史成交'}
+        title={props.title || t('历史成交')}
       />
     </OrderListWrapper>);
 }

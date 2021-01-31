@@ -17,7 +17,7 @@ import { useApi, useToggle } from '@polkadot/react-hooks';
 // import { useTranslation } from '../translate';
 import { queryCarbonProposals, proposeIssue, proposeAsset, proposeBurn, proposeProject } from '@eco/eco-utils/service';
 // import { getThreshold } from '../thresholds';
-
+import { useHistory } from 'react-router-dom';
 interface Props {
   isMember: boolean;
   // members: string[];
@@ -28,6 +28,8 @@ function Propose ({ isMember, members, propSenderId }: Props): React.ReactElemen
   // const { t } = useTranslation();
   const { api, apiDefaultTxSudo } = useApi();
   const [isOpen, toggleOpen] = useToggle();
+
+  const history = useHistory();
 
   const [proposals, updateProposals] = useState([]);
 
@@ -94,6 +96,7 @@ function Propose ({ isMember, members, propSenderId }: Props): React.ReactElemen
       // a.subscripe()
 
       toggleOpen();
+      history.go(-1);
       // const func = selectedProposal.type === 'project' ? proposeProject : ()
     }
   }, [selectedProposal, propSenderId]);

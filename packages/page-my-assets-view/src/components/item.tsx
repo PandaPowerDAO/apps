@@ -17,7 +17,7 @@ import styled from 'styled-components';
 import { fromHex, beautifulNumber, reformatAssetName, resolveAmountNumber } from '@eco/eco-utils/utils';
 import { useHistory } from 'react-router-dom';
 // import { api } from '@polkadot/react-api';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 const Content = styled.div`
   display: flex;
   align-items: center;
@@ -81,6 +81,7 @@ a {
 function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
   const { type, asset, balance, handleTransfer } = props;
 
+  const { t } = useTranslation('page-my-assets-view');
   const history = useHistory();
 
   // const [balance, updateBalance] = useState<Record<string, string | number>>({});
@@ -112,16 +113,16 @@ function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
           <div className='title'
             onClick={goDetail}>{reformatAssetName(fromHex(asset.symbol as string))}</div>
           <div>
-          持有量： {asset.assetId === 'eco2' ? beautifulNumber(balance.balance) : resolveAmountNumber(balance.balance) || 0}
+            {t<string>('持有量')}： {asset.assetId === 'eco2' ? beautifulNumber(balance.balance) : resolveAmountNumber(balance.balance) || 0}
           </div>
         </div>
       </Content>
       <ButtonWrapper>
         <SubmitBtn onClick={() => handleTransfer(asset)}>
-          转账
+          {t<string>('转账')}
         </SubmitBtn>
         {
-          asset.assetId === 'eco2' ? <SubmitBtn>赎回</SubmitBtn> : <SubmitBtn>收款</SubmitBtn>
+          asset.assetId === 'eco2' ? <SubmitBtn>{t<string>('赎回')}</SubmitBtn> : <SubmitBtn>{t<string>('收款')}</SubmitBtn>
         }
         {
           type === 'carbon' ? <SubmitBtn>

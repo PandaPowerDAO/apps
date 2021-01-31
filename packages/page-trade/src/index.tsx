@@ -19,7 +19,7 @@ import ECOAccountProvider, { AccountSelector, AccountUpdator } from '@eco/eco-co
 import styled from 'styled-components';
 import { AccountSelectorWrapper } from '@eco/eco-components/EcoStyledComponents';
 // import { typesSpec } from '@polkadot/apps-config/api';
-
+import { useTranslation } from '@eco/eco-utils/translate';
 import { setGaApi } from '@eco/eco-utils/service';
 
 const ECOAPPWrapper = styled.div`
@@ -64,25 +64,25 @@ interface Props {
 }
 
 function EcoTradeApp ({ basePath }: Props): React.ReactElement<Props> {
-  // const { t } = useTranslation();
+  const { t } = useTranslation('page-eco-trade');
   const items = useMemo(() => [
     {
       isRoot: true,
       name: 'trade',
       // text: t<string>('Democracy overview')
-      text: '交易'
+      text: t<string>('交易')
     },
     {
       isRoot: false,
       name: 'myorders',
       // text: t<string>('Democracy overview')
-      text: '我的订单'
+      text: t<string>('我的订单')
     },
     {
       isRoot: false,
       name: 'mydeals',
       // text: t<string>('Democracy overview')
-      text: '我的成交记录'
+      text: t<string>('我的成交记录')
     }
     // {
     //   isRoot: false,

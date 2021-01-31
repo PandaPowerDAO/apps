@@ -5,7 +5,7 @@ import React, { useState, useMemo, useContext } from 'react';
 import { BareProps } from '@polkadot/react-components/types';
 
 import { InputAddress } from '@polkadot/react-components';
-
+import keyring from '@polkadot/ui-keyring';
 import AccountContext, { AccountProvider, ContextProps } from './accountContext';
 
 type ECOAccount = BareProps

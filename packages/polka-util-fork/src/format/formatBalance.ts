@@ -70,7 +70,7 @@ function _formatBalance <ExtToBn extends ToBn> (input?: number | string | BN | B
 
   const postfix = `${`${new Array(padding + 1).join('0')}${text}`.substr(mid < 0 ? 0 : mid)}0000`.substr(0);
 
-  console.log('-=====', `${new Array(padding + 1).join('0')}${text}`, 'mid', mid, 'postfix', postfix, 'formatDecimal(prefix || 0)', formatDecimal(prefix || '0'));
+  // console.log('-=====', `${new Array(padding + 1).join('0')}${text}`, 'mid', mid, 'postfix', postfix, 'formatDecimal(prefix || 0)', formatDecimal(prefix || '0'));
 
   const units = withSi || withSiFull
     ? si.value === '-'

@@ -3,7 +3,7 @@
 
 import { Route } from '@polkadot/apps-routing/types';
 
-import React, { Suspense, useContext, useMemo } from 'react';
+import React, { Suspense, useContext, useMemo, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import createRoutes from '@polkadot/apps-routing';
@@ -11,6 +11,9 @@ import { ErrorBoundary, Spinner, StatusContext } from '@polkadot/react-component
 import { useApi } from '@polkadot/react-hooks';
 import RootNotice from '@polkadot/react-components/RootNotice';
 import { AccountUpdator } from '@eco/eco-components/Account';
+import { queryCarbonCommitteeMembers } from '@eco/eco-utils/service';
+import { MembersProvider } from '@eco/eco-utils/useMembers';
+import { updateMembers as utilUpdateMembers } from '@eco/eco-utils/utils';
 
 import { findMissingApis } from '../endpoint';
 import { useTranslation } from '../translate';
@@ -38,6 +41,7 @@ function Content ({ className }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api, isApiConnected, isApiReady } = useApi();
   const { queueAction } = useContext(StatusContext);
+  const [members, updateMembers] = useState<string[]>([]);
 
   const { Component, display: { needsApi }, name } = useMemo(
     (): Route => {
@@ -49,6 +53,20 @@ function Content ({ className }: Props): React.ReactElement<Props> {
   );
 
   const missingApis = findMissingApis(api, needsApi);
+
+  useEffect(() => {
+    init();
+
+    async function init () {
+      if (isApiReady && isApiConnected) {
+        const mm = await queryCarbonCommitteeMembers(api);
+
+        utilUpdateMembers(mm);
+        console.log('mmmmmm', mm);
+        updateMembers(mm);
+      }
+    }
+  }, [api, isApiReady, isApiConnected]);
 
   return (
     <div className={className}>
@@ -62,30 +80,32 @@ function Content ({ className }: Props): React.ReactElement<Props> {
           <>
             <Suspense fallback='...'>
               <ErrorBoundary trigger={name}>
-                {missingApis.length
-                  ? (
-                    <NotFound
-                      basePath={`/${name}`}
-                      location={location}
-                      missingApis={missingApis}
-                      onStatusChange={queueAction}
-                    />
-                  )
-                  : (
-                    <React.Fragment>
-                      <RootNotice key={name} />
-                      <AccountUpdator>
-                        <Component
-                          basePath={`/${name}`}
-                          location={location}
-                          onStatusChange={queueAction}
-                        />
-                      </AccountUpdator>
+                <MembersProvider value={members}>
+                  {missingApis.length
+                    ? (
+                      <NotFound
+                        basePath={`/${name}`}
+                        location={location}
+                        missingApis={missingApis}
+                        onStatusChange={queueAction}
+                      />
+                    )
+                    : (
+                      <React.Fragment>
+                        <RootNotice key={name} />
+                        <AccountUpdator>
+                          <Component
+                            basePath={`/${name}`}
+                            location={location}
+                            onStatusChange={queueAction}
+                          />
+                        </AccountUpdator>
 
-                    </React.Fragment>
+                      </React.Fragment>
 
-                  )
-                }
+                    )
+                  }
+                </MembersProvider>
               </ErrorBoundary>
             </Suspense>
             <Status />
