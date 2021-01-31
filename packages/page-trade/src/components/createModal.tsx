@@ -205,6 +205,14 @@ function CreateModal (props: Props): React.ReactElement<Props> {
       // if (!value || new BN(value).gt(new BN(assetBalance))) {
       //   throw new Error(`余额不足，当前可用资产${resolveAmountNumber(assetBalance || 0)}`);
       // }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    } else if (formValues.direction === '1' && formValues.assetId) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const _atotal = _value.mul(new Decimal(10).pow(unit)).mul(formValues.price).toString();
+
+      if (!value || new BN(_atotal).gt(new BN(assetBalance))) {
+        throw new Error(t<string>('余额不足，当前可用资产{{amount}}', { replace: { amount: resolveAmountNumber(assetBalance || 0) } }));
+      }
     }
 
     await Promise.resolve();

@@ -18,6 +18,9 @@ import { fromHex, beautifulNumber, reformatAssetName, resolveAmountNumber } from
 import { useHistory } from 'react-router-dom';
 // import { api } from '@polkadot/react-api';
 import { useTranslation } from '@eco/eco-utils/translate';
+import ECOimg from './eco.png';
+import ECO2Img from './eco2.png';
+import StandImg from './stand.png';
 const Content = styled.div`
   display: flex;
   align-items: center;
@@ -43,7 +46,7 @@ const Icon = styled.div`
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
-  background-image: url('/static/eco2.3d213ebd.svg');
+  // background-image: url('/static/eco2.3d213ebd.svg');
   background-size: cover;
   cursor: pointer;
 
@@ -108,7 +111,10 @@ function AssetItem (props: AssetItemType): React.ReactElement<AssetItemType> {
   return (
     <ItemWrapper>
       <Content>
-        <div><Icon onClick={goDetail} /></div>
+        <div><Icon onClick={goDetail}
+          style={{
+            backgroundImage: `url('${asset.assetId === 'eco2' ? ECO2Img : (type === 'carbon' ? ECOimg : StandImg)}')`
+          }} /></div>
         <div>
           <div className='title'
             onClick={goDetail}>{reformatAssetName(fromHex(asset.symbol as string))}</div>

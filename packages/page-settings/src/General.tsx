@@ -11,10 +11,17 @@ import uiSettings, { SettingsStruct } from '@polkadot/ui-settings';
 
 import { useTranslation } from './translate';
 import { createIdenticon, createOption, save, saveAndReload } from './util';
+import styled from 'styled-components';
 
 interface Props {
   className?: string;
 }
+
+const ChainRow = styled.div`
+  img.ui--Dropdown-icon{
+    background: none!important;
+  }
+`;
 
 const ledgerConnOptions = uiSettings.availableLedgerConn;
 
@@ -99,7 +106,7 @@ function General ({ className = '' }: Props): React.ReactElement<Props> {
           options={prefixOptions}
         />
       </div> */}
-      <div className='ui--row'>
+      <ChainRow className='ui--row'>
         <Dropdown
           defaultValue={icon}
           help={t<string>('Override the default identity icon display with a specific theme')}
@@ -107,7 +114,7 @@ function General ({ className = '' }: Props): React.ReactElement<Props> {
           onChange={_handleChange('icon')}
           options={iconOptions}
         />
-      </div>
+      </ChainRow>
       {isLedgerCapable() && (
         <div className='ui--row'>
           <Dropdown
