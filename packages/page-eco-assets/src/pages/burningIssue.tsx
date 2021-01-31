@@ -86,7 +86,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
     }];
   }, []);
 
-  const [unit, updateUnit] = useState<number>(SIOptions[0].value);
+  const [unit, updateUnit] = useState<number>(SIOptions[2].value);
 
   const handleUnitChange = useCallback((_unit) => {
     updateUnit(_unit);
@@ -161,8 +161,8 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
   };
 
   const amountValidtor = async (rule, value) => {
-    if (assetsInfo.balance < value * 10 ^ 6) {
-      throw new Error(t<string>('最大可销毁{{amount}}', { replace: { amount: resolveAmountNumber(assetsInfo.balance || 0) } }));
+    if (+unitToEco(assetsInfo?.balance || 0, 6) < value) {
+      throw new Error(t<string>('最大可销毁{{amount}}', { replace: { amount: resolveAmountNumber(assetsInfo?.balance || 0) } }));
     }
 
     return Promise.resolve();
@@ -282,9 +282,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isFull={false}
                   label={<div >{t<string>('申请销毁数量')}</div>}
-                  labelExtra={<div style={{
-                    paddingRight: '5em'
-                  }}>{t<string>('吨')}</div>}
+                  labelExtra={<div>{t<string>('吨')}</div>}
                   maxLength={500}
                   // onChange={(description: string) => setFieldsValue({ description })}
                   placeholder={t<string>('请输入您需要销毁的碳汇资产数量，当前最大可销毁{{max}}', { max: resolveAmountNumber(assetsInfo.balance || 0) })}
@@ -292,13 +290,13 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                   withLabel={true}
                 >
 
-                  <Dropdown
+                  {/* <Dropdown
                     defaultValue={unit}
                     dropdownClassName='ui--SiDropdown'
                     isButton
                     onChange={handleUnitChange}
                     options={SIOptions}
-                  />
+                  /> */}
                 </Input>
               </FieldDecorator>
             </Form.Item>
