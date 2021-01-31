@@ -102,10 +102,10 @@ function RegisterProject ({ className }: Props): React.ReactElement<Props> {
   const CarbonStandsTypes = useMemo(() => {
     return [{
       text: t<string>('VCS'),
-      value: 'vcs'
+      value: 'VCS'
     }, {
       text: t<string>('GS'),
-      value: 'gs'
+      value: 'GS'
     }];
   }, []);
 

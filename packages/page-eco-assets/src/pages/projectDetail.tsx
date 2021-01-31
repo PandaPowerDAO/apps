@@ -140,7 +140,7 @@ const DetailsMap = [
   // registerDate: '注册日期'
     registerDate: (v, t) => {
       return <>
-        <span className='label'>{t<string>('注册日期')}:</span>
+        <span className='label'>{t<string>('项目注册日期')}:</span>
         <span className='labelVal'>{v}</span>
       </>;
     }
