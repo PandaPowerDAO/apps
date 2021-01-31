@@ -58,7 +58,8 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
     costPro: false,
     // registerPro: false,
     agreed3: false,
-    agreed2: false
+    agreed2: false,
+    agreed4: false
   });
   const { t } = useTranslation('page-eco-assets');
 
@@ -149,7 +150,8 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
         costPro: false,
         // registerPro: false,
         agreed2: false,
-        agreed3: false
+        agreed3: false,
+        agreed4: false
       });
 
       console.log('result ----', result);
@@ -184,18 +186,16 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
         </Panel>
         <Panel title='说明：'>
           <p>{t<string>('如您要将ECO2 Ledger链上碳汇资产转回链下碳汇账户，须先将链上该笔碳汇资产先行销毁，避免产生重复计算的问题。')}</p>
-          <p>{t<string>('1、在「钱包」中选择您要销毁的碳汇资产。')}</p>
+          <p>{t<string>('1、在「我上链的资产」中选择您要销毁的碳汇资产。')}</p>
           <p style={{ textIndent: '1em ' }}>{t<string>('请输入收取这笔碳汇的链下碳汇账户。')}</p>
-          <p style={{ textIndent: '1em ' }}>{t<string>('如果是Gold Standard 标准，请汇至：Beijing Qianyuhui International Environmental Investment Co., Ltd（1069079）')}</p>
-          <p style={{ textIndent: '1em ' }}>{t<string>('其他标准暂时无法上链，我们将陆续开通。')}</p>
           <p>{t<string>('2、请输入收取这笔碳汇的链下碳汇账户。')}</p>
           <p>{t<string>('3、输入要销毁的数量。')}</p>
           <p>{t<string>('4、提交申请')}</p>
           <br />
 
           <p>{t<string>('备注')}</p>
-          <p>{t<string>('1、资产审查委员会一般会在24小时内完成审核。')}</p>
-          <p>{t<string>('2、若审核不通过，您钱包申请销毁的碳汇资产，将在24小时内退回至钱包。')}</p>
+          <p>{t<string>('1、资产审查委员会一般会在7个工作日内完成审核。')}</p>
+          <p>{t<string>('2、若审核不通过，您钱包申请销毁的碳汇资产，将在7个工作日内退回至钱包。')}</p>
           <p>{t<string>('3、仅将这笔碳汇资产上链的用户有权销毁。')}</p>
 
         </Panel>
@@ -208,7 +208,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isDisabled
                   isFull={false}
-                  label={<div>{t<string>('当前资产')}</div>}
+                  label={<div>{t<string>('当前选择的资产')}</div>}
                   value={assetName}
                   withLabel={true}
                 />
@@ -221,7 +221,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                 <Input
                   isDisabled
                   isFull={false}
-                  label={<div>{t<string>('资产年限')}</div>}
+                  label={<div>{t<string>('资产年份')}</div>}
                   value={fromHex(assetsInfo.vintage as string)}
                   withLabel={true}
                 />
@@ -287,7 +287,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                   }}>{t<string>('吨')}</div>}
                   maxLength={500}
                   // onChange={(description: string) => setFieldsValue({ description })}
-                  placeholder={t<string>('请输入')}
+                  placeholder={t<string>('请输入您需要销毁的碳汇资产数量，当前最大可销毁{{max}}', { max: resolveAmountNumber(assetsInfo.balance || 0) })}
                   // value={form.name}
                   withLabel={true}
                 >
@@ -320,7 +320,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                   isFull={false}
                   label={<div >{t<string>('链下碳汇账户')}</div>}
                   // onChange={(description: string) => setFieldsValue({ description })}
-                  placeholder={t<string>('请输入该比碳汇的链下碳汇账户')}
+                  placeholder={t<string>('请输入收取这笔碳汇的链下碳汇账户')}
                   // value={form.name}
                   withLabel={true}
                 >
@@ -341,7 +341,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
                 <TextArea
                   isFull={false}
                   label={<div>{t<string>('描述')}</div>}
-                  labelExtra={<div>{t<string>('请描述资产销毁原因，最多500字')}</div>}
+                  labelExtra={<div>{t<string>('请输入销毁资产的原因，最大500字符')}</div>}
                   maxLength={500}
                   // onChange={(description: string) => setFieldsValue({ description })}
                   rows={3}
@@ -355,7 +355,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
         <Panel>
           <div>
             <Checkbox
-              label={t<string>('请知晓，资产一旦销毁，不可撤回')}
+              label={t<string>('请知晓，资产一旦销毁，该操作不可撤回;')}
               onChange={(agreed: boolean) => setProtocalValue({ costPro: agreed })}
               value={protocals.costPro}
             />
@@ -370,7 +370,7 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
           </div> */}
           <div>
             <Checkbox
-              label={t<string>('销毁碳汇资产需要等待资产审查委员会审查通过后，您的碳汇数字资产将被扣除，同时会将您的真实碳汇资产原路转回到您的碳汇资产账户中')}
+              label={t<string>('销毁碳汇资产需要等待 资产审查委员会审查通过后，您的碳汇数字资产将被扣除，同时会将您的真实碳汇资产原路转回到你的碳汇资产账户中;')}
               onChange={(agreed2: boolean) => setProtocalValue({ agreed2 })}
               value={protocals.agreed2}
             />
@@ -378,16 +378,23 @@ function PageBurning ({ className }: Props): React.ReactElement<Props> {
           </div>
           <div>
             <Checkbox
-              label={t<string>('销毁碳汇资产将消耗 100 ECO2 及 10,000 ECC')}
+              label={t<string>('销毁碳汇资产将支付 100 ECO2 用于 资产审查委员会的审核费用  及 额外的网络资源使用手续费;')}
               onChange={(agreed3: boolean) => setProtocalValue({ agreed3 })}
               value={protocals.agreed3}
+            />
+          </div>
+          <div>
+            <Checkbox
+              label={t<string>('我同意 遵守TOS协议内容')}
+              onChange={(agreed4: boolean) => setProtocalValue({ agreed4 })}
+              value={protocals.agreed4}
             />
           </div>
           <div style={{
             textAlign: 'center',
             marginTop: '24px'
           }}>
-            <Button htmlType='submit'>{t<string>('立即销毁')}</Button>
+            <Button htmlType='submit'>{t<string>('销毁碳汇资产')}</Button>
           </div>
         </Panel>
       </div>

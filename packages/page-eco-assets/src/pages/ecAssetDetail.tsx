@@ -98,7 +98,7 @@ const DetailsMap = [
       </>;
     }
   }, {
-    initial_supply: (v, t) => {
+    total_supply: (v, t) => {
       return <>
         <span className='label'>{t<string>('碳汇资产上链数量')}:</span>
         <span className='labelVal'>{resolveAmountNumber(v)}</span>
@@ -116,7 +116,7 @@ const DetailsMap = [
   }],
   [{
     // projectDoc: '签发报告'
-    projectDoc: (v, t) => {
+    checkDoc: (v, t) => {
       return <>
         <span className='label'>{t<string>('核查报告')}:</span>
         <span className='labelVal'>{v}</span>
@@ -124,7 +124,7 @@ const DetailsMap = [
     }
   }, {
     // extraCertificate: '额外签发证书'
-    extraCertificate: (v, t) => {
+    extraDoc: (v, t) => {
       return <>
         <span className='label'>{t<string>('其他报告')}:</span>
         <span className='labelVal'>{v}</span>
